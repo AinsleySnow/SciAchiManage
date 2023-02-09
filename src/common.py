@@ -24,6 +24,7 @@ class User:
     name_: str
     passwd_: str
     sex_: Sex
+    dept_: str
 
 
 @dataclass(order = True)
@@ -57,6 +58,14 @@ class Journal:
     pic_link_: str
     ext_link_: str
 
+@dataclass
+class Paper:
+    apply_num_: str
+    issn_: str
+    title_: str
+    author_: str
+    link_: str
+
 
 @dataclass
 class Newspaper:
@@ -72,10 +81,17 @@ class Newspaper:
     pic_link_: str
     ext_link_: str
 
+@dataclass
+class Article:
+    apply_num_: str
+    issn_: str
+    title_: str
+    author_: str
+    link_: str
+
 
 @dataclass
 class Conference:
-    apply_num_: str
     id_: int
     name_: str
     time_: date
@@ -84,8 +100,17 @@ class Conference:
     publisher_: str
     publish_date_: date
     chief_edit_: str
+    editors_: str
     pic_link_: str
     ext_link_: str
+
+@dataclass
+class ConferencePaper:
+    apply_num_: str
+    id_: int
+    title_: str
+    author_: str
+    link_: str
 
 
 @dataclass
@@ -113,3 +138,39 @@ class Patent:
     cata_num_: str
     maj_cata_: str
     ext_link_: str
+
+
+@dataclass
+class PaperApply:
+    apply_num_: str
+    author_id_: str
+    issn_: str
+    processed_: bool
+
+@dataclass
+class ArticleApply:
+    apply_num_: str
+    author_id_: str
+    issn_: str
+    processed_: bool
+
+@dataclass
+class ConfPaperApply:
+    apply_num_: str
+    author_id_: str
+    id_: int
+    processed_: bool
+
+@dataclass
+class BookApply:
+    apply_num_: str
+    author_id_: str
+    isbn_: str
+    processed_: bool
+
+@dataclass
+class PatentApply:
+    apply_num_: str
+    author_id_: str
+    patent_num_: str
+    processed_: bool
