@@ -181,10 +181,10 @@ class NewspaperAuthor(models.Model):
         on_delete=models.CASCADE,
         to_field='id'
     )
-    issn = models.CharField(
+    issn = models.ForeignKey(
         Newspaper,
         on_delete=models.CASCADE,
-        to_field='id'
+        to_field='issn'
     )
 
     class Status(models.IntegerChoices):
@@ -201,7 +201,7 @@ class ConferenceAuthor(models.Model):
         on_delete=models.CASCADE,
         to_field='id'
     )
-    id = models.IntegerField(
+    id = models.ForeignKey(
         Conference,
         on_delete=models.CASCADE,
         to_field='id'
@@ -221,7 +221,7 @@ class BookAuthor(models.Model):
         on_delete=models.CASCADE,
         to_field='id'
     )
-    isbn = models.CharField(
+    isbn = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
         to_field='isbn'
@@ -241,10 +241,10 @@ class PatentAuthor(models.Model):
         on_delete=models.CASCADE,
         to_field='id'
     )
-    patent_num = models.CharField(
+    patent_num = models.ForeignKey(
         Patent,
         on_delete=models.CASCADE,
-        to_field='id'
+        to_field='patent_num'
     )
 
     class Status(models.IntegerChoices):
