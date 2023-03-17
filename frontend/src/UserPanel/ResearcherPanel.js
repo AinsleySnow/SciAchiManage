@@ -22,7 +22,9 @@ import { Routes, Route } from 'react-router-dom'
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
 import Orders from './Orders';
-import Chart from './Chart';
+import ResearcherSettings from './ResearcherSettings';
+import { ArticleInfo, BookInfo, ConferenceInfo, JournalInfo, NewspaperInfo, PaperInfo, PatentInfo } from './ApplyForm';
+import { Button } from '@mui/material';
 
 
 function Copyright(props) {
@@ -50,7 +52,7 @@ export const resListItems = (
       <ListItemIcon>
         <ApprovalRoundedIcon />
       </ListItemIcon>
-      <ListItemText primary="我的申请" />
+      <ListItemText primary="添加成果" />
     </ListItemButton>
     <ListItemButton href='/my/settings'>
       <ListItemIcon>
@@ -120,6 +122,14 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                        <JournalInfo />
+                        <PaperInfo />
+                        <NewspaperInfo />
+                        <ArticleInfo />
+                        <ConferenceInfo />
+                        <BookInfo />
+                        <PatentInfo />
+                        <Button sx={{ marginLeft: 105, marginTop: 4, marginBottom: 1, maxWidth: 100 }} variant='contained'>确定</Button>
                       </Paper>
                     </Grid>
                   } />
@@ -127,7 +137,7 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <Chart />
+                        <ResearcherSettings />
                       </Paper>
                     </Grid>
                   } />
