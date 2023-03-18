@@ -1,15 +1,16 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
-class User(models.Model):
+class User(AbstractUser):
     id = models.CharField(max_length=7, primary_key=True)
-    
+
     class Type(models.IntegerChoices):
         RESEARCHER = 1
         ASSISTANT = 2
         ADMIN = 3
     type = models.IntegerField(choices=Type.choices)
-    
+
     name = models.CharField(max_length=10)
     passwd = models.CharField(max_length=32)
 
@@ -17,17 +18,18 @@ class User(models.Model):
         MALE = 1
         FEMALE = 2
     sex = models.IntegerField(choices=Sex.choices)
-    
+
     dept = models.CharField(max_length=45)
 
 
 
 class Researcher(models.Model):
-    id = models.ForeignKey(
+    rid = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         to_field='id'
     )
+    dept = models.CharField(max_length=50)
     position = models.CharField(max_length=10, blank=True)
     profile = models.TextField(blank=True)
     work = models.TextField(blank=True)
@@ -39,12 +41,12 @@ class Journal(models.Model):
     issn = models.CharField(max_length=8, primary_key=True)
     title = models.CharField(max_length=45)
     host = models.CharField(max_length=100)
-  
+
     class Period(models.IntegerChoices):
         monthly = 1
         seasonly = 2
     period = models.IntegerField(choices=Period.choices)
-    
+
     inf_factor = models.FloatField(blank=True)
     
     class Zone(models.IntegerChoices):
@@ -52,9 +54,9 @@ class Journal(models.Model):
         second = 2
         third = 3
         fourth = 4
-    zone = models.IntegerField(choices=Period.choices)
-    
-    picture = models.ImageField()
+    zone = models.IntegerField(choices=Period.choices, blank=True)
+
+    picture = models.ImageField(blank=True)
     link = models.CharField(max_length=400, blank=True),
 
 
