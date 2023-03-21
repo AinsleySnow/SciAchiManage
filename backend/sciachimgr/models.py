@@ -1,8 +1,7 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 
-class User(AbstractUser):
+class User(models.Model):
     id = models.CharField(max_length=7, primary_key=True)
 
     class Type(models.IntegerChoices):

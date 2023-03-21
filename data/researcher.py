@@ -32,11 +32,20 @@ if __name__ == '__main__':
     write_result = csv.DictWriter(result, ['id', 'rid', 'dept', 'position', 'profile', 'work', 'photo'])
 
     with open('user.csv', 'r', encoding='utf-8') as file:
+        man = woman = 1
         i = 0
         reader = csv.DictReader(file)
         for row in reader:
             rid = row['id']
             dept = row['dept']
+            sex = row['sex']
+            photo = ''
+            if sex == '1':
+                photo = 'cengyi_' + '%04d' % man + '.jpg'
+                man += 1
+            elif sex == '2':
+                photo = 'baibaihe_' + '%04d' % woman + '.jpg'
+                woman += 1
             write_result.writerow(
                 {
                     'id': i,
@@ -45,7 +54,7 @@ if __name__ == '__main__':
                     'position': random.choice(position),
                     'profile': get_profile(),
                     'work': get_work(),
-                    'photo': None
+                    'photo': 'pic/' + photo
                 }
             )
             i += 1

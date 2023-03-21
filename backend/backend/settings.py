@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'sciachimgr.apps.SciachimgrConfig',
     'import_export',
     'rest_framework',
-    'core',
     'corsheaders'
 ]
 
