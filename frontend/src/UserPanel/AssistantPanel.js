@@ -20,7 +20,7 @@ import ApprovalRoundedIcon from '@mui/icons-material/ApprovalRounded';
 
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
-import Orders from './Orders';
+import InfoTable from './InfoTable';
 
 function Copyright(props) {
   return (
@@ -99,7 +99,7 @@ function AssistantPanelContent() {
               {/* Recent Orders */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
+                  <InfoTable />
                 </Paper>
               </Grid>
             </Grid>

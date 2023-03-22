@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import AppBar from '../AppBar';
-import Orders from '../UserPanel/Orders';
+import InfoTable from '../UserPanel/InfoTable';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Paper, Toolbar } from '@mui/material';
 
@@ -60,12 +60,12 @@ export default function Researcher() {
               </Grid>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, mt: 4 }}>
-                  <Orders />
+                  <InfoTable />
                 </Paper>
               </Grid>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, mt: 2 }}>
-                  <Orders />
+                  <InfoTable />
                 </Paper>
               </Grid>
             </Grid>

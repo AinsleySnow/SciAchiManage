@@ -52,7 +52,7 @@ function preventDefault(event) {
   event.preventDefault();
 }
 
-export default function Orders() {
+export default function InfoTable() {
   return (
     <React.Fragment>
       <Title>Recent Orders</Title>

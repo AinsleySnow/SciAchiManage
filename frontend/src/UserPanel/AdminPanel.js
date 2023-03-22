@@ -22,7 +22,7 @@ import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
 
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
-import Orders from './Orders';
+import InfoTable from './InfoTable';
 
 
 function Copyright(props) {
@@ -113,7 +113,7 @@ function AdminPanelContent() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
+                  <InfoTable />
                 </Paper>
               </Grid>
             </Grid>

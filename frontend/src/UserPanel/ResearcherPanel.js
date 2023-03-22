@@ -21,7 +21,7 @@ import { Routes, Route } from 'react-router-dom'
 
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
-import Orders from './Orders';
+import InfoTable from './InfoTable';
 import ResearcherSettings from './ResearcherSettings';
 import { ArticleInfo, BookInfo, ConferenceInfo, JournalInfo, NewspaperInfo, PaperInfo, PatentInfo } from './ApplyForm';
 import { Button } from '@mui/material';
@@ -106,7 +106,7 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <Orders />
+                        <InfoTable />
                       </Paper>
                     </Grid>
                   } />
@@ -114,7 +114,7 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <Orders />
+                        <InfoTable />
                       </Paper>
                     </Grid>
                   } />
