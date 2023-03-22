@@ -18,7 +18,7 @@ export default function Researcher() {
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar drawerWidth='0'/>
+        <AppBar drawerwidth='0'/>
         <Box
           component="main"
           sx={{

@@ -8,7 +8,11 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { API_URL, REACT_URL } from './Constants';
+
 
 function Copyright(props) {
   return (
@@ -25,19 +29,46 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignIn() {
+export default function Login() {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (e) => {
+    setOpen(false);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    fetch('http://127.0.0.1:8000/sciachimgr/dologin/', {
+      method: "POST",
+      body: JSON.stringify({
+        id: data.get('id'),
+        passwd: data.get('password'),
+      }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+      .then((res) => res.text())
+      .then((resdata) => {
+        if (resdata === 'success')
+        {
+          window.sessionStorage.setItem('id', data.get('id'));
+          window.location.assign(REACT_URL + '/my');
+        }
+        else setOpen(true);
+      });
   };
 
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
+        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+            用户名或密码错误。
+          </Alert>
+        </Snackbar>
         <CssBaseline />
         <Box
           sx={{

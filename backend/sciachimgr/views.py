@@ -2,16 +2,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
+import json
 from . models import *
 from . serializer import *
 
 
-
-def index(request):
-    return HttpResponse("Hello world.")
-
-
 def Logged(request):
+    if 'logged' not in request.session:
+        request.session['logged'] = False
+        return HttpResponse('not logged')
     if request.session['logged'] == False:
         return HttpResponse('not logged')
     else:
@@ -19,9 +18,16 @@ def Logged(request):
 
 
 def DoLogin(request):
-    user = User.objects.get(id=request.POST['id'])
-    if user.passwd == request.POST['passwd']:
+    received = json.loads(request.body)
+
+    user = User.objects.filter(id=received.get('id'))
+    if not user.exists():
+        return HttpResponse('fail')
+
+    user = User.objects.get(id=received.get('id'))
+    if user.passwd == received.get('passwd'):
         request.session['logged'] = True
+        request.session['user'] = user.id
         return HttpResponse('success')
     else:
         return HttpResponse('fail')

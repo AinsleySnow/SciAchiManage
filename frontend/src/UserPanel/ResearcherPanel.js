@@ -70,7 +70,7 @@ function ResearcherPanelContent() {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar drawerWidth='240'/>
+        <AppBar drawerwidth='240'/>
         <Drawer variant="permanent">
           <Toolbar
             sx={{

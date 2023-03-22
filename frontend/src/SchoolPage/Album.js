@@ -33,7 +33,7 @@ export default function Album(props) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar drawerWidth='0'/>
+      <AppBar drawerwidth='0'/>
       <main>
         {/* Hero unit */}
         <Box
