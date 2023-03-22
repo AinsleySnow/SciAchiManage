@@ -1,10 +1,18 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import json
 from . models import *
 from . serializer import *
+
+
+def Picture(request, picname):
+    path = settings.MEDIA_ROOT + picname
+    with open(path, 'rb') as pic:
+        data = pic.read()
+    return HttpResponse(data, content_type='image/jpeg')
 
 
 def Logged(request):
