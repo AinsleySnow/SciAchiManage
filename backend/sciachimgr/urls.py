@@ -6,5 +6,6 @@ urlpatterns = [
     path('pic/<str:picname>', views.Picture),
     path('logged/', views.Logged),
     path('dologin/', views.DoLogin),
-    path('dologout/', views.DoLogout)
+    path('dologout/', views.DoLogout),
+    path('usrinfo/', views.UsrInfo.as_view())
 ]

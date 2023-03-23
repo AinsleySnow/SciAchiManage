@@ -47,22 +47,41 @@ def DoLogout(request):
 
 
 
-class UserView(APIView):
+class UsrInfo(APIView):
     serializer_class = UserSerializer
 
     def get(self, request):
-        user = [
-            {
-                'id': user.name,
-                'type': user.type,
-                'name': user.name,
-                'passwd': user.passwd,
-                'sex': user.sex,
-                'dept': user.dept
-            } 
-            for user in User.objects.all()
-        ]
-        return Response(user)
+        id = request.GET['id']
+        ty = id[2:4]
+        which = request.GET['which']
+
+        if ty == '01' and which == 'all':
+            return Response(status=403)
+        elif which == 'all':
+            user = [
+                {
+                    'id': user.id,
+                    'type': user.type,
+                    'name': user.name,
+                    'passwd': user.passwd,
+                    'sex': user.sex,
+                    'dept': user.dept
+                }
+                for user in User.objects.all()
+            ]
+            return Response(user)
+        else:
+            user = User.objects.get(id=which)
+            return Response(
+                {
+                    'id': user.id,
+                    'type': user.type,
+                    'name': user.name,
+                    'passwd': user.passwd,
+                    'sex': user.sex,
+                    'dept': user.dept
+                }
+            )
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)

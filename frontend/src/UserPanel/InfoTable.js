@@ -20,13 +20,13 @@ export default function InfoTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {props.rows ? props.rows.map((row) => (
             <TableRow>
-              {row.map((property) => (
-                <TableCell>{row[property]}</TableCell>
+              {Array.from(Object.entries(row)).map(([key, value]) => (
+                <TableCell key={key}>{value}</TableCell>
               ))}
             </TableRow>
-          ))}
+          )) : <TableRow></TableRow>}
         </TableBody>
       </Table>
     </React.Fragment>

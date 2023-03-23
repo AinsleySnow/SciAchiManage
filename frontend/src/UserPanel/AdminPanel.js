@@ -23,6 +23,8 @@ import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
 import InfoTable from './InfoTable';
+import { Routes, Route } from 'react-router-dom';
+import { API_URL } from '../Constants';
 
 
 function Copyright(props) {
@@ -39,39 +41,69 @@ function Copyright(props) {
 }
 
 export const assistantListItems = (
-    <React.Fragment>
-      <ListItemButton>
-        <ListItemIcon>
-          <PeopleAltRoundedIcon />
-        </ListItemIcon>
-        <ListItemText primary="用户管理" />
-      </ListItemButton>
-      <ListItemButton>
-        <ListItemIcon>
-          <DescriptionRoundedIcon />
-        </ListItemIcon>
-        <ListItemText primary="数据管理" />
-      </ListItemButton>
-      <ListItemButton>
-        <ListItemIcon>
-          <ApprovalRoundedIcon />
-        </ListItemIcon>
-        <ListItemText primary="申请处理" />
-      </ListItemButton>
-      <ListItemButton>
-        <ListItemIcon>
-          <SchoolRoundedIcon />
-        </ListItemIcon>
-        <ListItemText primary="学院管理" />
-      </ListItemButton>
-      <ListItemButton>
-        <ListItemIcon>
-          <AutoStoriesRoundedIcon />
-        </ListItemIcon>
-        <ListItemText primary="添加出版物" />
-      </ListItemButton>
-    </React.Fragment>
+  <React.Fragment>
+    <ListItemButton href='/my/users'>
+      <ListItemIcon>
+        <PeopleAltRoundedIcon />
+      </ListItemIcon>
+      <ListItemText primary="用户管理" />
+    </ListItemButton>
+    <ListItemButton href='/my/data'>
+      <ListItemIcon>
+        <DescriptionRoundedIcon />
+      </ListItemIcon>
+      <ListItemText primary="数据管理" />
+    </ListItemButton>
+    <ListItemButton href='/my/apply'>
+      <ListItemIcon>
+        <ApprovalRoundedIcon />
+      </ListItemIcon>
+      <ListItemText primary="申请处理" />
+    </ListItemButton>
+    <ListItemButton href='/my/college'>
+      <ListItemIcon>
+        <SchoolRoundedIcon />
+      </ListItemIcon>
+      <ListItemText primary="学院管理" />
+    </ListItemButton>
+    <ListItemButton href='/my/published'>
+      <ListItemIcon>
+        <AutoStoriesRoundedIcon />
+      </ListItemIcon>
+      <ListItemText primary="添加出版物" />
+    </ListItemButton>
+  </React.Fragment>
 );
+
+
+function GetUser(curusr, id) {
+  var which = '';
+  if (!id) which = 'all';
+  else which = id;
+
+  return fetch(API_URL + '/usrinfo?id=' + curusr + '&which=' + which)
+    .then((res) => res.json())
+}
+
+
+function UsrManage() {
+  var uid = window.sessionStorage.getItem('id');
+
+  const [users, setUsers] = React.useState(null);
+  React.useEffect(() => {
+    GetUser(uid)
+      .then((data) => { console.log('a'); console.log(data); setUsers(data);})
+  }, []);
+
+  return (
+    <InfoTable
+      title='用户列表'
+      heads={['工号', '用户类型', '姓名', '密码', '性别', '部门']}
+      rows={users}
+    />
+  );
+}
+
 
 const mdTheme = createTheme();
 
@@ -80,7 +112,7 @@ function AdminPanelContent() {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar drawerwidth='240'/>
+        <AppBar drawerwidth='240' />
         <Drawer variant="permanent">
           <Toolbar
             sx={{
@@ -111,11 +143,23 @@ function AdminPanelContent() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <InfoTable />
-                </Paper>
-              </Grid>
+              <Routes>
+                <Route path='/'
+                  element={
+                    <Grid item xs={12}>
+                      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                        <UsrManage />
+                      </Paper>
+                    </Grid>
+                  } />
+                <Route path='/users' element={
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <UsrManage />
+                    </Paper>
+                  </Grid>
+                } />
+              </Routes>
             </Grid>
             <Copyright sx={{ pt: 4 }} />
           </Container>
