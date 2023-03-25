@@ -25,6 +25,7 @@ import Drawer from '../Drawer';
 import InfoTable from './InfoTable';
 import { Routes, Route } from 'react-router-dom';
 import { API_URL } from '../Constants';
+import { GetUser } from './Common'
 
 
 function Copyright(props) {
@@ -76,23 +77,13 @@ export const assistantListItems = (
 );
 
 
-function GetUser(curusr, id) {
-  var which = '';
-  if (!id) which = 'all';
-  else which = id;
-
-  return fetch(API_URL + '/usrinfo?id=' + curusr + '&which=' + which)
-    .then((res) => res.json())
-}
-
-
 function UsrManage() {
   var uid = window.sessionStorage.getItem('id');
 
   const [users, setUsers] = React.useState(null);
   React.useEffect(() => {
     GetUser(uid)
-      .then((data) => { console.log('a'); console.log(data); setUsers(data);})
+      .then((data) => { setUsers(data);})
   }, []);
 
   return (
