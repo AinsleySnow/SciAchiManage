@@ -8,10 +8,10 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import { API_URL, REACT_URL } from './Constants';
+import { MessageBar } from './MessageBar';
 
 
 function Copyright(props) {
@@ -64,11 +64,14 @@ export default function Login() {
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
-        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-            用户名或密码错误。
-          </Alert>
-        </Snackbar>
+        <MessageBar
+          open={open}
+          dura={3000}
+          state='error'
+          onClose={handleClose}
+        >
+          用户名或密码错误。
+        </MessageBar>
         <CssBaseline />
         <Box
           sx={{
