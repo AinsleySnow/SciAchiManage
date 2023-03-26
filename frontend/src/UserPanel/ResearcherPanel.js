@@ -11,6 +11,7 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import MuiLink from '@mui/material/Link';
 
+import { Button } from '@mui/material';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -19,12 +20,16 @@ import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { Routes, Route } from 'react-router-dom'
 
+import { API_URL } from '../Constants';
+import { GetUser } from './Common';
+import { GetResearcher } from './Common';
+
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
 import InfoTable from './InfoTable';
-import ResearcherSettings from './ResearcherSettings';
-import { ArticleInfo, BookInfo, ConferenceInfo, JournalInfo, NewspaperInfo, PaperInfo, PatentInfo } from './ApplyForm';
-import { Button } from '@mui/material';
+import ResearcherInfo from './ResearcherInfo';
+import { ArticleInfo, BookInfo, ConferenceInfo, JournalInfo,
+  NewspaperInfo, PaperInfo, PatentInfo } from './ApplyForm';
 
 
 function Copyright(props) {
@@ -65,12 +70,82 @@ export const resListItems = (
 
 const mdTheme = createTheme();
 
+function SettingPanel() {
+  const [rname, SetRname] = React.useState('');
+  const [passwd, setPassws] = React.useState('');
+  const [sex, SetSex] = React.useState('');
+  const [dept, SetDept] = React.useState('');
+
+  const [position, SetPosition] = React.useState('');
+  const [profile, SetProfile] = React.useState('');
+  const [work, SetWork] = React.useState('');
+  const [pic, SetPic] = React.useState('');
+
+  var uid = window.sessionStorage.getItem('id');
+
+  React.useEffect(() => {
+    GetUser(uid, uid)
+      .then((data) => {
+        SetRname(data['name']);
+        setPassws(data['passwd']);
+        SetSex(data['sex']);
+        SetDept(data['dept']);
+      });
+
+    GetResearcher(uid)
+      .then((data) => {
+        SetPic(API_URL + data['pic']);
+        SetPosition(data['position']);
+        SetProfile(data['profile']);
+        SetWork(data['works']);
+      });
+  }, []);
+
+
+  var newpasswd = '';
+
+  var resdict = {
+    pic: pic,
+    position: position,
+    profile: profile,
+    works: work
+  };
+
+  const handlePasswdChange = (dict) => {
+    newpasswd = dict['passwd'];
+  };
+
+  const handleResChange = (dict) => {
+    resdict = { ...dict };
+  };
+
+
+  return (
+    <ResearcherInfo
+      onUsrChange={handlePasswdChange}
+      onResChange={handleResChange}
+      allowbasic={false}
+      title={'基本信息'}
+      id={uid}
+      rname={rname}
+      passwd={passwd}
+      position={position}
+      dept={dept}
+      sex={sex}
+      profile={profile}
+      works={work}
+      pic={pic}
+    />
+  );
+}
+
+
 function ResearcherPanelContent() {
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <AppBar drawerwidth='240'/>
+        <AppBar drawerwidth='240' />
         <Drawer variant="permanent">
           <Toolbar
             sx={{
@@ -137,7 +212,7 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <ResearcherSettings />
+                        <SettingPanel />
                       </Paper>
                     </Grid>
                   } />

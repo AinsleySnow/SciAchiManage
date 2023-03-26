@@ -23,9 +23,12 @@ import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
 import InfoTable from './InfoTable';
-import { Routes, Route } from 'react-router-dom';
-import { API_URL } from '../Constants';
-import { GetUser } from './Common'
+import ResearcherInfo from './ResearcherInfo';
+import { Routes, Route, useParams } from 'react-router-dom';
+import { API_URL, REACT_URL } from '../Constants';
+import { DeleteUser, GetUser, SetResInfo, SetUserInfo } from './Common'
+import { Button } from '@mui/material';
+import { MessageBar } from '../MessageBar';
 
 
 function Copyright(props) {
@@ -82,17 +85,273 @@ function UsrManage() {
 
   const [users, setUsers] = React.useState(null);
   React.useEffect(() => {
-    GetUser(uid)
-      .then((data) => { setUsers(data);})
+    GetUser(uid, null)
+      .then((data) => {
+        data.map((usr) => {
+          return {
+            ...usr,
+            action: <Link href={REACT_URL + '/my/user?id=' + usr.id}>编辑</Link>
+          };
+        });
+        setUsers(data);
+      })
   }, []);
 
   return (
     <InfoTable
       title='用户列表'
-      heads={['工号', '用户类型', '姓名', '密码', '性别', '部门']}
+      heads={['工号', '用户类型', '姓名', '密码', '性别', '部门', '操作']}
       rows={users}
     />
   );
+}
+
+
+function ResearcherInfoEdit(props) {
+  const [id, setId] = React.useState(props.id);
+  const [rname, setRname] = React.useState('');
+  const [passwd, setPasswd] = React.useState('');
+  const [sex, setSex] = React.useState('');
+  const [dept, setDept] = React.useState('');
+
+  const [position, setPosition] = React.useState('');
+  const [profile, setProfile] = React.useState('');
+  const [work, setWork] = React.useState('');
+  const [pic, setPic] = React.useState('');
+
+  var uid = window.sessionStorage.getItem('id');
+
+  var loadfinish = false;
+  React.useEffect(() => {
+    GetUser(uid, props.id)
+      .then((data) => {
+        setId(data['id']);
+        setRname(data['name']);
+        setPasswd(data['passwd']);
+        setSex(data['sex']);
+        setDept(data['dept']);
+      });
+
+    GetResearcher(props.id)
+      .then((data) => {
+        setPic(API_URL + data['pic']);
+        setPosition(data['position']);
+        setProfile(data['profile']);
+        setWork(data['works']);
+      });
+
+    loadfinish = true;
+  }, []);
+
+  var usrUpdated = false;
+  var usrdict = {
+    id: id,
+    rname: rname,
+    passwd: passwd,
+    sex: sex,
+    dept: dept
+  };
+
+  var resUpdated = false;
+  var resdict = {
+    pic: pic,
+    position: position,
+    profile: profile,
+    works: work
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (e) => {
+    setOpen(false);
+  };
+
+  const handleUsrChange = (dict) => {
+    usrdict = { ...dict };
+    usrUpdated = true;
+  };
+
+  const handleResChange = (dict) => {
+    resdict = { ...dict };
+    resUpdated = true;
+  };
+
+  const doUpdate = (e) => {
+    if (!loadfinish)
+      return;
+    if (usrUpdated) {
+      let succeed = SetUserInfo(props.id, usrdict);
+      if (!succeed)
+        setOpen(true);
+      if (id != props.id)
+        props.id = id;
+    }
+    if (resUpdated) {
+      let succeed = SetResInfo(id, resdict);
+      if (!succeed)
+        setOpen(true);
+    }
+  };
+
+  const doDelete = (e) => {
+    var succeed = DeleteUser(props.id);
+    if (!succeed)
+      setOpen(true);
+  };
+
+  return (
+    <Grid>
+      <MessageBar
+        open={open}
+        dura={3000}
+        state='error'
+        onClose={handleClose}
+      >
+        出错了！
+      </MessageBar>
+      <ResearcherInfo
+        onUsrChange={handleUsrChange}
+        onResChange={handleResChange}
+        allowbasic={true}
+        title={'编辑用户信息'}
+        id={id}
+        rname={rname}
+        passwd={passwd}
+        position={position}
+        dept={dept}
+        sex={sex}
+        profile={profile}
+        works={work}
+        pic={pic}
+      />
+      <Button
+        variant='contained'
+        color='error'
+        fullWidth
+        onClick={doUpdate}
+      >
+        确认更改
+      </Button>
+      <Button
+        variant='contained'
+        color='error'
+        fullWidth
+        onClick={doDelete}
+      >
+        删除用户
+      </Button>
+    </Grid>
+  );
+}
+
+function UserInfoEdit(props) {
+  const [id, setId] = React.useState(props.id);
+  const [uname, setUname] = React.useState('');
+  const [passwd, setPasswd] = React.useState('');
+  const [sex, setSex] = React.useState('');
+  const [dept, setDept] = React.useState('');
+
+  var uid = window.sessionStorage.getItem('id');
+
+  var loadfinish = false;
+  React.useEffect(() => {
+    GetUser(uid, props.id)
+      .then((data) => {
+        setId(data['id']);
+        setUname(data['name']);
+        setPasswd(data['passwd']);
+        setSex(data['sex']);
+        setDept(data['dept']);
+      });
+    loadfinish = true;
+  }, []);
+
+  var usrUpdated = false;
+  var usrdict = {
+    id: id,
+    uname: uname,
+    passwd: passwd,
+    sex: sex,
+    dept: dept
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (e) => {
+    setOpen(false);
+  };
+
+  const handleUsrChange = (dict) => {
+    usrdict = { ...dict };
+    usrUpdated = true;
+  };
+
+  const doUpdate = (e) => {
+    if (!loadfinish)
+      return;
+    if (usrUpdated) {
+      var succeed = SetUserInfo(props.id, usrdict);
+      if (!succeed)
+        setOpen(true);
+      if (id != props.id)
+        props.id = id;
+    }
+  };
+
+  const doDelete = (e) => {
+    var succeed = DeleteUser(props.id);
+    if (!succeed)
+      setOpen(true);
+    window.location.replace(REACT_URL + 'my/users');
+  };
+
+  return (
+    <Grid>
+      <MessageBar
+        open={open}
+        dura={3000}
+        state='error'
+        onClose={handleClose}
+      >
+        出错了！
+      </MessageBar>
+      <UserInfo
+        onUsrChange={handleUsrChange}
+        allowbasic={true}
+        title={'编辑用户信息'}
+        id={id}
+        uname={uname}
+        passwd={passwd}
+        dept={dept}
+        sex={sex}
+      />
+      <Button
+        variant='contained'
+        color='error'
+        fullWidth
+        onClick={doUpdate}
+      >
+        确认更改
+      </Button>
+      <Button
+        variant='contained'
+        color='error'
+        fullWidth
+        onClick={doDelete}
+      >
+        删除用户
+      </Button>
+    </Grid>
+  );
+}
+
+function InfoEdit() {
+  var id = useParams();
+  var ty = id.slice(2, 4);
+  if (ty === '01')
+    return <ResearcherInfoEdit />;
+  else
+    return <UserInfoEdit />
 }
 
 
@@ -143,13 +402,23 @@ function AdminPanelContent() {
                       </Paper>
                     </Grid>
                   } />
-                <Route path='/users' element={
-                  <Grid item xs={12}>
+                <Route path='/users'>
+                  <Route path='/' element={<Grid item xs={12}>
                     <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                       <UsrManage />
                     </Paper>
-                  </Grid>
-                } />
+                  </Grid>} />
+                  <Route path='/add' element={<Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <UsrManage />
+                    </Paper>
+                  </Grid>} />
+                  <Route path=':id' element={<Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <InfoEdit />
+                    </Paper>
+                  </Grid>} />
+                </Route>
               </Routes>
             </Grid>
             <Copyright sx={{ pt: 4 }} />
