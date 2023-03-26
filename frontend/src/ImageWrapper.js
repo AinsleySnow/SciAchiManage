@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { Image } from 'mui-image';
 import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { CameraAlt } from '@mui/icons-material';
 import { Stack } from '@mui/system';
+import { API_URL } from './Constants';
 
 
 function ImageWrapper(props) {
@@ -27,19 +28,38 @@ function ImageWrapper(props) {
     }
   `;
 
+  const [src, setSrc] = useState(props.url);
+
+  const doUpload = (event) => {
+    const img = event.target.files[0];
+    const formData = new FormData();
+    formData.append('image', img);
+
+    fetch(API_URL + '/imgupload', {
+      method: 'POST',
+      body: formData
+    })
+    .then((response) => response.text())
+    .then((url) => setSrc(url));
+
+    props.onPicUpdated(src);
+  };
+
   return (
-    <ContainerStyled component='form'>
-      <label htmlFor='file-upload'>
+    <ContainerStyled>
+      <label htmlFor='img-upload'>
         <input
-          id='file-upload'
-          name='file-upload'
+          onChange={doUpload}
+          id='img-upload'
+          name='img-upload'
           type='file'
+          accept=".jpg, .jpeg, .png"
           style={{ display: 'none' }}
         />
         <Image
           height={props.height}
           width={props.width}
-          src={props.url}
+          src={src}
           alt='featured'
         />
         <MaskStyled className='mask'
