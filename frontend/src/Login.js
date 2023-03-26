@@ -40,7 +40,7 @@ export default function Login() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    fetch('http://127.0.0.1:8000/sciachimgr/dologin/', {
+    fetch(API_URL + '/dologin/', {
       method: "POST",
       body: JSON.stringify({
         id: data.get('id'),
