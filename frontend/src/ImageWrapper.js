@@ -64,6 +64,7 @@ function ImageWrapper(props) {
           height={props.height}
           width={props.width}
           src={src}
+          duration={0}
           alt='featured'
         />
         <MaskStyled className='mask'

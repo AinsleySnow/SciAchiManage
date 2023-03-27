@@ -15,35 +15,29 @@ export function GetResearcher(id) {
 }
 
 export function SetUserInfo(id, dict) {
-  var response = '';
   var uid = window.sessionStorage.getItem('id');
 
-  fetch(API_URL + '/setusrinfo?id=' + id, {
+  return fetch(API_URL + '/setusrinfo/?id=' + id, {
     method: 'POST',
     body: JSON.stringify({ ...dict, curusr: uid }),
     headers: {
       'Content-type': 'application/json; charset=UTF-8'
     }
   })
-    .then((res) => response = res.text());
-
-  return response === 'success';
+    .then((res) => { return res.text() === 'success'; });
 }
 
 export function SetResInfo(id, dict) {
-  var response = '';
   var uid = window.sessionStorage.getItem('id');
 
-  fetch(API_URL + '/setresinfo?id=' + id, {
+  return fetch(API_URL + '/setresinfo/?id=' + id, {
     method: 'POST',
     body: JSON.stringify({ ...dict, curusr: uid }),
     headers: {
       'Content-type': 'application/json; charset=UTF-8'
     }
   })
-    .then((res) => response = res.text());
-
-  return response === 'success';
+    .then((res) => { return res.text() === 'success'; });
 }
 
 export function AddUser(usr) {

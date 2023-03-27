@@ -125,7 +125,6 @@ function ResearcherInfoEdit(props) {
 
   var uid = window.sessionStorage.getItem('id');
 
-  var loadfinish = false;
   React.useEffect(() => {
     GetUser(uid, props.id)
       .then((data) => {
@@ -143,11 +142,8 @@ function ResearcherInfoEdit(props) {
         setProfile(data['profile']);
         setWork(data['work']);
       });
-
-    loadfinish = true;
   }, []);
 
-  var usrUpdated = false;
   var usrdict = {
     id: id,
     rname: rname,
@@ -156,7 +152,6 @@ function ResearcherInfoEdit(props) {
     dept: dept
   };
 
-  var resUpdated = false;
   var resdict = {
     pic: pic,
     position: position,
@@ -172,29 +167,24 @@ function ResearcherInfoEdit(props) {
 
   const handleUsrChange = (dict) => {
     usrdict = { ...dict };
-    usrUpdated = true;
   };
 
   const handleResChange = (dict) => {
     resdict = { ...dict };
-    resUpdated = true;
   };
 
   const doUpdate = (e) => {
-    if (!loadfinish)
-      return;
-    if (usrUpdated) {
-      let succeed = SetUserInfo(props.id, usrdict);
-      if (!succeed)
-        setOpen(true);
-      if (id != props.id)
-        props.id = id;
-    }
-    if (resUpdated) {
-      let succeed = SetResInfo(id, resdict);
-      if (!succeed)
-        setOpen(true);
-    }
+    let succeed = SetUserInfo(props.id, usrdict);
+
+    if (!succeed)
+      setOpen(true);
+    if (id != props.id)
+      props.id = id;
+
+    succeed = SetResInfo(id, resdict);
+    console.log(succeed)
+    if (!succeed)
+      setOpen(true);
   };
 
   const doDelete = (e) => {
@@ -282,6 +272,7 @@ function UserInfoEdit(props) {
   };
 
   const doUpdate = (e) => {
+    console.log('a')
     if (!loadfinish)
       return;
     if (usrUpdated) {

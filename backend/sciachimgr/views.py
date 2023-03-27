@@ -116,3 +116,41 @@ class ResearcherInfo(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+
+
+def SetUserInfo(request):
+    received = json.loads(request.body)
+    id = request.GET['id']
+
+    user = User.objects.get(id=id)
+    if user.id != received.get('id'):
+        user.id = received.get('id')
+        user.type = received.get('id')[2:4]
+    if user.name != received.get('rname'):
+        user.name = received.get('rname')
+    if user.name != received.get('passwd'):
+        user.passwd = received.get('passwd')
+    if user.name != received.get('sex'):
+        user.sex = received.get('sex')
+    if user.name != received.get('dept'):
+        user.dept = received.get('dept')
+
+    user.save()
+    return HttpResponse('success')
+
+
+
+def SetResearcherInfo(request):
+    received = json.loads(request.body)
+    id = request.GET['id']
+
+    researcher = Researcher.objects.get(rid=id)
+    if researcher.position != received.get('position'):
+        researcher.position = received.get('position')
+    if researcher.profile != received.get('profile'):
+        researcher.profile = received.get('profile')
+    if researcher.work != received.get('works'):
+        researcher.work = received.get('works')
+
+    researcher.save()
+    return HttpResponse('success')

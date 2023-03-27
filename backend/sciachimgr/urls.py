@@ -8,5 +8,7 @@ urlpatterns = [
     path('dologin/', views.DoLogin),
     path('dologout/', views.DoLogout),
     path('usrinfo/', views.UsrInfo.as_view()),
-    path('resinfo/', views.ResearcherInfo.as_view())
+    path('resinfo/', views.ResearcherInfo.as_view()),
+    path('setusrinfo/', views.SetUserInfo),
+    path('setresinfo/', views.SetResearcherInfo)
 ]
