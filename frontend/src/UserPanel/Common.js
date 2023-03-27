@@ -48,6 +48,7 @@ export function SetResInfo(id, dict) {
 
 export function AddUser(usr) {
   let uid = window.sessionStorage.getItem('id');
+  let response = '';
 
   fetch(API_URL + '/add/', {
     method: 'POST',
@@ -63,6 +64,7 @@ export function AddUser(usr) {
 
 export function DeleteUser(id) {
   let uid = window.sessionStorage.getItem('id');
+  let response = '';
 
   fetch(API_URL + '/delete/', {
     method: 'POST',
