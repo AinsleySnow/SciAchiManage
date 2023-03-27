@@ -11,10 +11,28 @@ import Stack from '@mui/material/Stack'
 
 export default function UserInfo(props) {
   const [id, setId] = React.useState(props.id);
-  const [sex, setSex] = React.useState(props.sex);
   const [uname, setUname] = React.useState(props.uname);
   const [passwd, setPasswd] = React.useState(props.passwd);
   const [dept, setDept] = React.useState(props.dept);
+  const [sex, setSex] = React.useState(props.sex);
+
+  React.useEffect(
+    () => setUname(props.uname),
+    [props.uname]
+  );
+  React.useEffect(
+    () => setPasswd(props.passwd),
+    [props.passwd]
+  );
+  React.useEffect(
+    () => setDept(props.dept),
+    [props.dept]
+  );
+  React.useEffect(
+    () => setSex(props.sex),
+    [props.sex]
+  );
+
 
   var usrdict = {
     id: id,
@@ -64,7 +82,7 @@ export default function UserInfo(props) {
               id="number"
               name="number"
               label="工号"
-              defaultValue={props.id}
+              value={id}
               variant="standard"
             />
             <TextField
@@ -74,7 +92,7 @@ export default function UserInfo(props) {
               id="name"
               name="name"
               label="姓名"
-              defaultValue={props.uname}
+              value={uname}
               variant="standard"
             />
             <TextField
@@ -83,7 +101,7 @@ export default function UserInfo(props) {
               id="passwd"
               name="passwd"
               label="密码"
-              defaultValue={props.passwd}
+              value={passwd}
               variant="standard"
             />
             <TextField
@@ -93,7 +111,7 @@ export default function UserInfo(props) {
               id="dept"
               name="dept"
               label="所在部门"
-              defaultValue={props.dept}
+              value={dept}
               variant="standard"
             />
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>

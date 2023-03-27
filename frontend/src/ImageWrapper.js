@@ -12,15 +12,15 @@ function ImageWrapper(props) {
   const MaskStyled = styled(Box)`
     position: absolute;
     left: 0;
-    right: 0;
     top: 0;
-    bottom: 0;
+    height: 100%;
+    width: 100%;
     margin: auto;
     display: none;
   `;
 
   const ContainerStyled = styled(Box)`
-    position: absolute;
+    position: relative;
     &:hover {
       .mask {
         display: flex;
@@ -28,7 +28,11 @@ function ImageWrapper(props) {
     }
   `;
 
-  const [src, setSrc] = useState(props.url);
+  const [src, setSrc] = useState(props.src);
+  React.useEffect(
+    () => setSrc(props.src),
+    [props.src]
+  );
 
   const doUpload = (event) => {
     const img = event.target.files[0];

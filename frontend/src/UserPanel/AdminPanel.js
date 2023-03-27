@@ -24,9 +24,10 @@ import AppBar from '../AppBar';
 import Drawer from '../Drawer';
 import InfoTable from './InfoTable';
 import ResearcherInfo from './ResearcherInfo';
+import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, SetResInfo, SetUserInfo } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo } from './Common'
 import { Button } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 
@@ -87,14 +88,17 @@ function UsrManage() {
   React.useEffect(() => {
     GetUser(uid, null)
       .then((data) => {
-        data.map((usr) => {
-          return {
+        setUsers(data.map(usr => (
+          {
             ...usr,
-            action: <Link href={REACT_URL + '/my/user?id=' + usr.id}>编辑</Link>
-          };
-        });
-        setUsers(data);
-      })
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/users/' + usr.id}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
   }, []);
 
   return (
@@ -134,10 +138,10 @@ function ResearcherInfoEdit(props) {
 
     GetResearcher(props.id)
       .then((data) => {
-        setPic(API_URL + data['pic']);
+        setPic(API_URL + '/' + data['photo']);
         setPosition(data['position']);
         setProfile(data['profile']);
-        setWork(data['works']);
+        setWork(data['work']);
       });
 
     loadfinish = true;
@@ -266,15 +270,6 @@ function UserInfoEdit(props) {
     loadfinish = true;
   }, []);
 
-  var usrUpdated = false;
-  var usrdict = {
-    id: id,
-    uname: uname,
-    passwd: passwd,
-    sex: sex,
-    dept: dept
-  };
-
   const [open, setOpen] = React.useState(false);
 
   const handleClose = (e) => {
@@ -303,6 +298,15 @@ function UserInfoEdit(props) {
     if (!succeed)
       setOpen(true);
     window.location.replace(REACT_URL + 'my/users');
+  };
+
+  var usrUpdated = false;
+  var usrdict = {
+    id: id,
+    uname: uname,
+    passwd: passwd,
+    sex: sex,
+    dept: dept
   };
 
   return (
@@ -346,12 +350,12 @@ function UserInfoEdit(props) {
 }
 
 function InfoEdit() {
-  var id = useParams();
+  var id = useParams().id;
   var ty = id.slice(2, 4);
   if (ty === '01')
-    return <ResearcherInfoEdit />;
+    return <ResearcherInfoEdit id={id} />;
   else
-    return <UserInfoEdit />
+    return <UserInfoEdit id={id} />;
 }
 
 
@@ -403,21 +407,24 @@ function AdminPanelContent() {
                     </Grid>
                   } />
                 <Route path='/users'>
-                  <Route path='/' element={<Grid item xs={12}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                      <UsrManage />
-                    </Paper>
-                  </Grid>} />
-                  <Route path='/add' element={<Grid item xs={12}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                      <UsrManage />
-                    </Paper>
-                  </Grid>} />
-                  <Route path=':id' element={<Grid item xs={12}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                      <InfoEdit />
-                    </Paper>
-                  </Grid>} />
+                  <Route path='/users' element={
+                    <Grid item xs={12}>
+                      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                        <UsrManage />
+                      </Paper>
+                    </Grid>} />
+                  <Route path='/users/add' element={
+                    <Grid item xs={12}>
+                      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                        <UsrManage />
+                      </Paper>
+                    </Grid>} />
+                  <Route path='/users/:id' element={
+                    <Grid item xs={12}>
+                      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                        <InfoEdit />
+                      </Paper>
+                    </Grid>} />
                 </Route>
               </Routes>
             </Grid>

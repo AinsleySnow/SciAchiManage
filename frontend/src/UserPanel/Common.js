@@ -10,7 +10,7 @@ export function GetUser(curusr, id) {
 }
 
 export function GetResearcher(id) {
-  return fetch(API_URL + 'resinfo?id=' + id)
+  return fetch(API_URL + '/resinfo?id=' + id)
     .then((res) => res.json())
 }
 
@@ -50,7 +50,7 @@ export function AddUser(usr) {
   let uid = window.sessionStorage.getItem('id');
   let response = '';
 
-  fetch(API_URL + '/add/', {
+  fetch(API_URL + '/adduser/', {
     method: 'POST',
     body: JSON.stringify({ ...usr, uid }),
     headers: {
@@ -66,7 +66,7 @@ export function DeleteUser(id) {
   let uid = window.sessionStorage.getItem('id');
   let response = '';
 
-  fetch(API_URL + '/delete/', {
+  fetch(API_URL + '/deleteuser/', {
     method: 'POST',
     body: JSON.stringify({ todelete: id, curusr: uid }),
     headers: {

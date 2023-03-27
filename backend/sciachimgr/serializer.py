@@ -9,4 +9,4 @@ class UserSerializer(serializers.ModelSerializer):
 class ResearcherSerializer(serializers.ModelSerializer):
     class Meta:
         model = Researcher
-        fields = ['rid', 'dept', 'position', 'profile', 'work', 'photo']
+        fields = ['id', 'dept', 'position', 'profile', 'work', 'photo']

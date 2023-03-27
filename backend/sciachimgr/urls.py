@@ -7,5 +7,6 @@ urlpatterns = [
     path('logged/', views.Logged),
     path('dologin/', views.DoLogin),
     path('dologout/', views.DoLogout),
-    path('usrinfo/', views.UsrInfo.as_view())
+    path('usrinfo/', views.UsrInfo.as_view()),
+    path('resinfo/', views.ResearcherInfo.as_view())
 ]

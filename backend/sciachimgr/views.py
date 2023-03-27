@@ -88,3 +88,31 @@ class UsrInfo(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+
+
+class ResearcherInfo(APIView):
+    serializer_class = ResearcherSerializer
+
+    def get(self, request):
+        id = request.GET['id']
+        ty = id[2:4]
+        if ty != '01':
+            return Response(status=400)
+
+        researcher = Researcher.objects.get(rid=id)
+        return Response(
+            {
+                'id': id,
+                'dept': researcher.dept,
+                'position': researcher.position,
+                'profile': researcher.profile,
+                'work': researcher.work,
+                'photo': researcher.photo.name
+            }
+        )
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)

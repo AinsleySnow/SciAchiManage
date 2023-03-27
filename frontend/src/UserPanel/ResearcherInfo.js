@@ -18,6 +18,23 @@ export default function ResearcherInfo(props) {
   const [passwd, setPasswd] = React.useState(props.passwd);
   const [dept, setDept] = React.useState(props.dept);
 
+  React.useEffect(
+    () => setRname(props.rname),
+    [props.rname]
+  );
+  React.useEffect(
+    () => setPasswd(props.passwd),
+    [props.passwd]
+  );
+  React.useEffect(
+    () => setDept(props.dept),
+    [props.dept]
+  );
+  React.useEffect(
+    () => setSex(props.sex),
+    [props.sex]
+  );
+
   var usrdict = {
     id: id,
     rname: rname,
@@ -51,10 +68,27 @@ export default function ResearcherInfo(props) {
     props.onUsrChange(usrdict);
   };
 
-  const [position, setPosition] = React.useState(props.id);
-  const [profile, setProfile] = React.useState(props.sex);
+  const [position, setPosition] = React.useState(props.position);
+  const [profile, setProfile] = React.useState(props.profile);
   const [work, setWork] = React.useState(props.works);
-  const [pic, setPic] = React.useState(props.sex);
+  const [pic, setPic] = React.useState(props.pic);
+
+  React.useEffect(
+    () => setPosition(props.position),
+    [props.position]
+  );
+  React.useEffect(
+    () => setProfile(props.profile),
+    [props.profile]
+  );
+  React.useEffect(
+    () => setWork(props.works),
+    [props.works]
+  );
+  React.useEffect(
+    () => setPic(props.pic),
+    [props.pic]
+  );
 
   var resdict = {
     pic: pic,
@@ -79,7 +113,7 @@ export default function ResearcherInfo(props) {
   };
 
   const handlePicChange = (event) => {
-    setPic(event.target.value);
+    setPic(event.target.src);
     props.onResChange(resdict);
   };
 
@@ -91,7 +125,7 @@ export default function ResearcherInfo(props) {
       <Grid container flexShrink={'row'} spacing={3}>
         <Grid item xs={12} sm={5}>
           <ImageWrapper
-            height={500}
+            height={400}
             src={props.pic}
             onPicUpdated={handlePicChange}
           />
@@ -105,7 +139,7 @@ export default function ResearcherInfo(props) {
               id="number"
               name="number"
               label="工号"
-              defaultValue={props.id}
+              value={id}
               variant="standard"
             />
             <TextField
@@ -115,7 +149,7 @@ export default function ResearcherInfo(props) {
               id="name"
               name="name"
               label="姓名"
-              defaultValue={props.rname}
+              value={rname}
               variant="standard"
             />
             <TextField
@@ -124,7 +158,7 @@ export default function ResearcherInfo(props) {
               id="passwd"
               name="passwd"
               label="密码"
-              defaultValue={props.passwd}
+              value={passwd}
               variant="standard"
             />
             <TextField
@@ -134,7 +168,7 @@ export default function ResearcherInfo(props) {
               id="position"
               name="position"
               label="职位"
-              defaultValue={props.position}
+              value={position}
               variant="standard"
             />
             <TextField
@@ -144,7 +178,7 @@ export default function ResearcherInfo(props) {
               id="dept"
               name="dept"
               label="所在部门"
-              defaultValue={props.dept}
+              value={dept}
               variant="standard"
             />
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
@@ -173,7 +207,7 @@ export default function ResearcherInfo(props) {
             fullWidth
             label="个人简介"
             multiline
-            defaultValue={props.profile}
+            value={profile}
             rows={10}
           />
         </Grid>
@@ -184,7 +218,7 @@ export default function ResearcherInfo(props) {
             label="代表成果"
             fullWidth
             multiline
-            defaultValue={props.works}
+            value={work}
             rows={10}
           />
         </Grid>
