@@ -139,7 +139,6 @@ def SetUserInfo(request):
     return HttpResponse('success')
 
 
-
 def SetResearcherInfo(request):
     received = json.loads(request.body)
     id = request.GET['id']
@@ -154,3 +153,50 @@ def SetResearcherInfo(request):
 
     researcher.save()
     return HttpResponse('success')
+
+
+def AddUser(request):
+    received = json.loads(request.body)
+    curusr = received.get('uid')
+    if curusr[2:4] != '03':
+        return Response(status=403)
+
+    User.objects.create(
+        id = received.get('id'),
+        type = received.get('id')[2:4],
+        name = received.get('uname'),
+        passwd = received.get('passwd'),
+        sex = received.get('sex'),
+        dept = received.get('dept')
+    )
+
+    if received.get('id')[2:4] == '01':
+        usr = User.objects.get(id=received.get('id'))
+        Researcher.objects.create(
+            rid=usr,
+            dept=usr.dept,
+            position='',
+            profile='',
+            work='',
+            photo=None
+        )
+
+    return HttpResponse('success')
+
+
+def DeleteUser(request):
+    received = json.loads(request.body)
+    try:
+        curusr = received.get('curusr')
+        todelete = received.get('todelete')
+
+        # prevent admin from deleting himself/herself
+        if curusr == todelete:
+            return Response(status=403)
+
+        if curusr[2:4] == '01':
+            Researcher.objects.filter(rid=todelete).delete()
+        User.objects.filter(id=todelete).delete()
+        return HttpResponse('success')
+    except:
+        return Response(status=403)

@@ -1,4 +1,4 @@
-import { API_URL } from "../Constants";
+import { API_URL, REACT_URL } from "../Constants";
 
 export function GetUser(curusr, id) {
   var which = '';
@@ -42,18 +42,14 @@ export function SetResInfo(id, dict) {
 
 export function AddUser(usr) {
   let uid = window.sessionStorage.getItem('id');
-  let response = '';
 
-  fetch(API_URL + '/adduser/', {
+  return fetch(API_URL + '/adduser/', {
     method: 'POST',
-    body: JSON.stringify({ ...usr, uid }),
+    body: JSON.stringify({ ...usr, 'uid': uid }),
     headers: {
       'Content-type': 'application/json; charset=UTF-8'
     }
-  })
-    .then((res) => response = res.text());
-
-  return response === 'success';
+  });
 }
 
 export function DeleteUser(id) {
@@ -69,5 +65,6 @@ export function DeleteUser(id) {
   })
     .then((res) => response = res.text());
 
+  window.location.assign(REACT_URL + '/my/users');
   return response === 'success';
 }

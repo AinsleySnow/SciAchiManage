@@ -10,5 +10,7 @@ urlpatterns = [
     path('usrinfo/', views.UsrInfo.as_view()),
     path('resinfo/', views.ResearcherInfo.as_view()),
     path('setusrinfo/', views.SetUserInfo),
-    path('setresinfo/', views.SetResearcherInfo)
+    path('setresinfo/', views.SetResearcherInfo),
+    path('adduser/', views.AddUser),
+    path('deleteuser/', views.DeleteUser)
 ]

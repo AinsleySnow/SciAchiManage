@@ -10,6 +10,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
+import AddIcon from '@mui/icons-material/Add';
 
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -27,8 +28,8 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo } from './Common'
-import { Button } from '@mui/material';
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser } from './Common'
+import { Button, Fab } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 
 
@@ -219,17 +220,20 @@ function ResearcherInfoEdit(props) {
         pic={pic}
       />
       <Button
+        sx={{
+          marginTop: 4,
+          marginRight: 4
+        }}
         variant='contained'
         color='error'
-        fullWidth
         onClick={doUpdate}
       >
         确认更改
       </Button>
       <Button
+        sx={{ marginTop: 4 }}
         variant='contained'
         color='error'
-        fullWidth
         onClick={doDelete}
       >
         删除用户
@@ -272,7 +276,6 @@ function UserInfoEdit(props) {
   };
 
   const doUpdate = (e) => {
-    console.log('a')
     if (!loadfinish)
       return;
     if (usrUpdated) {
@@ -285,10 +288,9 @@ function UserInfoEdit(props) {
   };
 
   const doDelete = (e) => {
-    var succeed = DeleteUser(props.id);
-    if (!succeed)
-      setOpen(true);
-    window.location.replace(REACT_URL + 'my/users');
+    DeleteUser(props.id)
+      .then(s => window.location.replace(REACT_URL + 'my/users'),
+            f => setOpen(true));
   };
 
   var usrUpdated = false;
@@ -321,17 +323,22 @@ function UserInfoEdit(props) {
         sex={sex}
       />
       <Button
+        sx={{
+          marginTop: 4,
+          marginRight: 4
+        }}
         variant='contained'
-        color='error'
-        fullWidth
+        color='success'
         onClick={doUpdate}
       >
         确认更改
       </Button>
       <Button
+        sx={{
+          marginTop: 4,
+        }}
         variant='contained'
         color='error'
-        fullWidth
         onClick={doDelete}
       >
         删除用户
@@ -350,9 +357,77 @@ function InfoEdit() {
 }
 
 
+function AddUserPanel() {
+  var id = '';
+  var uname = '';
+  var passwd = '';
+  var sex = '';
+  var dept = '';
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (e) => {
+    setOpen(false);
+  };
+
+  const handleUsrChange = (dict) => {
+    usrdict = { ...dict };
+  };
+
+  var usrdict = {
+    id: id,
+    uname: uname,
+    passwd: passwd,
+    sex: sex,
+    dept: dept
+  };
+
+  const doAddition = () => {
+    console.log(usrdict);
+    AddUser(usrdict)
+      .then((success) => window.location.assign(REACT_URL + '/my/users'),
+            (failure) => setOpen(true));
+  }
+
+  return (
+    <Grid>
+      <MessageBar
+        open={open}
+        dura={3000}
+        state='error'
+        onClose={handleClose}
+      >
+        出错了！
+      </MessageBar>
+      <UserInfo
+        onUsrChange={handleUsrChange}
+        allowbasic={true}
+        title={'新建用户'}
+        id={id}
+        uname={uname}
+        passwd={passwd}
+        dept={dept}
+        sex={sex}
+      />
+      <Button
+        sx={{ marginTop: 4 }}
+        variant='contained'
+        onClick={doAddition}
+      >
+        确定
+      </Button>
+    </Grid>
+  );
+}
+
+
 const mdTheme = createTheme();
 
 function AdminPanelContent() {
+  const doUserAddition = () => {
+    window.location.assign(REACT_URL + '/my/users/add');
+  }
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -395,6 +470,19 @@ function AdminPanelContent() {
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                         <UsrManage />
                       </Paper>
+                      <Fab
+                        onClick={doUserAddition}
+                        color="primary"
+                        aria-label="add"
+                        sx={{
+                          position: 'fixed',
+                          float: 'right',
+                          bottom: 50,
+                          right: 100
+                        }}
+                      >
+                        <AddIcon />
+                      </Fab>
                     </Grid>
                   } />
                 <Route path='/users'>
@@ -403,11 +491,25 @@ function AdminPanelContent() {
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                         <UsrManage />
                       </Paper>
+                      <Fab
+                        onClick={doUserAddition}
+                        color="primary"
+                        aria-label="add"
+                        sx={{
+                          position: 'fixed',
+                          float: 'right',
+                          float: 'right',
+                          bottom: 50,
+                          right: 100
+                        }}
+                      >
+                        <AddIcon />
+                      </Fab>
                     </Grid>} />
                   <Route path='/users/add' element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <UsrManage />
+                        <AddUserPanel />
                       </Paper>
                     </Grid>} />
                   <Route path='/users/:id' element={

@@ -44,26 +44,31 @@ export default function UserInfo(props) {
 
   const handleIdChange = (event) => {
     setId(event.target.value);
+    usrdict.id = event.target.value;
     props.onUsrChange(usrdict);
   };
 
   const handleSexChange = (event) => {
-    setSex(event.target.value);
+    usrdict.sex = event.target.value;
+    setSex(usrdict.sex);
     props.onUsrChange(usrdict);
   };
 
-  const handleRnameChange = (event) => {
+  const handleUnameChange = (event) => {
     setUname(event.target.value);
+    usrdict.uname = event.target.value;
     props.onUsrChange(usrdict);
   };
 
   const handlePasswdChange = (event) => {
     setPasswd(event.target.value);
+    usrdict.passwd = event.target.value;
     props.onUsrChange(usrdict);
   };
 
   const handleDeptChange = (event) => {
     setDept(event.target.value);
+    usrdict.dept = event.target.value;
     props.onUsrChange(usrdict);
   };
 
@@ -86,7 +91,7 @@ export default function UserInfo(props) {
               variant="standard"
             />
             <TextField
-              onChange={handleRnameChange}
+              onChange={handleUnameChange}
               disabled={!props.allowbasic}
               required
               id="name"
