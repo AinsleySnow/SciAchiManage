@@ -20,10 +20,8 @@ const AppBarBase = styled(MuiAppBar, {
 export default function AppBar(props) {
   const handleMyClick = (e) => {
     e.preventDefault();
-    var islogged = false;
-
-    fetch(API_URL + '/logged')
-      .then((res) => islogged = res.text() === 'logged');
+    var islogged = fetch(API_URL + '/logged')
+      .then((res) => res.text() === 'logged');
 
     if (islogged) window.location.assign(REACT_URL + '/my');
     else window.location.assign(REACT_URL + '/login');
