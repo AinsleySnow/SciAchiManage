@@ -28,8 +28,8 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser } from './Common'
-import { Button, Fab } from '@mui/material';
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers } from './Common'
+import { Button, Fab, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 
 
@@ -290,7 +290,7 @@ function UserInfoEdit(props) {
   const doDelete = (e) => {
     DeleteUser(props.id)
       .then(s => window.location.replace(REACT_URL + 'my/users'),
-            f => setOpen(true));
+        f => setOpen(true));
   };
 
   var usrUpdated = false;
@@ -386,7 +386,7 @@ function AddUserPanel() {
     console.log(usrdict);
     AddUser(usrdict)
       .then((success) => window.location.assign(REACT_URL + '/my/users'),
-            (failure) => setOpen(true));
+        (failure) => setOpen(true));
   }
 
   return (
@@ -420,12 +420,136 @@ function AddUserPanel() {
   );
 }
 
+function AddFab({ handleClick }) {
+  <Fab
+    onClick={handleClick}
+    color="primary"
+    aria-label="add"
+    sx={{
+      position: 'fixed',
+      float: 'right',
+      float: 'right',
+      bottom: 50,
+      right: 100
+    }}
+  >
+    <AddIcon />
+  </Fab>
+}
+
+
+function CollegePanel() {
+  const [college, setCollege] = React.useState();
+
+  React.useEffect(() => {
+    GetCollege()
+      .then((data) => {
+        setCollege(data.map(c => (
+          {
+            ...c,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/college/' + c.id}>
+                  查看
+                </Link>
+              </Typography>
+          }
+        )));
+      })
+  }, []);
+
+  return <InfoTable
+    title='学院列表'
+    heads={['编号', '名称', '操作']}
+    rows={college}
+  />
+}
+
+
+function CollegeMembers() {
+  var id = useParams();
+
+  const [users, setUsers] = React.useState();
+
+  React.useEffect(() => {
+    GetCollegeMembers(id)
+      .then((data) => {
+        setUsers(data.map(usr => (
+          {
+            ...usr,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/users/' + c.id}>
+                  编辑
+                </Link>
+              </Typography>
+          }
+        )));
+      })
+  }, []);
+
+  return <InfoTable
+    title='成员列表'
+    heads={['工号', '用户类型', '姓名', '密码', '性别', '部门', '操作']}
+    rows={users}
+  />
+}
+
+
+function AddCollegePanel() {
+  var name = '';
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (e) => {
+    setOpen(false);
+  };
+
+  const handleChange = (e) => {
+    name = e.target.value;
+  }
+
+  const doAddition = () => {
+    console.log(usrdict);
+    AddUser(usrdict)
+      .then((success) => window.location.assign(REACT_URL + '/my/users'),
+        (failure) => setOpen(true));
+  }
+
+  return (
+    <Grid>
+      <MessageBar
+        open={open}
+        dura={3000}
+        state='error'
+        onClose={handleClose}
+      >
+        出错了！
+      </MessageBar>
+      <TextField
+        label='学院名称'
+        onChange={handleChange}
+      />
+      <Button
+        sx={{ marginTop: 4 }}
+        variant='contained'
+        onClick={doAddition}
+      >
+        确定
+      </Button>
+    </Grid>
+  );
+}
+
 
 const mdTheme = createTheme();
 
 function AdminPanelContent() {
   const doUserAddition = () => {
     window.location.assign(REACT_URL + '/my/users/add');
+  }
+
+  const doCollegeDeletion = () => {
+    window.location.assign(REACT_URL + '/my/college/add');
   }
 
   return (
@@ -470,19 +594,7 @@ function AdminPanelContent() {
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                         <UsrManage />
                       </Paper>
-                      <Fab
-                        onClick={doUserAddition}
-                        color="primary"
-                        aria-label="add"
-                        sx={{
-                          position: 'fixed',
-                          float: 'right',
-                          bottom: 50,
-                          right: 100
-                        }}
-                      >
-                        <AddIcon />
-                      </Fab>
+                      <AddFab handleClick={doUserAddition} />
                     </Grid>
                   } />
                 <Route path='/users'>
@@ -491,20 +603,7 @@ function AdminPanelContent() {
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                         <UsrManage />
                       </Paper>
-                      <Fab
-                        onClick={doUserAddition}
-                        color="primary"
-                        aria-label="add"
-                        sx={{
-                          position: 'fixed',
-                          float: 'right',
-                          float: 'right',
-                          bottom: 50,
-                          right: 100
-                        }}
-                      >
-                        <AddIcon />
-                      </Fab>
+                      <AddFab handleClick={doUserAddition} />
                     </Grid>} />
                   <Route path='/users/add' element={
                     <Grid item xs={12}>
@@ -516,6 +615,36 @@ function AdminPanelContent() {
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                         <InfoEdit />
+                      </Paper>
+                    </Grid>} />
+                </Route>
+                <Route path='/college'>
+                  <Route path='/college' element={
+                    <Grid item xs={12}>
+                      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                        <CollegePanel />
+                      </Paper>
+                      <AddFab handleClick={doUserAddition} />
+                    </Grid>
+                  } />
+                  <Route path='/college/add' element={
+                    <Grid item xs={12}>
+                      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                        <AddCollegePanel />
+                      </Paper>
+                    </Grid>
+                  } />
+                  <Route path='/college/:id' element={
+                    <Grid item xs={12}>
+                      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                        <CollegeMembers />
+                        <Button
+                          marginTop={4}
+                          color='error'
+                          onClick={doCollegeDeletion}
+                        >
+                          删除学院
+                        </Button>
                       </Paper>
                     </Grid>} />
                 </Route>

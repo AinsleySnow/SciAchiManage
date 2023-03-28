@@ -68,3 +68,29 @@ export function DeleteUser(id) {
   window.location.assign(REACT_URL + '/my/users');
   return response === 'success';
 }
+
+export function GetCollege() {
+  return fetch(API_URL + '/collegelist/')
+    .then((res) => res.json());
+}
+
+export function GetCollegeMembers(id) {
+  return fetch(API_URL + '/collegemembers/?id=' + id)
+    .then((res) => res.json());
+}
+
+export function DeleteCollege(id) {
+  let response = '';
+
+  fetch(API_URL + '/deletecollege/', {
+    method: 'POST',
+    body: JSON.stringify({ todelete: id, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => response = res.text());
+
+  window.location.assign(REACT_URL + '/my/college');
+  return response === 'success';
+}
