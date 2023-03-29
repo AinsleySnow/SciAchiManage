@@ -110,3 +110,159 @@ export function DeleteCollege(id) {
   window.location.assign(REACT_URL + '/my/college');
   return response === 'success';
 }
+
+
+export function GetNewspaper(issn) {
+  return fetch(API_URL + '/newspaperinfo?issn=' + issn)
+    .then((res) => res.json())
+}
+
+
+export function SetNewspaperInfo(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/setnewspaperinfo/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => { return res.text() === 'success'; });
+}
+
+
+export function AddNewspaper(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/addnewspaper/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => res.json());
+}
+
+
+export function DeleteNewspaper(isbn) {
+  let response = '';
+  let uid = window.sessionStorage.getItem('id');
+
+  fetch(API_URL + '/deletenewspaper/', {
+    method: 'POST',
+    body: JSON.stringify({ todelete: isbn, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => response = res.text());
+
+  window.location.assign(REACT_URL + '/my/publish');
+  return response === 'success';
+}
+
+
+export function GetJournal(issn) {
+  return fetch(API_URL + '/journalinfo?issn=' + issn)
+    .then((res) => res.json())
+}
+
+
+export function SetJournalInfo(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/setjournalinfo/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => { return res.text() === 'success'; });
+}
+
+
+export function AddJournal(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/addjournal/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => res.json());
+}
+
+
+export function DeleteJournal(isbn) {
+  let response = '';
+  let uid = window.sessionStorage.getItem('id');
+
+  fetch(API_URL + '/deletejournal/', {
+    method: 'POST',
+    body: JSON.stringify({ todelete: isbn, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => response = res.text());
+
+  window.location.assign(REACT_URL + '/my/publish');
+  return response === 'success';
+}
+
+
+export function GetConf(id) {
+  return fetch(API_URL + '/confinfo?id=' + id)
+    .then((res) => res.json())
+}
+
+
+export function SetConfInfo(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/setconfinfo/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => { return res.text() === 'success'; });
+}
+
+
+export function AddConf(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/addconf/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => res.json());
+}
+
+
+export function DeleteConf(isbn) {
+  let response = '';
+  let uid = window.sessionStorage.getItem('id');
+
+  fetch(API_URL + '/deleteconf/', {
+    method: 'POST',
+    body: JSON.stringify({ todelete: isbn, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => response = res.text());
+
+  window.location.assign(REACT_URL + '/my/publish');
+  return response === 'success';
+}

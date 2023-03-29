@@ -28,9 +28,10 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege } from './Common'
 import { Button, Fab, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
+import { Stack } from '@mui/system';
 
 
 function Copyright(props) {
@@ -492,25 +493,59 @@ function ApplyPanel() {
 
 
 function PublishPanel() {
+  const [journal, setJournal] = React.useState(null);
+  React.useEffect(() => {
+    GetJournal(null)
+      .then((data) => {
+        setJournal(data.map(jrnl => (
+          {
+            ...jrnl,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/users/' + jrnl.id}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
-        <InfoTable
-          title='期刊列表'
-          heads={['ISSN', '标题', '主办机构', '出版周期',
-            '影响因子', '分区', '链接', '操作']} />
+        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+          <InfoTable
+            title='期刊列表'
+            heads={['ISSN', '标题', '主办机构', '出版周期',
+              '影响因子', '分区', '链接', '操作']} 
+            rows={journal}/>
+          <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
+            <Link>添加期刊</Link>
+          </Typography>
+        </Paper>
       </Grid>
       <Grid item xs={12}>
-        <InfoTable
-          title='报纸列表'
-          heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
-            '地址', '邮编', '电话', '链接']} />
+        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+          <InfoTable
+            title='报纸列表'
+            heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
+              '地址', '邮编', '电话', '链接', '操作']} />
+          <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
+            <Link>添加报纸</Link>
+          </Typography>
+        </Paper>
       </Grid>
       <Grid item xs={12}>
-        <InfoTable
-          title='会议列表'
-          heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
-            '地址', '邮编', '电话', '链接']} />
+        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+          <InfoTable
+            title='会议列表'
+            heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
+              '地址', '邮编', '电话', '链接', '操作']} />
+          <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
+            <Link>添加会议</Link>
+          </Typography>
+        </Paper>
       </Grid>
     </Grid>
   );
@@ -546,7 +581,7 @@ function CollegePanel() {
 
 
 function CollegeMembers() {
-  var id = useParams();
+  var id = useParams().id;
 
   const [users, setUsers] = React.useState();
 
@@ -567,11 +602,23 @@ function CollegeMembers() {
       })
   }, []);
 
-  return <InfoTable
-    title='成员列表'
-    heads={['工号', '用户类型', '姓名', '密码', '性别', '部门', '操作']}
-    rows={users}
-  />
+  return (
+    <Box>
+      <InfoTable
+        title='成员列表'
+        heads={['工号', '用户类型', '姓名', '密码', '性别', '部门', '操作']}
+        rows={users}
+      />
+      <Button
+        sx={{ marginTop: 4 }}
+        variant='contained'
+        color='error'
+        onClick={() => { DeleteCollege(id); }}
+      >
+        删除学院
+      </Button>
+    </Box>
+  )
 }
 
 
@@ -588,13 +635,12 @@ function AddCollegePanel() {
   }
 
   const doAddition = () => {
-    AddUser(name)
-      .then((success) => window.location.assign(REACT_URL + '/my/users'),
-        (failure) => setOpen(true));
+    AddCollege(name);
+    window.location.assign(REACT_URL + '/my/college');
   }
 
   return (
-    <Grid>
+    <Stack spacing={4}>
       <MessageBar
         open={open}
         dura={3000}
@@ -614,7 +660,7 @@ function AddCollegePanel() {
       >
         确定
       </Button>
-    </Grid>
+    </Stack>
   );
 }
 
@@ -626,7 +672,7 @@ function AdminPanelContent() {
     window.location.assign(REACT_URL + '/my/users/add');
   }
 
-  const doCollegeDeletion = () => {
+  const doCollegeAddition = () => {
     window.location.assign(REACT_URL + '/my/college/add');
   }
 
@@ -702,7 +748,7 @@ function AdminPanelContent() {
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                         <CollegePanel />
                       </Paper>
-                      <AddFab handleClick={doUserAddition} />
+                      <AddFab handleClick={doCollegeAddition} />
                     </Grid>
                   } />
                   <Route path='/college/add' element={
@@ -716,13 +762,6 @@ function AdminPanelContent() {
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                         <CollegeMembers />
-                        <Button
-                          marginTop={4}
-                          color='error'
-                          onClick={doCollegeDeletion}
-                        >
-                          删除学院
-                        </Button>
                       </Paper>
                     </Grid>} />
                 </Route>
@@ -742,9 +781,7 @@ function AdminPanelContent() {
                 } />
                 <Route path='/published' element={
                   <Grid item xs={12}>
-                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                      <PublishPanel />
-                    </Paper>
+                    <PublishPanel />
                   </Grid>
                 } />
               </Routes>
