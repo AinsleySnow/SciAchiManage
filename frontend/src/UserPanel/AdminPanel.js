@@ -420,21 +420,23 @@ function AddUserPanel() {
   );
 }
 
-function AddFab({ handleClick }) {
-  <Fab
-    onClick={handleClick}
-    color="primary"
-    aria-label="add"
-    sx={{
-      position: 'fixed',
-      float: 'right',
-      float: 'right',
-      bottom: 50,
-      right: 100
-    }}
-  >
-    <AddIcon />
-  </Fab>
+function AddFab(props) {
+  return (
+    <Fab
+      onClick={props.handleClick}
+      color="primary"
+      aria-label="add"
+      sx={{
+        position: 'fixed',
+        float: 'right',
+        float: 'right',
+        bottom: 50,
+        right: 100
+      }}
+    >
+      <AddIcon />
+    </Fab>
+  );
 }
 
 
@@ -479,7 +481,7 @@ function CollegeMembers() {
             ...usr,
             action:
               <Typography fontSize={'small'} color="text.secondary">
-                <Link href={REACT_URL + '/my/users/' + c.id}>
+                <Link href={REACT_URL + '/my/users/' + usr.id}>
                   编辑
                 </Link>
               </Typography>
@@ -509,8 +511,7 @@ function AddCollegePanel() {
   }
 
   const doAddition = () => {
-    console.log(usrdict);
-    AddUser(usrdict)
+    AddUser(name)
       .then((success) => window.location.assign(REACT_URL + '/my/users'),
         (failure) => setOpen(true));
   }
