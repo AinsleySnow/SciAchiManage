@@ -54,11 +54,11 @@ export const assistantListItems = (
       </ListItemIcon>
       <ListItemText primary="用户管理" />
     </ListItemButton>
-    <ListItemButton href='/my/data'>
+    <ListItemButton href='/my/achi'>
       <ListItemIcon>
         <DescriptionRoundedIcon />
       </ListItemIcon>
-      <ListItemText primary="数据管理" />
+      <ListItemText primary="成果管理" />
     </ListItemButton>
     <ListItemButton href='/my/apply'>
       <ListItemIcon>
@@ -76,7 +76,7 @@ export const assistantListItems = (
       <ListItemIcon>
         <AutoStoriesRoundedIcon />
       </ListItemIcon>
-      <ListItemText primary="添加出版物" />
+      <ListItemText primary="报刊/会议管理" />
     </ListItemButton>
   </React.Fragment>
 );
@@ -440,6 +440,83 @@ function AddFab(props) {
 }
 
 
+function DataPanel() {
+  return (
+    <Grid container spacing={5}>
+      <Grid item xs={12}>
+        <InfoTable
+          title='期刊论文'
+          heads={['标题', '作者', '刊物', '链接', '操作']} />
+      </Grid>
+      <Grid item xs={12}>
+        <InfoTable
+          title='会议论文'
+          heads={['标题', '作者', '会议名', '链接', '操作']}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <InfoTable
+          title='报刊文章'
+          heads={['标题', '作者', '报纸名', '链接', '操作']}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <InfoTable
+          title='著作'
+          heads={['题目', '书号', '作者', '出版社', '出版年', '出版地', '链接', '操作']}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <InfoTable
+          title='专利'
+          heads={['专利号', '公布号', '专利名', '申请人', '发明人',
+            '专辑', '专题', '分类号', '主分类号', '链接', '操作']}
+        />
+      </Grid>
+    </Grid>
+  );
+}
+
+
+function ApplyPanel() {
+  return (
+    <Grid container spacing={5}>
+      <Grid item xs={12}>
+        <InfoTable
+          title='申请列表'
+          heads={['申请人', '部门', '状态', '操作']} />
+      </Grid>
+    </Grid>
+  );
+}
+
+
+function PublishPanel() {
+  return (
+    <Grid container spacing={5}>
+      <Grid item xs={12}>
+        <InfoTable
+          title='期刊列表'
+          heads={['ISSN', '标题', '主办机构', '出版周期',
+            '影响因子', '分区', '链接', '操作']} />
+      </Grid>
+      <Grid item xs={12}>
+        <InfoTable
+          title='报纸列表'
+          heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
+            '地址', '邮编', '电话', '链接']} />
+      </Grid>
+      <Grid item xs={12}>
+        <InfoTable
+          title='会议列表'
+          heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
+            '地址', '邮编', '电话', '链接']} />
+      </Grid>
+    </Grid>
+  );
+}
+
+
 function CollegePanel() {
   const [college, setCollege] = React.useState();
 
@@ -649,6 +726,27 @@ function AdminPanelContent() {
                       </Paper>
                     </Grid>} />
                 </Route>
+                <Route path='/achi' element={
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <DataPanel />
+                    </Paper>
+                  </Grid>
+                } />
+                <Route path='/apply' element={
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <ApplyPanel />
+                    </Paper>
+                  </Grid>
+                } />
+                <Route path='/published' element={
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <PublishPanel />
+                    </Paper>
+                  </Grid>
+                } />
               </Routes>
             </Grid>
             <Copyright sx={{ pt: 4 }} />
