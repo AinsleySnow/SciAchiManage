@@ -25,7 +25,7 @@ urlpatterns = [
     path('setjournalinfo/', views.SetJournalInfo),
     path('addjournal/', views.AddJournal),
     path('deletejournal/', views.DeleteJournal),
-    path('conferenceinfo/', views.ConferenceInfo.as_view()),
+    path('confinfo/', views.ConferenceInfo.as_view()),
     path('setconfinfo/', views.SetConferenceInfo),
     path('addconf/', views.AddConference),
     path('deleteconf/', views.DeleteConference),

@@ -61,7 +61,7 @@ class Journal(models.Model):
     zone = models.IntegerField(choices=Period.choices, blank=True)
 
     picture = models.ImageField(blank=True)
-    link = models.CharField(max_length=400, blank=True),
+    link = models.CharField(max_length=400, blank=True)
 
 
 

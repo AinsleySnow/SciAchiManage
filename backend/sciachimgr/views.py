@@ -279,7 +279,7 @@ class NewspaperInfo(APIView):
     serializer_class = UserSerializer
 
     def get(self, request):
-        issn = request.GET['id']
+        issn = request.GET['issn']
         if issn != 'all':
             np = Newspaper.objects.get(issn=issn)
             return Response({
@@ -308,7 +308,7 @@ class NewspaperInfo(APIView):
                     'picture': np.picture.name,
                     'link': np.link
                 }
-                for np in Newspaper.objects
+                for np in Newspaper.objects.all()
             ]
             return Response(newspaper)
 
@@ -387,7 +387,7 @@ class JournalInfo(APIView):
     serializer_class = JournalSerializer
 
     def get(self, request):
-        issn = request.GET['id']
+        issn = request.GET['issn']
         if issn != 'all':
             journal = Journal.objects.get(issn=issn)
             return Response({
@@ -412,7 +412,7 @@ class JournalInfo(APIView):
                     'picture': j.picture.name,
                     'link': j.link
                 }
-                for j in Journal.objects
+                for j in Journal.objects.all()
             ]
             return Response(journal)
 
@@ -427,7 +427,7 @@ def SetJournalInfo(request):
     received = json.loads(request.body)
     issn = received.get('issn')
 
-    j = Newspaper.objects.get(issn=issn)
+    j = Journal.objects.get(issn=issn)
     if j.issn != received.get('issn'):
         j.issn = received.get('issn')
     if j.title != received.get('title'):
@@ -516,7 +516,7 @@ class ConferenceInfo(APIView):
                     'editors': conf.editors,
                     'link': conf.link
                 }
-                for conf in Conference.objects
+                for conf in Conference.objects.all()
             ]
             return Response(conference)
 

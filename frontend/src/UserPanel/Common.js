@@ -113,7 +113,9 @@ export function DeleteCollege(id) {
 
 
 export function GetNewspaper(issn) {
-  return fetch(API_URL + '/newspaperinfo?issn=' + issn)
+  var link = issn ? 'issn=' + issn : 'issn=all';
+
+  return fetch(API_URL + '/newspaperinfo/?' + link)
     .then((res) => res.json())
 }
 
@@ -165,7 +167,9 @@ export function DeleteNewspaper(isbn) {
 
 
 export function GetJournal(issn) {
-  return fetch(API_URL + '/journalinfo?issn=' + issn)
+  var link = issn ? 'issn=' + issn : 'issn=all';
+
+  return fetch(API_URL + '/journalinfo/?' + link)
     .then((res) => res.json())
 }
 
@@ -217,7 +221,9 @@ export function DeleteJournal(isbn) {
 
 
 export function GetConf(id) {
-  return fetch(API_URL + '/confinfo?id=' + id)
+  var link = id ? 'id=' + id : 'id=all';
+
+  return fetch(API_URL + '/confinfo/?' + link)
     .then((res) => res.json())
 }
 
