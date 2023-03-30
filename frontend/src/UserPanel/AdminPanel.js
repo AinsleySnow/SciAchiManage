@@ -28,10 +28,13 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, AddJournal } from './Common'
 import { Button, Fab, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
+import { AddJournalPanel } from './JournalPanel';
+import { AddNewspaperPanel, NewspaperInfoEdit } from './NewspaperPanel';
+import { AddConfPanel, ConfInfoEdit } from './ConfPanel';
 
 
 function Copyright(props) {
@@ -502,7 +505,7 @@ function PublishPanel() {
             ...jrnl,
             action:
               <Typography fontSize={'small'} color="text.secondary">
-                <Link href={REACT_URL + '/my/users/' + jrnl.id}>
+                <Link href={REACT_URL + '/my/journal/' + jrnl.issn}>
                   编辑
                 </Link>
               </Typography>
@@ -510,6 +513,39 @@ function PublishPanel() {
       });
   }, []);
 
+  const [newspaper, setNewspaper] = React.useState(null);
+  React.useEffect(() => {
+    GetNewspaper(null)
+      .then((data) => {
+        setNewspaper(data.map(np => (
+          {
+            ...np,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/newspaper/' + np.issn}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+  const [conf, setConf] = React.useState(null);
+  React.useEffect(() => {
+    GetConf(null)
+      .then((data) => {
+        setConf(data.map(c => (
+          {
+            ...c,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/conference/' + c.id}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
 
   return (
     <Grid container spacing={5}>
@@ -519,9 +555,9 @@ function PublishPanel() {
             title='期刊列表'
             heads={['ISSN', '标题', '主办机构', '出版周期',
               '影响因子', '分区', '链接', '操作']} 
-            rows={journal}/>
+            rows={journal} />
           <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
-            <Link>添加期刊</Link>
+            <Link href={ REACT_URL + '/my/journal/add' }>添加期刊</Link>
           </Typography>
         </Paper>
       </Grid>
@@ -530,9 +566,10 @@ function PublishPanel() {
           <InfoTable
             title='报纸列表'
             heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
-              '地址', '邮编', '电话', '链接', '操作']} />
+              '地址', '邮编', '电话', '链接', '操作']}
+            rows={newspaper} />
           <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
-            <Link>添加报纸</Link>
+            <Link href={ REACT_URL + '/my/newspaper/add' }>添加报纸</Link>
           </Typography>
         </Paper>
       </Grid>
@@ -541,9 +578,10 @@ function PublishPanel() {
           <InfoTable
             title='会议列表'
             heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
-              '地址', '邮编', '电话', '链接', '操作']} />
+              '地址', '邮编', '电话', '链接', '操作']}
+            rows={conf} />
           <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
-            <Link>添加会议</Link>
+            <Link href={ REACT_URL + '/my/conference/add' }>添加会议</Link>
           </Typography>
         </Paper>
       </Grid>
@@ -784,6 +822,42 @@ function AdminPanelContent() {
                     <PublishPanel />
                   </Grid>
                 } />
+                <Route path='/journal'>
+                  <Route path='/journal/add' element={
+                    <Grid item xs={12}>
+                      <AddJournalPanel />
+                    </Grid>
+                  }/>
+                  <Route path='/journal/:id' element={
+                    <Grid item xs={12}>
+                      <JournalInfoEdit issn={useParams()} />
+                    </Grid>
+                  } />
+                </Route>
+                <Route path='/newspaper'>
+                  <Route path='/newspaper/add' element={
+                    <Grid item xs={12}>
+                      <AddNewspaperPanel />
+                    </Grid>
+                  } />
+                  <Route path='/newspaper/:id' element={
+                    <Grid item xs={12}>
+                      <NewspaperInfoEdit issn={useParams()} />
+                    </Grid>
+                  } />
+                </Route>
+                <Route path='/conference'>
+                  <Route path='/conference/add' element={
+                    <Grid item xs={12}>
+                      <AddConfPanel />
+                    </Grid>
+                  } />
+                  <Route path='/conference/:id' element={
+                    <Grid item xs={12}>
+                      <ConfInfoEdit id={useParams()} />
+                    </Grid>
+                  } />
+                </Route>
               </Routes>
             </Grid>
             <Copyright sx={{ pt: 4 }} />
