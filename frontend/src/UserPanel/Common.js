@@ -167,6 +167,7 @@ export function DeleteNewspaper(isbn) {
 
 
 export function GetJournal(issn) {
+  console.log(issn);
   var link = issn ? 'issn=' + issn : 'issn=all';
 
   return fetch(API_URL + '/journalinfo/?' + link)
@@ -256,13 +257,13 @@ export function AddConf(dict) {
 }
 
 
-export function DeleteConf(isbn) {
+export function DeleteConf(id) {
   let response = '';
   let uid = window.sessionStorage.getItem('id');
 
   fetch(API_URL + '/deleteconf/', {
     method: 'POST',
-    body: JSON.stringify({ todelete: isbn, curusr: uid }),
+    body: JSON.stringify({ todelete: id, curusr: uid }),
     headers: {
       'Content-type': 'application/json; charset=UTF-8'
     }

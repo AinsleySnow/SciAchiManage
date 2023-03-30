@@ -20,6 +20,8 @@ export function JournalInfo(props) {
   const [inf_factor, setInfactor] = React.useState(props.inf_factor);
   const [link, setLink] = React.useState(props.link);
 
+  console.log(props.picture);
+
   React.useEffect(
     () => setIssn(props.issn),
     [props.issn]
@@ -110,7 +112,7 @@ export function JournalInfo(props) {
       </Typography>
       <Grid container flexShrink={'row'} spacing={3}>
         <Grid item xs={12} sm={5}>
-          <ImageWrapper height={400} src={ API_URL + '/' + props.picture + '/' } />
+          <ImageWrapper height={400} src={ API_URL + '/' + props.picture } />
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
@@ -169,8 +171,8 @@ export function JournalInfo(props) {
               </MenuItem>
               <MenuItem value={1}>一区</MenuItem>
               <MenuItem value={2}>二区</MenuItem>
-              <MenuItem value={1}>三区</MenuItem>
-              <MenuItem value={2}>四区</MenuItem>
+              <MenuItem value={3}>三区</MenuItem>
+              <MenuItem value={4}>四区</MenuItem>
             </Select>
           </FormControl>
           <TextField
@@ -241,7 +243,7 @@ export function PaperInfo() {
   );
 }
 
-export function NewspaperInfo() {
+export function NewspaperInfo(props) {
   const [issn, setIssn] = React.useState(props.issn);
   const [title, setTitle] = React.useState(props.title);
   const [authority, setAuthority] = React.useState(props.authority);
@@ -364,11 +366,12 @@ export function NewspaperInfo() {
       </Typography>
       <Grid container flexShrink={'row'} spacing={3}>
         <Grid item xs={12} sm={5}>
-          <ImageWrapper height={400} src={API_URL + '/' + props.picture + '/'} />
+          <ImageWrapper height={400} src={API_URL + '/' + props.picture} />
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
             onChange={handleIssnChange}
+            value={issn}
             required
             id="issn"
             name="issn"
@@ -377,6 +380,7 @@ export function NewspaperInfo() {
           />
           <TextField
             onChange={handleTitleChange}
+            value={title}
             required
             id="title"
             name="title"
@@ -385,6 +389,7 @@ export function NewspaperInfo() {
           />
           <TextField
             onChange={handleAuthorityChange}
+            value={authority}
             required
             id="authority"
             name="authority"
@@ -393,6 +398,7 @@ export function NewspaperInfo() {
           />
           <TextField
             onChange={handleHostChange}
+            value={host}
             required
             id="host"
             name="host"
@@ -403,6 +409,7 @@ export function NewspaperInfo() {
         <Grid item xs={12} sm={3}>
           <TextField
             onChange={handleCityChange}
+            value={city}
             required
             id="city"
             name="city"
@@ -411,6 +418,7 @@ export function NewspaperInfo() {
           />
           <TextField
             onChange={handleAddressChange}
+            value={address}
             required
             id="address"
             name="address"
@@ -419,6 +427,7 @@ export function NewspaperInfo() {
           />
           <TextField
             onChange={handlePostcodeChange}
+            value={postcode}
             required
             id="postcode"
             name="postcode"
@@ -427,6 +436,7 @@ export function NewspaperInfo() {
           />
           <TextField
             onChange={handlePhoneNumChange}
+            value={phone_num}
             required
             id="phone_num"
             name="phone_num"
@@ -435,6 +445,7 @@ export function NewspaperInfo() {
           />
           <TextField
             onChange={handleLinkChange}
+            value={link}
             required
             id="link"
             name="link"
@@ -491,7 +502,7 @@ export function ArticleInfo() {
   );
 }
 
-export function ConferenceInfo() {
+export function ConferenceInfo(props) {
   const [id, setId] = React.useState(props.id);
   const [name, setName] = React.useState(props.name);
   const [time, setTime] = React.useState(props.time);
@@ -548,7 +559,7 @@ export function ConferenceInfo() {
   var confdict = {
     id: id,
     name: name,
-    place: time,
+    time: time,
     place: place,
     association: association,
     publisher: publisher,
@@ -618,6 +629,8 @@ export function ConferenceInfo() {
     props.onConfChange(confdict);
   };
 
+  console.log(confdict);
+
 
   return (
     <React.Fragment>
@@ -628,6 +641,7 @@ export function ConferenceInfo() {
         <Grid item xs={12} sm={3}>
           <TextField
             onChange={handleNameChange}
+            value={name}
             required
             id="name"
             name="name"
@@ -636,6 +650,7 @@ export function ConferenceInfo() {
           />
           <TextField
             onChange={handleTimeChange}
+            value={time}
             required
             id="time"
             name="time"
@@ -644,6 +659,7 @@ export function ConferenceInfo() {
           />
           <TextField
             onChange={handlePlaceChange}
+            value={place}
             required
             id="place"
             name="place"
@@ -652,6 +668,7 @@ export function ConferenceInfo() {
           />
           <TextField
             onChange={handleAssociationChange}
+            value={association}
             required
             id="association"
             name="association"
@@ -662,6 +679,7 @@ export function ConferenceInfo() {
         <Grid item sm={4}>
           <TextField
             onChange={handlePublisherChange}
+            value={publisher}
             required
             id="publisher"
             name="publisher"
@@ -670,6 +688,7 @@ export function ConferenceInfo() {
           />
           <TextField
             onChange={handlePDChange}
+            value={publish_date}
             required
             id="publish-date"
             name="publish-date"
@@ -678,6 +697,7 @@ export function ConferenceInfo() {
           />
           <TextField
             onChange={handleChiefEditorChange}
+            value={chief_editor}
             required
             id="chief-editor"
             name="chief-editor"
@@ -686,6 +706,7 @@ export function ConferenceInfo() {
           />
           <TextField
             onChange={handleEditorsChange}
+            value={editors}
             required
             id="editor"
             name="editor"
@@ -694,6 +715,7 @@ export function ConferenceInfo() {
           />
           <TextField
             onChange={handleLinkChange}
+            value={link}
             required
             id="link"
             name="link"

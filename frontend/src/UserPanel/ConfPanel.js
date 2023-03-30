@@ -1,4 +1,7 @@
+import { Button, Grid } from "@mui/material";
 import * as React from "react";
+import { REACT_URL } from "../Constants";
+import { MessageBar } from "../MessageBar";
 import { ConferenceInfo } from "./ApplyForm";
 import { AddConf, DeleteConf, GetConf, SetConfInfo } from "./Common";
 
@@ -21,10 +24,10 @@ export function AddConfPanel() {
   };
 
   const handleConfChange = (dict) => {
-    npdict = { ...dict };
+    confdict = { ...dict };
   };
 
-  var npdict = {
+  var confdict = {
     issn: issn,
     title: title,
     authority: authority,
@@ -37,7 +40,7 @@ export function AddConfPanel() {
   };
 
   const doAddition = () => {
-    AddConf(npdict)
+    AddConf(confdict)
       .then((success) => window.location.assign(REACT_URL + '/my/users'),
         (failure) => setOpen(true));
   }
@@ -52,7 +55,7 @@ export function AddConfPanel() {
       >
         出错了！
       </MessageBar>
-      <ConfInfo
+      <ConferenceInfo
         onConfChange={handleConfChange}
         issn={issn}
         title={title}
@@ -76,7 +79,7 @@ export function AddConfPanel() {
 
 
 export function ConfInfoEdit(props) {
-  const [id, setId] = React.useState('');
+  const [id, setId] = React.useState(props.id);
   const [name, setName] = React.useState('');
   const [time, setTime] = React.useState('');
   const [place, setPlace] = React.useState('');
@@ -87,24 +90,20 @@ export function ConfInfoEdit(props) {
   const [editors, setEditors] = React.useState('');
   const [link, setLink] = React.useState('');
 
-  var uid = window.sessionStorage.getItem('id');
-
-  var loadfinish = false;
   React.useEffect(() => {
-    GetConf(uid, props.id)
+    GetConf(props.id)
       .then((data) => {
         setId(data['id']);
-        setName(data['title']);
-        setTime(data['authority']);
-        setPlace(data['host']);
-        setAssociation(data['city']);
-        setPublisher(data['address']);
-        setPublishDate(data['postcode']);
-        setChiefEditor(data['phone_num']);
+        setName(data['name']);
+        setTime(data['time']);
+        setPlace(data['place']);
+        setAssociation(data['association']);
+        setPublisher(data['publisher']);
+        setPublishDate(data['publish_date']);
+        setChiefEditor(data['chief_editor']);
         setEditors(data['editors']);
         setLink(data['link']);
       });
-    loadfinish = true;
   }, []);
 
   const [open, setOpen] = React.useState(false);
@@ -119,15 +118,11 @@ export function ConfInfoEdit(props) {
   };
 
   const doUpdate = (e) => {
-    if (!loadfinish)
-      return;
-    if (confUpdated) {
-      var succeed = SetConfInfo(props.id, confdict);
-      if (!succeed)
-        setOpen(true);
-      if (id != props.id)
-        props.id = id;
-    }
+    var succeed = SetConfInfo(confdict);
+    if (!succeed)
+      setOpen(true);
+    if (id != props.id)
+      props.id = id;
   };
 
   const doDelete = (e) => {

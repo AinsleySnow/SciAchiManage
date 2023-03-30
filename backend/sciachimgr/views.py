@@ -9,6 +9,7 @@ from . serializer import *
 
 
 def Picture(request, picname):
+    print(picname)
     path = settings.MEDIA_ROOT + picname
     with open(path, 'rb') as pic:
         data = pic.read()
@@ -340,8 +341,6 @@ def SetNewspaperInfo(request):
         np.postcode = received.get('postcode')
     if np.phone_num != received.get('phone_num'):
         np.phone_num = received.get('phone_num')
-    if np.picture.name != received.get('picture'):
-        np.picture = received.get('picture')
 
     np.save()
     return HttpResponse('success')
@@ -349,7 +348,7 @@ def SetNewspaperInfo(request):
 
 def AddNewspaper(request):
     received = json.loads(request.body)
-    curusr = received.get('uid')
+    curusr = received.get('curusr')
     if curusr[2:4] != '03':
         return Response(status=403)
 
@@ -440,8 +439,6 @@ def SetJournalInfo(request):
         j.inf_factor = received.get('inf_factor')
     if j.zone != received.get('zone'):
         j.zone = received.get('zone')
-    if j.picture.name != received.get('picture'):
-        j.picture = received.get('picture')
     if j.link != received.get('link'):
         j.link = received.get('link')
 
@@ -451,7 +448,7 @@ def SetJournalInfo(request):
 
 def AddJournal(request):
     received = json.loads(request.body)
-    curusr = received.get('uid')
+    curusr = received.get('curusr')
     if curusr[2:4] != '03':
         return Response(status=403)
 
@@ -534,22 +531,24 @@ def SetConferenceInfo(request):
     conf = Conference.objects.get(id=id)
     if conf.id != received.get('id'):
         conf.id = received.get('id')
-    if conf.title != received.get('title'):
-        conf.title = received.get('title')
-    if conf.authority != received.get('authority'):
-        conf.authority = received.get('authority')
-    if conf.host != received.get('host'):
-        conf.host = received.get('host')
-    if conf.city != received.get('city'):
-        conf.city = received.get('city')
-    if conf.address != received.get('address'):
-        conf.address = received.get('address')
-    if conf.postcode != received.get('postcode'):
-        conf.postcode = received.get('postcode')
-    if conf.phone_num != received.get('phone_num'):
-        conf.phone_num = received.get('phone_num')
-    if conf.picture.name != received.get('picture'):
-        conf.picture = received.get('picture')
+    if conf.name != received.get('name'):
+        conf.name = received.get('name')
+    if conf.time != received.get('time'):
+        conf.time = received.get('time')
+    if conf.place != received.get('place'):
+        conf.place = received.get('place')
+    if conf.association != received.get('association'):
+        conf.association = received.get('association')
+    if conf.publisher != received.get('publisher'):
+        conf.publisher = received.get('publisher')
+    if conf.publish_date != received.get('publish_date'):
+        conf.publish_date = received.get('publish_date')
+    if conf.chief_editor != received.get('chief_editor'):
+        conf.chief_editor = received.get('chief_editor')
+    if conf.editors != received.get('editors'):
+        conf.editors = received.get('editors')
+    if conf.link != received.get('link'):
+        conf.link = received.get('link')
 
     conf.save()
     return HttpResponse('success')
@@ -557,7 +556,7 @@ def SetConferenceInfo(request):
 
 def AddConference(request):
     received = json.loads(request.body)
-    curusr = received.get('uid')
+    curusr = received.get('curusr')
     if curusr[2:4] != '03':
         return Response(status=403)
 

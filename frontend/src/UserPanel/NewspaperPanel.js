@@ -1,4 +1,7 @@
+import { Button, Grid } from "@mui/material";
 import * as React from "react";
+import { REACT_URL } from "../Constants";
+import { MessageBar } from "../MessageBar";
 import { NewspaperInfo } from "./ApplyForm";
 import { AddNewspaper, DeleteNewspaper, GetNewspaper, SetNewspaperInfo } from "./Common";
 
@@ -37,9 +40,8 @@ export function AddNewspaperPanel() {
   };
 
   const doAddition = () => {
-    AddNewspaper(npdict)
-      .then((success) => window.location.assign(REACT_URL + '/my/users'),
-        (failure) => setOpen(true));
+    AddNewspaper(npdict);
+    window.location.assign(REACT_URL + '/my/published');
   }
 
   return (
@@ -76,7 +78,7 @@ export function AddNewspaperPanel() {
 
 
 export function NewspaperInfoEdit(props) {
-  const [issn, setIssn] = React.useState(props.id);
+  const [issn, setIssn] = React.useState(props.issn);
   const [title, setTitle] = React.useState('');
   const [authority, setAuthority] = React.useState('');
   const [host, setHost] = React.useState('');
@@ -84,13 +86,12 @@ export function NewspaperInfoEdit(props) {
   const [address, setAddress] = React.useState('');
   const [postcode, setPostcode] = React.useState('');
   const [phone_num, setPhonenum] = React.useState('');
+  const [picture, setPicture] = React.useState('');
   const [link, setLink] = React.useState('');
-
-  var uid = window.sessionStorage.getItem('id');
 
   var loadfinish = false;
   React.useEffect(() => {
-    GetNewspaper(uid, props.issn)
+    GetNewspaper(props.issn)
       .then((data) => {
         setIssn(data['issn']);
         setTitle(data['title']);
@@ -100,6 +101,7 @@ export function NewspaperInfoEdit(props) {
         setAddress(data['address']);
         setPostcode(data['postcode']);
         setPhonenum(data['phone_num']);
+        setPicture(data['picture']);
         setLink(data['link']);
       });
     loadfinish = true;
@@ -117,15 +119,11 @@ export function NewspaperInfoEdit(props) {
   };
 
   const doUpdate = (e) => {
-    if (!loadfinish)
-      return;
-    if (npUpdated) {
-      var succeed = SetNewspaperInfo(props.issn, npdict);
-      if (!succeed)
-        setOpen(true);
-      if (issn != props.issn)
-        props.issn = issn;
-    }
+    var succeed = SetNewspaperInfo(npdict);
+    if (!succeed)
+      setOpen(true);
+    if (issn != props.issn)
+      props.issn = issn;
   };
 
   const doDelete = (e) => {
@@ -138,10 +136,13 @@ export function NewspaperInfoEdit(props) {
   var npdict = {
     issn: issn,
     title: title,
+    authority: authority,
     host: host,
-    period: city,
-    zone: address,
-    inf_factor: postcode,
+    city: city,
+    address: address,
+    postcode: postcode,
+    phone_num: phone_num,
+    picture: picture,
     link: link
   };
 
@@ -165,6 +166,7 @@ export function NewspaperInfoEdit(props) {
         address={address}
         postcode={postcode}
         phone_num={phone_num}
+        picture={picture}
         link={link}
       />
       <Button

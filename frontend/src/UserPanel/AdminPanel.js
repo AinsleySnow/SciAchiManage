@@ -32,7 +32,7 @@ import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, G
 import { Button, Fab, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
-import { AddJournalPanel } from './JournalPanel';
+import { AddJournalPanel, JournalInfoEdit } from './JournalPanel';
 import { AddNewspaperPanel, NewspaperInfoEdit } from './NewspaperPanel';
 import { AddConfPanel, ConfInfoEdit } from './ConfPanel';
 
@@ -823,14 +823,17 @@ function AdminPanelContent() {
                   </Grid>
                 } />
                 <Route path='/journal'>
+                  <Route path='/journal' />
                   <Route path='/journal/add' element={
                     <Grid item xs={12}>
                       <AddJournalPanel />
                     </Grid>
                   }/>
-                  <Route path='/journal/:id' element={
+                  <Route path='/journal/:issn' element={
                     <Grid item xs={12}>
-                      <JournalInfoEdit issn={useParams()} />
+                      <JournalInfoEdit issn={
+                        Object.values(useParams())[0].substring(8)
+                      } />
                     </Grid>
                   } />
                 </Route>
@@ -840,9 +843,9 @@ function AdminPanelContent() {
                       <AddNewspaperPanel />
                     </Grid>
                   } />
-                  <Route path='/newspaper/:id' element={
+                  <Route path='/newspaper/:issn' element={
                     <Grid item xs={12}>
-                      <NewspaperInfoEdit issn={useParams()} />
+                      <NewspaperInfoEdit issn={Object.values(useParams())[0].substring(10)} />
                     </Grid>
                   } />
                 </Route>
@@ -854,7 +857,7 @@ function AdminPanelContent() {
                   } />
                   <Route path='/conference/:id' element={
                     <Grid item xs={12}>
-                      <ConfInfoEdit id={useParams()} />
+                      <ConfInfoEdit id={Object.values(useParams())[0].substring(11)} />
                     </Grid>
                   } />
                 </Route>

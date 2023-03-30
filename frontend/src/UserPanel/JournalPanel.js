@@ -1,3 +1,7 @@
+import { Button, Grid } from '@mui/material';
+import * as React from 'react';
+import { REACT_URL } from '../Constants';
+import { MessageBar } from '../MessageBar';
 import { JournalInfo } from "./ApplyForm";
 import { AddJournal, DeleteJournal, GetJournal, SetJournalInfo } from "./Common";
 
@@ -32,9 +36,8 @@ export function AddJournalPanel() {
   };
 
   const doAddition = () => {
-    AddJournal(jurdict)
-      .then((success) => window.location.assign(REACT_URL + '/my/users'),
-        (failure) => setOpen(true));
+    AddJournal(jurdict);
+    window.location.assign(REACT_URL + '/my/published');
   }
 
   return (
@@ -76,13 +79,14 @@ export function JournalInfoEdit(props) {
   const [period, setPeriod] = React.useState('');
   const [zone, setZone] = React.useState('');
   const [inf_factor, setInfactor] = React.useState('');
+  const [picture, setPicture] = React.useState('');
   const [link, setLink] = React.useState('');
 
   var uid = window.sessionStorage.getItem('id');
 
   var loadfinish = false;
   React.useEffect(() => {
-    GetJournal(uid, props.issn)
+    GetJournal(props.issn)
       .then((data) => {
         setIssn(data['issn']);
         setTitle(data['title']);
@@ -90,6 +94,7 @@ export function JournalInfoEdit(props) {
         setPeriod(data['period']);
         setZone(data['zone']);
         setInfactor(data['inf_factor']);
+        setPicture(data['picture']);
         setLink(data['link']);
       });
     loadfinish = true;
@@ -107,15 +112,11 @@ export function JournalInfoEdit(props) {
   };
 
   const doUpdate = (e) => {
-    if (!loadfinish)
-      return;
-    if (jourUpdated) {
-      var succeed = SetJournalInfo(props.issn, jourdict);
-      if (!succeed)
-        setOpen(true);
-      if (issn != props.issn)
-        props.issn = issn;
-    }
+    var succeed = SetJournalInfo(jourdict);
+    if (!succeed)
+      setOpen(true);
+    if (issn != props.issn)
+      props.issn = issn;
   };
 
   const doDelete = (e) => {
@@ -132,6 +133,7 @@ export function JournalInfoEdit(props) {
     period: period,
     zone: zone,
     inf_factor: inf_factor,
+    picture: picture,
     link: link
   };
 
@@ -154,6 +156,7 @@ export function JournalInfoEdit(props) {
         zone={zone}
         inf_factor={inf_factor}
         link={link}
+        picture={picture}
       />
       <Button
         sx={{
