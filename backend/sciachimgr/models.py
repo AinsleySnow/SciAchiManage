@@ -36,6 +36,11 @@ class Researcher(models.Model):
 
 
 
+class College(models.Model):
+    name = models.CharField(max_length=45)
+
+
+
 class Journal(models.Model):
     issn = models.CharField(max_length=8, primary_key=True)
     title = models.CharField(max_length=45)
@@ -61,7 +66,6 @@ class Journal(models.Model):
 
 
 class Paper(models.Model):
-    applynum = models.CharField(max_length=30, primary_key=True)
     issn = models.ForeignKey(
         Journal,
         on_delete=models.CASCADE,
@@ -88,7 +92,6 @@ class Newspaper(models.Model):
 
 
 class Article(models.Model):
-    applynum = models.CharField(max_length=30, primary_key=True)
     issn = models.ForeignKey(
         Newspaper,
         on_delete=models.CASCADE,
@@ -101,7 +104,6 @@ class Article(models.Model):
 
 
 class Conference(models.Model):
-    id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=300)
     time = models.DateField()
     place = models.CharField(max_length=100)
@@ -110,14 +112,12 @@ class Conference(models.Model):
     publish_date = models.DateField(blank=True)
     chief_editor = models.CharField(max_length=10, blank=True)
     editors = models.CharField(max_length=300, blank=True)
-    picture = models.ImageField(blank=True)
     link = models.CharField(max_length=400, blank=True)
 
 
 
 class ConferencePaper(models.Model):
-    applynum = models.CharField(max_length=30, primary_key=True)
-    id = models.ForeignKey(
+    cid = models.ForeignKey(
         Conference,
         on_delete=models.CASCADE,
         to_field='id'
@@ -129,7 +129,6 @@ class ConferencePaper(models.Model):
 
 
 class Book(models.Model):
-    applynum = models.CharField(max_length=30, unique=True)
     isbn = models.CharField(max_length=13, primary_key=True)
     author = models.CharField(max_length=300)
     publisher = models.CharField(max_length=100)
@@ -141,7 +140,6 @@ class Book(models.Model):
 
 
 class Patent(models.Model):
-    applynum = models.CharField(max_length=30, unique=True)
     patent_num = models.CharField(max_length=13, primary_key=True)
     promulgate_num = models.CharField(max_length=12)
     name = models.CharField(max_length=200)
@@ -155,17 +153,16 @@ class Patent(models.Model):
 
 
 
-class JournalAuthor(models.Model):
-    applynum = models.CharField(max_length=30, primary_key=True)
+class PaperAuthor(models.Model):
     applicant = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         to_field='id'
     )
-    issn = models.ForeignKey(
-        Journal,
+    pid = models.ForeignKey(
+        Paper,
         on_delete=models.CASCADE,
-        to_field='issn'
+        to_field='id'
     )
 
     class Status(models.IntegerChoices):
@@ -176,16 +173,15 @@ class JournalAuthor(models.Model):
 
 
 class NewspaperAuthor(models.Model):
-    applynum = models.CharField(max_length=30, primary_key=True)
     applicant = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         to_field='id'
     )
-    issn = models.ForeignKey(
-        Newspaper,
+    aid = models.ForeignKey(
+        Article,
         on_delete=models.CASCADE,
-        to_field='issn'
+        to_field='id'
     )
 
     class Status(models.IntegerChoices):
@@ -196,13 +192,12 @@ class NewspaperAuthor(models.Model):
 
 
 class ConferenceAuthor(models.Model):
-    applynum = models.CharField(max_length=30, primary_key=True)
     applicant = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         to_field='id'
     )
-    id = models.ForeignKey(
+    cid = models.ForeignKey(
         Conference,
         on_delete=models.CASCADE,
         to_field='id'
@@ -216,7 +211,6 @@ class ConferenceAuthor(models.Model):
 
 
 class BookAuthor(models.Model):
-    applynum = models.CharField(max_length=30, primary_key=True)
     applicant = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -236,7 +230,6 @@ class BookAuthor(models.Model):
 
 
 class PatentAuthor(models.Model):
-    applynum = models.CharField(max_length=30, primary_key=True)
     applicant = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
