@@ -73,6 +73,10 @@ class Paper(models.Model):
     )
     title = models.CharField(max_length=45)
     author = models.CharField(max_length=200)
+    page = models.CharField(max_length=50)
+    volume = models.IntegerField()
+    number = models.IntegerField()
+    publish_date = models.DateField()
     link = models.CharField(max_length=400, blank=True)
 
 
@@ -99,6 +103,8 @@ class Article(models.Model):
     )
     title = models.CharField(max_length=45)
     author = models.CharField(max_length=200)
+    version = models.IntegerField()
+    publish_date = models.DateField()
     link = models.CharField(max_length=400, blank=True)
 
 
@@ -124,18 +130,21 @@ class ConferencePaper(models.Model):
     )
     title = models.CharField(max_length=300)
     author = models.CharField(max_length=200)
+    page = models.IntegerField()
+    publish_date = models.DateField()
     link = models.CharField(max_length=400, blank=True)
 
 
 
 class Book(models.Model):
     isbn = models.CharField(max_length=13, primary_key=True)
+    title = models.CharField(max_length=200)
     author = models.CharField(max_length=300)
     publisher = models.CharField(max_length=100)
     publish_year = models.DateField()
     place_published = models.CharField(max_length=100)
     picture = models.ImageField(blank=True)
-    link = models.CharField(max_length=400, blank=True),
+    link = models.CharField(max_length=400, blank=True)
 
 
 
@@ -149,7 +158,7 @@ class Patent(models.Model):
     theme = models.CharField(max_length=45)
     catagory_num = models.CharField(max_length=100)
     major_catagory = models.CharField(max_length=10)
-    link = models.CharField(max_length=400, blank=True),
+    link = models.CharField(max_length=400, blank=True)
 
 
 

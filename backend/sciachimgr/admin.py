@@ -43,14 +43,20 @@ class ConferenceAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class ConferencePaperAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     pass
 
+
+class BookResource(resources.ModelResource):
+    class Meta:
+        model = models.Book
+        import_id_fields = ('isbn',)
+
 class BookAdmin(ImportExportModelAdmin, admin.ModelAdmin):
-    pass
+    resource_class = BookResource
 
 
 class PatentResource(resources.ModelResource):
     class Meta:
         model = models.Patent
-        import_id_fields = ('issn',)
+        import_id_fields = ('patent_num',)
 
 class PatentAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     resource_class = PatentResource
