@@ -28,13 +28,14 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, AddJournal } from './Common'
-import { Button, Fab, TextField } from '@mui/material';
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, AddJournal, GetPaper, AddPaper } from './Common'
+import { Button, Fab, Tab, Tabs, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
 import { AddJournalPanel, JournalInfoEdit } from './JournalPanel';
 import { AddNewspaperPanel, NewspaperInfoEdit } from './NewspaperPanel';
 import { AddConfPanel, ConfInfoEdit } from './ConfPanel';
+import { AddPaperPanel, PaperInfoEdit } from './PaperPanel';
 
 
 function Copyright(props) {
@@ -443,39 +444,128 @@ function AddFab(props) {
   );
 }
 
+var datapanel_paper_from = 0;
 
 function DataPanel() {
+  var nomorepaper = false;
+  
+  const [paper, setPaper] = React.useState(null);
+  React.useEffect(() => {
+    GetPaper('all', datapanel_paper_from)
+      .then((data) => {
+        setPaper(data.map(p => (
+          {
+            ...p,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/paper/' + p.id}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const morePaper = (e) => {
+    if (nomorepaper)
+      return;
+    datapanel_paper_from += 250;
+    GetPaper('all', datapanel_paper_from)
+      .then((data) => {
+        if (!data) {
+          nomorepaper = true;
+          datapanel_paper_from = 0;
+          return;
+        }
+        let newdata = paper.concat(data);
+        setPaper(newdata.map(p => (
+          {
+            ...p,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/paper/' + p.id}>
+                  编辑
+                </Link>
+              </Typography>
+          }
+        )));
+      });
+  }
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
-        <InfoTable
-          title='期刊论文'
-          heads={['标题', '作者', '刊物', '链接', '操作']} />
+        <Tabs value={value} onChange={handleChange} aria-label="tab control">
+          <Tab label="期刊论文" />
+          <Tab label="会议论文" />
+          <Tab label="报刊文章" />
+          <Tab label="著作" />
+          <Tab label="专利" />
+        </Tabs>
       </Grid>
       <Grid item xs={12}>
-        <InfoTable
-          title='会议论文'
-          heads={['标题', '作者', '会议名', '链接', '操作']}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <InfoTable
-          title='报刊文章'
-          heads={['标题', '作者', '报纸名', '链接', '操作']}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <InfoTable
-          title='著作'
-          heads={['题目', '书号', '作者', '出版社', '出版年', '出版地', '链接', '操作']}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <InfoTable
-          title='专利'
-          heads={['专利号', '公布号', '专利名', '申请人', '发明人',
-            '专辑', '专题', '分类号', '主分类号', '链接', '操作']}
-        />
+        {
+          value === 0 &&
+          <Box>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+              <InfoTable
+                title='期刊论文'
+                heads={['标题', '作者', '刊物', '链接', '操作']}
+                rows={paper} />
+              <Typography sx={{ marginTop: 4 }} fontSize={'small'} color="text.secondary">
+                <Link component='button' onClick={morePaper}>
+                  查看更多
+                </Link>
+              </Typography>
+            </Paper>
+            <AddFab handleClick={
+              (e) => window.location.assign(REACT_URL + '/my/paper/add')
+            } />
+          </Box>
+        }
+        {
+          value === 1 &&
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <InfoTable
+              title='会议论文'
+              heads={['标题', '作者', '会议名', '链接', '操作']}
+            />
+          </Paper>
+        }
+        {
+          value === 2 &&
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <InfoTable
+              title='报刊文章'
+              heads={['标题', '作者', '报纸名', '链接', '操作']}
+            />
+          </Paper>
+        }
+        {
+          value === 3 &&
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 240 }}>
+            <InfoTable
+              title='著作'
+              heads={['题目', '书号', '作者', '出版社', '出版年', '出版地', '链接', '操作']}
+            />
+          </Paper>
+        }
+        {
+          value === 4 &&
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 240 }}>
+            <InfoTable
+              title='专利'
+              heads={['专利号', '公布号', '专利名', '申请人', '发明人',
+                '专辑', '专题', '分类号', '主分类号', '链接', '操作']}
+            />
+          </Paper>
+        }
       </Grid>
     </Grid>
   );
@@ -554,10 +644,10 @@ function PublishPanel() {
           <InfoTable
             title='期刊列表'
             heads={['ISSN', '标题', '主办机构', '出版周期',
-              '影响因子', '分区', '链接', '操作']} 
+              '影响因子', '分区', '链接', '操作']}
             rows={journal} />
-          <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
-            <Link href={ REACT_URL + '/my/journal/add' }>添加期刊</Link>
+          <Typography sx={{ marginTop: 3 }} fontSize={'small'} color="text.secondary">
+            <Link href={REACT_URL + '/my/journal/add'}>添加期刊</Link>
           </Typography>
         </Paper>
       </Grid>
@@ -568,8 +658,8 @@ function PublishPanel() {
             heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
               '地址', '邮编', '电话', '链接', '操作']}
             rows={newspaper} />
-          <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
-            <Link href={ REACT_URL + '/my/newspaper/add' }>添加报纸</Link>
+          <Typography sx={{ marginTop: 3 }} fontSize={'small'} color="text.secondary">
+            <Link href={REACT_URL + '/my/newspaper/add'}>添加报纸</Link>
           </Typography>
         </Paper>
       </Grid>
@@ -580,8 +670,8 @@ function PublishPanel() {
             heads={['ISSN', '题目', '主管机构', '主办机构', '出版地',
               '地址', '邮编', '电话', '链接', '操作']}
             rows={conf} />
-          <Typography sx={{marginTop: 3}} fontSize={'small'} color="text.secondary">
-            <Link href={ REACT_URL + '/my/conference/add' }>添加会议</Link>
+          <Typography sx={{ marginTop: 3 }} fontSize={'small'} color="text.secondary">
+            <Link href={REACT_URL + '/my/conference/add'}>添加会议</Link>
           </Typography>
         </Paper>
       </Grid>
@@ -803,11 +893,23 @@ function AdminPanelContent() {
                       </Paper>
                     </Grid>} />
                 </Route>
-                <Route path='/achi' element={
+                <Route path='/paper/:id' element={
                   <Grid item xs={12}>
                     <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                      <DataPanel />
+                      <PaperInfoEdit id={Object.values(useParams())[0].substring(8)} />
                     </Paper>
+                  </Grid>
+                } />
+                <Route path='/paper/add' element={
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <AddPaperPanel />
+                    </Paper>
+                  </Grid>
+                } />
+                <Route path='/achi' element={
+                  <Grid item xs={12}>
+                    <DataPanel />
                   </Grid>
                 } />
                 <Route path='/apply' element={
@@ -828,7 +930,7 @@ function AdminPanelContent() {
                     <Grid item xs={12}>
                       <AddJournalPanel />
                     </Grid>
-                  }/>
+                  } />
                   <Route path='/journal/:issn' element={
                     <Grid item xs={12}>
                       <JournalInfoEdit issn={

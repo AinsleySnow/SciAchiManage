@@ -199,7 +199,120 @@ export function JournalInfo(props) {
   );
 }
 
-export function PaperInfo() {
+export function PaperInfo(props) {
+  const [id, setId] = React.useState('');
+  const [issn, setIssn] = React.useState('');
+  const [title, setTitle] = React.useState('');
+  const [author, setAuthor] = React.useState('');
+  const [link, setLink] = React.useState('');
+  const [publish_date, setPublishDate] = React.useState('');
+  const [page, setPage] = React.useState('');
+  const [volume, setVolume] = React.useState('');
+  const [number, setNumber] = React.useState('');
+
+  React.useEffect(
+    () => setId(props.id),
+    [props.id]
+  );
+  React.useEffect(
+    () => setIssn(props.issn),
+    [props.issn]
+  );
+  React.useEffect(
+    () => setTitle(props.title),
+    [props.title]
+  );
+  React.useEffect(
+    () => setAuthor(props.author),
+    [props.author]
+  );
+  React.useEffect(
+    () => setLink(props.link),
+    [props.link]
+  );
+  React.useEffect(
+    () => setPublishDate(props.publish_date),
+    [props.publish_date]
+  );
+  React.useEffect(
+    () => setPage(props.page),
+    [props.page]
+  );
+  React.useEffect(
+    () => setVolume(props.volume),
+    [props.volume]
+  );
+  React.useEffect(
+    () => setNumber(props.number),
+    [props.number]
+  );
+
+  var pdict = {
+    id: id,
+    issn: issn,
+    title: title,
+    author: author,
+    page: page,
+    volume: volume,
+    number: number,
+    publish_date: publish_date,
+    link: link
+  };
+
+  const handleIdChange = (event) => {
+    setId(event.target.value);
+    pdict.id = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
+  const handleIssnChange = (event) => {
+    setIssn(event.target.value);
+    pdict.issn = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+    pdict.title = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value);
+    pdict.author = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
+  const handleLinkChange = (event) => {
+    setLink(event.target.value);
+    pdict.link = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
+  const handlePublishDateChange = (event) => {
+    setPublishDate(event.target.value);
+    pdict.publish_date = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
+  const handlePageChange = (event) => {
+    setPage(event.target.value);
+    pdict.page = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
+  const handleVolumeChange = (event) => {
+    setVolume(event.target.value);
+    pdict.volume = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
+  const handleNumberChange = (event) => {
+    setNumber(event.target.value);
+    pdict.number = event.target.value;
+    props.onPaperChange(pdict);
+  }
+
   return (
     <React.Fragment>
       <Typography variant="h6" paddingBottom={4}>
@@ -208,6 +321,8 @@ export function PaperInfo() {
       <Grid container flexShrink={'row'} spacing={3}>
         <Grid item xs={12} sm={3}>
           <TextField
+            onChange={handleIssnChange}
+            value={issn}
             required
             id="issn"
             name="issn"
@@ -215,6 +330,8 @@ export function PaperInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleTitleChange}
+            value={title}
             required
             id="title"
             name="title"
@@ -224,6 +341,8 @@ export function PaperInfo() {
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
+            onChange={handleAuthorChange}
+            value={author}
             required
             id="author"
             name="author"
@@ -231,10 +350,50 @@ export function PaperInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handlePublishDateChange}
+            value={publish_date}
+            required
+            id="publish_date"
+            name="publish_date"
+            label="出版日期"
+            variant="standard"
+          />
+          <TextField
+            onChange={handleLinkChange}
+            value={link}
             required
             id="link"
             name="link"
             label="链接"
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            onChange={handlePageChange}
+            value={page}
+            required
+            id="page"
+            name="page"
+            label="页码"
+            variant="standard"
+          />
+          <TextField
+            onChange={handleVolumeChange}
+            value={volume}
+            required
+            id="volume"
+            name="volume"
+            label="卷号"
+            variant="standard"
+          />
+          <TextField
+            onChange={handleNumberChange}
+            value={number}
+            required
+            id="number"
+            name="number"
+            label="期号"
             variant="standard"
           />
         </Grid>

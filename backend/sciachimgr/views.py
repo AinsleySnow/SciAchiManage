@@ -518,7 +518,7 @@ class ConferenceInfo(APIView):
             return Response(conference)
 
     def post(self, request):
-        serializer = NewspaperSerializer(data=request.data)
+        serializer = ConferenceSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
@@ -584,6 +584,116 @@ def DeleteConference(request):
 
         todelete = received.get('todelete')
         Conference.objects.filter(issn=todelete).delete()
+        return HttpResponse('success')
+    except:
+        return Response(status=403)
+
+
+class PaperInfo(APIView):
+    serializer_class = PaperSerializer
+
+    batch_size = 250
+    total_objects = Paper.objects.count()
+
+    def get(self, request):
+        id = request.GET['id']
+        if id != 'all':
+            p = Paper.objects.get(id=id)
+            return Response({
+                'id': p.id,
+                'issn': p.issn.issn,
+                'title': p.title,
+                'author': p.author,
+                'page': p.page,
+                'volume': p.volume,
+                'number': p.number,
+                'publish_date': p.publish_date,
+                'link': p.link
+            })
+        else:
+            start = int(request.GET['from'])
+            if start >= PaperInfo.total_objects:
+                return None
+            paper = [
+                {
+                    'id': p.id,
+                    'issn': p.issn.issn,
+                    'title': p.title,
+                    'author': p.author,
+                    'page': p.page,
+                    'volume': p.volume,
+                    'number': p.number,
+                    'publish_date': p.publish_date,
+                    'link': p.link
+                }
+                for p in Paper.objects.all()[start:start + PaperInfo.batch_size]
+            ]
+            return Response(paper)
+
+    def post(self, request):
+        serializer = PaperSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+
+def SetPaperInfo(request):
+    received = json.loads(request.body)
+    id = received.get('id')
+
+    p = Paper.objects.get(id=id)
+    if p.id != received.get('id'):
+        p.id = received.get('id')
+    if p.issn != received.get('issn'):
+        p.issn = Journal.objects.get(issn=received.get('issn'))
+    if p.title != received.get('title'):
+        p.title = received.get('title')
+    if p.author != received.get('author'):
+        p.author = received.get('author')
+    if p.page != received.get('page'):
+        p.page = received.get('page')
+    if p.volume != received.get('volume'):
+        p.volume = received.get('volume')
+    if p.number != received.get('number'):
+        p.number = received.get('number')
+    if p.publish_date != received.get('publish_date'):
+        p.publish_date = received.get('publish_date')
+    if p.link != received.get('link'):
+        p.link = received.get('link')
+
+    p.save()
+    return HttpResponse('success')
+
+
+def AddPaper(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    if curusr[2:4] != '03':
+        return Response(status=403)
+
+    Paper.objects.create(
+        issn = Journal.objects.get(issn=received.get('issn')),
+        title = received.get('title'),
+        author = received.get('author'),
+        page = received.get('page'),
+        volume = received.get('volume'),
+        number = received.get('number'),
+        publish_date = received.get('publish_date'),
+        link = received.get('link')
+    )
+
+    return HttpResponse('success')
+
+
+def DeletePaper(request):
+    received = json.loads(request.body)
+    try:
+        curusr = received.get('curusr')
+        if curusr[2:4] != '03':
+            return Response(status=403)
+
+        todelete = received.get('todelete')
+        Paper.objects.filter(id=todelete).delete()
         return HttpResponse('success')
     except:
         return Response(status=403)

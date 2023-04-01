@@ -29,4 +29,8 @@ urlpatterns = [
     path('setconfinfo/', views.SetConferenceInfo),
     path('addconf/', views.AddConference),
     path('deleteconf/', views.DeleteConference),
+    path('paperinfo/', views.PaperInfo.as_view()),
+    path('setpaperinfo/', views.SetPaperInfo),
+    path('addpaper/', views.AddPaper),
+    path('deletepaper/', views.DeletePaper),
 ]
