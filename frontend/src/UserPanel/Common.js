@@ -283,8 +283,6 @@ export function GetPaper(id, from) {
 export function SetPaperInfo(dict) {
   var uid = window.sessionStorage.getItem('id');
 
-  console.log(dict);
-
   return fetch(API_URL + '/setpaperinfo/', {
     method: 'POST',
     body: JSON.stringify({ ...dict, curusr: uid }),
@@ -313,6 +311,55 @@ export function DeletePaper(id) {
   let uid = window.sessionStorage.getItem('id');
 
   fetch(API_URL + '/deletepaper/', {
+    method: 'POST',
+    body: JSON.stringify({ todelete: id, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => response = res.text());
+
+  window.location.assign(REACT_URL + '/my/achi');
+  return response === 'success';
+}
+
+
+export function GetConfpaper(id, from) {
+  return fetch(API_URL + '/confpaperinfo/?id=' + id + '&from=' + from)
+    .then((res) => res.json())
+}
+
+export function SetConfpaperInfo(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/setconfpaperinfo/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => { return res.text() === 'success'; });
+}
+
+export function AddConfpaper(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/addconfpaper/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => res.json());
+}
+
+export function DeleteConfpaper(id) {
+  let response = '';
+  let uid = window.sessionStorage.getItem('id');
+
+  fetch(API_URL + '/deleteconfpaper/', {
     method: 'POST',
     body: JSON.stringify({ todelete: id, curusr: uid }),
     headers: {

@@ -28,7 +28,7 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, AddJournal, GetPaper, AddPaper } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper } from './Common'
 import { Button, Fab, Tab, Tabs, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
@@ -36,6 +36,7 @@ import { AddJournalPanel, JournalInfoEdit } from './JournalPanel';
 import { AddNewspaperPanel, NewspaperInfoEdit } from './NewspaperPanel';
 import { AddConfPanel, ConfInfoEdit } from './ConfPanel';
 import { AddPaperPanel, PaperInfoEdit } from './PaperPanel';
+import { AddConfpaperPanel, ConfpaperInfoEdit } from './ConfpaperPanel';
 
 
 function Copyright(props) {
@@ -445,10 +446,11 @@ function AddFab(props) {
 }
 
 var datapanel_paper_from = 0;
+var datapanel_confpaper_from = 0;
 
 function DataPanel() {
   var nomorepaper = false;
-  
+
   const [paper, setPaper] = React.useState(null);
   React.useEffect(() => {
     GetPaper('all', datapanel_paper_from)
@@ -498,6 +500,51 @@ function DataPanel() {
       });
   }
 
+  var nomoreconfpaper = false;
+
+  const [confpaper, setConfpaper] = React.useState(null);
+  React.useEffect(() => {
+    GetConfpaper('all', datapanel_confpaper_from)
+      .then((data) => {
+        setConfpaper(data.map(p => (
+          {
+            ...p,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/confpaper/' + p.id}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+  const moreConfpaper = (e) => {
+    if (nomoreconfpaper)
+      return;
+    datapanel_confpaper_from += 250;
+    GetConfpaper('all', datapanel_confpaper_from)
+      .then((data) => {
+        if (!data) {
+          nomoreconfpaper = true;
+          datapanel_confpaper_from = 0;
+          return;
+        }
+        let newdata = confpaper.concat(data);
+        setConfpaper(newdata.map(cp => (
+          {
+            ...cp,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/confpaper/' + cp.id}>
+                  编辑
+                </Link>
+              </Typography>
+          }
+        )));
+      });
+  }
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
@@ -531,12 +578,23 @@ function DataPanel() {
         }
         {
           value === 1 &&
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-            <InfoTable
-              title='会议论文'
-              heads={['标题', '作者', '会议名', '链接', '操作']}
-            />
-          </Paper>
+          <Box>
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+              <InfoTable
+                title='会议论文'
+                heads={['标题', '作者', '会议名', '链接', '操作']}
+                rows={confpaper}
+              />
+              <Typography sx={{ marginTop: 4 }} fontSize={'small'} color="text.secondary">
+                <Link component='button' onClick={moreConfpaper}>
+                  查看更多
+                </Link>
+              </Typography>
+            </Paper>
+            <AddFab handleClick={
+              (e) => window.location.assign(REACT_URL + '/my/confpaper/add')
+            } />
+          </Box>
         }
         {
           value === 2 &&
@@ -904,6 +962,20 @@ function AdminPanelContent() {
                   <Grid item xs={12}>
                     <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                       <AddPaperPanel />
+                    </Paper>
+                  </Grid>
+                } />
+                <Route path='/confpaper/:id' element={
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <ConfpaperInfoEdit id={Object.values(useParams())[0].substring(10)} />
+                    </Paper>
+                  </Grid>
+                } />
+                <Route path='/confpaper/add' element={
+                  <Grid item xs={12}>
+                    <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                      <AddConfpaperPanel />
                     </Paper>
                   </Grid>
                 } />

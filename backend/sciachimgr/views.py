@@ -697,3 +697,103 @@ def DeletePaper(request):
         return HttpResponse('success')
     except:
         return Response(status=403)
+
+
+class ConfpaperInfo(APIView):
+    serializer_class = ConfpaperSerializer
+
+    batch_size = 250
+    total_objects = ConferencePaper.objects.count()
+
+    def get(self, request):
+        id = request.GET['id']
+        if id != 'all':
+            cp = ConferencePaper.objects.get(id=id)
+            return Response({
+                'id': cp.id,
+                'cid': cp.cid.id,
+                'title': cp.title,
+                'author': cp.author,
+                'page': cp.page,
+                'publish_date': cp.publish_date,
+                'link': cp.link
+            })
+        else:
+            start = int(request.GET['from'])
+            if start >= ConfpaperInfo.total_objects:
+                return None
+            confpaper = [
+                {
+                    'id': cp.id,
+                    'cid': cp.cid.id,
+                    'title': cp.title,
+                    'author': cp.author,
+                    'page': cp.page,
+                    'publish_date': cp.publish_date,
+                    'link': cp.link
+                }
+                for cp in ConferencePaper.objects.all()[start:start + ConfpaperInfo.batch_size]
+            ]
+            return Response(confpaper)
+
+    def post(self, request):
+        serializer = ConfpaperSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+
+def SetConfpaperInfo(request):
+    received = json.loads(request.body)
+    id = received.get('id')
+
+    cp = ConferencePaper.objects.get(id=id)
+    if cp.id != received.get('id'):
+        cp.id = received.get('id')
+    if cp.cid != received.get('cid'):
+        cp.cid = Conference.objects.get(id=received.get('cid'))
+    if cp.title != received.get('title'):
+        cp.title = received.get('title')
+    if cp.author != received.get('author'):
+        cp.author = received.get('author')
+    if cp.page != received.get('page'):
+        cp.page = received.get('page')
+    if cp.publish_date != received.get('publish_date'):
+        cp.publish_date = received.get('publish_date')
+    if cp.link != received.get('link'):
+        cp.link = received.get('link')
+
+    cp.save()
+    return HttpResponse('success')
+
+
+def AddConfpaper(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    if curusr[2:4] != '03':
+        return Response(status=403)
+
+    ConferencePaper.objects.create(
+        cid = Conference.objects.get(id=received.get('cid')),
+        title = received.get('title'),
+        author = received.get('author'),
+        page = received.get('page'),
+        publish_date = received.get('publish_date'),
+        link = received.get('link')
+    )
+
+    return HttpResponse('success')
+
+
+def DeleteConfpaper(request):
+    received = json.loads(request.body)
+    try:
+        curusr = received.get('curusr')
+        if curusr[2:4] != '03':
+            return Response(status=403)
+
+        todelete = received.get('todelete')
+        ConferencePaper.objects.filter(id=todelete).delete()
+        return HttpResponse('success')
+    except:
+        return Response(status=403)

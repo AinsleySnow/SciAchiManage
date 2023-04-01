@@ -36,3 +36,8 @@ class PaperSerializer(serializers.ModelSerializer):
     class Meta:
         model = Paper
         fields = [ 'id', 'issn', 'title', 'author', 'page', 'volume', 'number', 'publish_date', 'link']
+
+class ConfpaperSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConferencePaper
+        fields = ['id', 'title', 'author', 'page', 'publish_date', 'link']

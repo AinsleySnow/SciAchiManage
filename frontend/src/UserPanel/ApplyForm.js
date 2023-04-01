@@ -112,7 +112,7 @@ export function JournalInfo(props) {
       </Typography>
       <Grid container flexShrink={'row'} spacing={3}>
         <Grid item xs={12} sm={5}>
-          <ImageWrapper height={400} src={ API_URL + '/' + props.picture } />
+          <ImageWrapper height={400} src={API_URL + '/' + props.picture} />
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
@@ -879,6 +879,167 @@ export function ConferenceInfo(props) {
             id="link"
             name="link"
             label="链接"
+            variant="standard"
+          />
+        </Grid>
+      </Grid>
+    </React.Fragment >
+  );
+}
+
+export function ConfpaperInfo(props) {
+  const [id, setId] = React.useState('');
+  const [cid, setCid] = React.useState('');
+  const [title, setTitle] = React.useState('');
+  const [author, setAuthor] = React.useState('');
+  const [link, setLink] = React.useState('');
+  const [publish_date, setPublishDate] = React.useState('');
+  const [page, setPage] = React.useState('');
+
+  React.useEffect(
+    () => setId(props.id),
+    [props.id]
+  );
+  React.useEffect(
+    () => setCid(props.cid),
+    [props.cid]
+  );
+  React.useEffect(
+    () => setTitle(props.title),
+    [props.title]
+  );
+  React.useEffect(
+    () => setAuthor(props.author),
+    [props.author]
+  );
+  React.useEffect(
+    () => setLink(props.link),
+    [props.link]
+  );
+  React.useEffect(
+    () => setPublishDate(props.publish_date),
+    [props.publish_date]
+  );
+  React.useEffect(
+    () => setPage(props.page),
+    [props.page]
+  );
+
+  var cpdict = {
+    id: id,
+    cid: cid,
+    title: title,
+    author: author,
+    page: page,
+    publish_date: publish_date,
+    link: link
+  };
+
+  const handleIdChange = (event) => {
+    setId(event.target.value);
+    cpdict.id = event.target.value;
+    props.onConfpaperChange(cpdict);
+  }
+
+  const handleCidChange = (event) => {
+    setCid(event.target.value);
+    cpdict.cid = event.target.value;
+    props.onConfpaperChange(cpdict);
+  }
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+    cpdict.title = event.target.value;
+    props.onConfpaperChange(cpdict);
+  }
+
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value);
+    cpdict.author = event.target.value;
+    props.onConfpaperChange(cpdict);
+  }
+
+  const handleLinkChange = (event) => {
+    setLink(event.target.value);
+    cpdict.link = event.target.value;
+    props.onConfpaperChange(cpdict);
+  }
+
+  const handlePublishDateChange = (event) => {
+    setPublishDate(event.target.value);
+    cpdict.publish_date = event.target.value;
+    props.onConfpaperChange(cpdict);
+  }
+
+  const handlePageChange = (event) => {
+    setPage(event.target.value);
+    cpdict.page = event.target.value;
+    props.onConfpaperChange(cpdict);
+  }
+
+  return (
+    <React.Fragment>
+      <Typography variant="h6" paddingBottom={4}>
+        添加/编辑会议论文信息
+      </Typography>
+      <Grid container flexShrink={'row'} spacing={3}>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            onChange={handleCidChange}
+            value={cid}
+            required
+            id="cid"
+            name="cid"
+            label="会议编号"
+            variant="standard"
+          />
+          <TextField
+            onChange={handleTitleChange}
+            value={title}
+            required
+            id="title"
+            name="title"
+            label="论文题目"
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            onChange={handleAuthorChange}
+            value={author}
+            required
+            id="author"
+            name="author"
+            label="作者"
+            variant="standard"
+          />
+          <TextField
+            onChange={handlePublishDateChange}
+            value={publish_date}
+            required
+            id="publish_date"
+            name="publish_date"
+            label="出版日期"
+            variant="standard"
+          />
+          <TextField
+            onChange={handleLinkChange}
+            value={link}
+            required
+            id="link"
+            name="link"
+            label="链接"
+            variant="standard"
+          />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <TextField
+            onChange={handlePageChange}
+            value={page}
+            required
+            id="page"
+            name="page"
+            label="页码"
             variant="standard"
           />
         </Grid>
