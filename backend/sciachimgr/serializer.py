@@ -46,3 +46,8 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ['id', 'issn', 'title', 'author', 'version', 'publish_date', 'link']
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['isbn', 'title', 'author', 'publisher', 'publish_year', 'place_published', 'picture', 'link']

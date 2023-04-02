@@ -1162,7 +1162,109 @@ export function ConfpaperInfo(props) {
   );
 }
 
-export function BookInfo() {
+export function BookInfo(props) {
+  const [isbn, setIsbn] = React.useState('');
+  const [title, setTitle] = React.useState('');
+  const [author, setAuthor] = React.useState('');
+  const [publisher, setPublisher] = React.useState('');
+  const [publish_year, setPublishYear] = React.useState('');
+  const [place_published, setPlacePublished] = React.useState('');
+  const [picture, setPicture] = React.useState('');
+  const [link, setLink] = React.useState('');
+
+  React.useEffect(
+    () => setIsbn(props.isbn),
+    [props.isbn]
+  );
+  React.useEffect(
+    () => setTitle(props.title),
+    [props.title]
+  );
+  React.useEffect(
+    () => setAuthor(props.author),
+    [props.author]
+  );
+  React.useEffect(
+    () => setPublisher(props.publisher),
+    [props.publisher]
+  );
+  React.useEffect(
+    () => setPublishYear(props.publish_year),
+    [props.publish_year]
+  );
+  React.useEffect(
+    () => setPlacePublished(props.place_published),
+    [props.place_published]
+  );
+  React.useEffect(
+    () => setPicture(props.picture),
+    [props.picture]
+  );
+  React.useEffect(
+    () => setLink(props.link),
+    [props.link]
+  );
+
+  var bdict = {
+    isbn: isbn,
+    title: title,
+    author: author,
+    publisher: publisher,
+    publish_year: publish_year,
+    place_published: place_published,
+    picture: picture,
+    link: link
+  };
+
+  const handleIsbnChange = (event) => {
+    setIsbn(event.target.value);
+    bdict.isbn = event.target.value;
+    props.onBookChange(bdict);
+  }
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+    bdict.title = event.target.value;
+    props.onBookChange(bdict);
+  }
+
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value);
+    bdict.author = event.target.value;
+    props.onBookChange(bdict);
+  }
+
+  const handlePublisherChange = (event) => {
+    setPublisher(event.target.value);
+    bdict.publish_year = event.target.value;
+    props.onBookChange(bdict);
+  }
+
+  const handlePlacePublishedChange = (event) => {
+    setPlacePublished(event.target.value);
+    bdict.place_published = event.target.value;
+    props.onBookChange(bdict);
+  }
+
+  const handlePictureChange = (event) => {
+    setPicture(event.target.value);
+    bdict.picture = event.target.value;
+    props.onBookChange(bdict);
+  }
+
+  const handlePublishYearChange = (event) => {
+    setPublishYear(event.target.value);
+    bdict.publish_year = event.target.value;
+    props.onBookChange(bdict);
+  }
+
+  const handleLinkChange = (event) => {
+    setLink(event.target.value);
+    bdict.link = event.target.value;
+    props.onBookChange(bdict);
+  }
+
+
   return (
     <React.Fragment>
       <Typography variant="h6" paddingBottom={4}>
@@ -1170,10 +1272,12 @@ export function BookInfo() {
       </Typography>
       <Grid container flexShrink={'row'} spacing={3}>
         <Grid item xs={12} sm={5}>
-          <Image height={200} src='https://source.unsplash.com/random' />
+          <ImageWrapper height={200} src='' />
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
+            onChange={handleIsbnChange}
+            value={isbn}
             required
             id="isbn"
             name="isbn"
@@ -1181,6 +1285,8 @@ export function BookInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleAuthorChange}
+            value={author}
             required
             id="author"
             name="author"
@@ -1188,6 +1294,8 @@ export function BookInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handlePublisherChange}
+            value={publisher}
             required
             id="publisher"
             name="publisher"
@@ -1195,6 +1303,8 @@ export function BookInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handlePublishYearChange}
+            value={publish_year}
             required
             id="publish-year"
             name="publish-year"
@@ -1204,6 +1314,8 @@ export function BookInfo() {
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
+            onChange={handlePlacePublishedChange}
+            value={place_published}
             required
             id="place-published"
             name="place-published"
@@ -1211,6 +1323,8 @@ export function BookInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleLinkChange}
+            value={link}
             required
             id="link"
             name="link"

@@ -420,3 +420,52 @@ export function DeleteArticle(id) {
   window.location.assign(REACT_URL + '/my/achi');
   return response === 'success';
 }
+
+
+export function GetBook(id, from) {
+  return fetch(API_URL + '/bookinfo/?isbn=' + id + '&from=' + from)
+    .then((res) => res.json())
+}
+
+export function SetBookInfo(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/setbookinfo/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => { return res.text() === 'success'; });
+}
+
+export function AddBook(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/addbook/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => res.json());
+}
+
+export function DeleteBook(id) {
+  let response = '';
+  let uid = window.sessionStorage.getItem('id');
+
+  fetch(API_URL + '/deletebook/', {
+    method: 'POST',
+    body: JSON.stringify({ todelete: id, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => response = res.text());
+
+  window.location.assign(REACT_URL + '/my/achi');
+  return response === 'success';
+}

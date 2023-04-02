@@ -41,4 +41,8 @@ urlpatterns = [
     path('setarticleinfo/', views.SetArticleInfo),
     path('addarticle/', views.AddArticle),
     path('deletearticle/', views.DeleteArticle),
+    path('bookinfo/', views.BookInfo.as_view()),
+    path('setbookinfo/', views.SetBookInfo),
+    path('addbook/', views.AddBook),
+    path('deletebook/', views.DeleteBook),
 ]

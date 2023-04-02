@@ -28,7 +28,7 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle, GetBook } from './Common'
 import { Button, Fab, Tab, Tabs, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
@@ -38,6 +38,7 @@ import { AddConfPanel, ConfInfoEdit } from './ConfPanel';
 import { AddPaperPanel, PaperInfoEdit } from './PaperPanel';
 import { AddConfpaperPanel, ConfpaperInfoEdit } from './ConfpaperPanel';
 import { AddArticlePanel, ArticleInfoEdit } from './ArticlePanel';
+import { AddBookPanel, BookInfoEdit } from './BookPanel';
 
 
 function Copyright(props) {
@@ -449,6 +450,7 @@ function AddFab(props) {
 var datapanel_paper_from = 0;
 var datapanel_confpaper_from = 0;
 var datapanel_article_from = 0;
+var datapanel_book_from = 0;
 
 function DataPanel() {
   var nomorepaper = false;
@@ -593,6 +595,51 @@ function DataPanel() {
       });
   }
 
+  var nomorebook = false;
+
+  const [book, setBook] = React.useState(null);
+  React.useEffect(() => {
+    GetBook('all', datapanel_book_from)
+      .then((data) => {
+        setBook(data.map(b => (
+          {
+            ...b,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/book/' + b.isbn}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+  const moreBook = (e) => {
+    if (nomorebook)
+      return;
+    datapanel_book_from += 250;
+    GetBook('all', datapanel_book_from)
+      .then((data) => {
+        if (!data) {
+          nomorebook = true;
+          datapanel_book_from = 0;
+          return;
+        }
+        let newdata = book.concat(data);
+        setBook(newdata.map(b => (
+          {
+            ...b,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/book/' + b.id}>
+                  编辑
+                </Link>
+              </Typography>
+          }
+        )));
+      });
+  }
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
@@ -664,11 +711,20 @@ function DataPanel() {
         }
         {
           value === 3 &&
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 240 }}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
             <InfoTable
               title='著作'
               heads={['题目', '书号', '作者', '出版社', '出版年', '出版地', '链接', '操作']}
+              rows={book}
             />
+            <Typography sx={{ marginTop: 4 }} fontSize={'small'} color="text.secondary">
+              <Link component='button' onClick={moreBook}>
+                查看更多
+              </Link>
+            </Typography>
+            <AddFab handleClick={
+              (e) => window.location.assign(REACT_URL + '/my/book/add')
+            } />
           </Paper>
         }
         {
@@ -1101,6 +1157,18 @@ function AdminPanelContent() {
                   <Route path='/article/:id' element={
                     <Grid item xs={12}>
                       <ArticleInfoEdit id={Object.values(useParams())[0].substring(8)} />
+                    </Grid>
+                  } />
+                </Route>
+                <Route path='/book'>
+                  <Route path='/book/add' element={
+                    <Grid item xs={12}>
+                      <AddBookPanel />
+                    </Grid>
+                  } />
+                  <Route path='/book/:id' element={
+                    <Grid item xs={12}>
+                      <BookInfoEdit isbn={Object.values(useParams())[0].substring(5)} />
                     </Grid>
                   } />
                 </Route>

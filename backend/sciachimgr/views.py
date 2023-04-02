@@ -898,3 +898,106 @@ def DeleteArticle(request):
     except:
         return Response(status=403)
 
+
+class BookInfo(APIView):
+    serializer_class = BookSerializer
+
+    batch_size = 250
+    total_objects = Book.objects.count()
+
+    def get(self, request):
+        isbn = request.GET['isbn']
+        if isbn != 'all':
+            b = Book.objects.get(isbn=isbn)
+            return Response({
+                'isbn': b.isbn,
+                'title': b.title,
+                'author': b.author,
+                'publisher': b.publisher,
+                'publish_year': b.publish_year,
+                'place_published': b.place_published,
+                'picture': '',
+                'link': b.link
+            })
+        else:
+            start = int(request.GET['from'])
+            if start >= ArticleInfo.total_objects:
+                return None
+            book = [
+                {
+                    'isbn': b.isbn,
+                    'title': b.title,
+                    'author': b.author,
+                    'publisher': b.publisher,
+                    'publish_year': b.publish_year,
+                    'place_published': b.place_published,
+                    'picture': '',
+                    'link': b.link
+                }
+                for b in Book.objects.all()[start:start + BookInfo.batch_size]
+            ]
+            return Response(book)
+
+    def post(self, request):
+        serializer = BookSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+
+def SetBookInfo(request):
+    received = json.loads(request.body)
+    isbn = received.get('isbn')
+
+    b = Book.objects.get(isbn=isbn)
+    if b.isbn != received.get('isbn'):
+        b.isbn = received.get('isbn')
+    if b.title != received.get('title'):
+        b.title = received.get('title')
+    if b.author != received.get('author'):
+        b.author = received.get('author')
+    if b.publisher != received.get('publisher'):
+        b.publisher = received.get('publisher')
+    if b.publish_year != received.get('publish_year'):
+        b.publish_year = received.get('publish_year')
+    # if b.picture != received.get('picture'):
+        # b.picture = received.get('picture')
+    if b.link != received.get('link'):
+        b.link = received.get('link')
+
+    b.save()
+    return HttpResponse('success')
+
+
+def AddBook(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    if curusr[2:4] != '03':
+        return Response(status=403)
+
+    Book.objects.create(
+        isbn = received.get('isbn'),
+        title = received.get('title'),
+        author = received.get('author'),
+        publisher = received.get('publisher'),
+        publish_year = received.get('publish_year'),
+        place_published = received.get('place_published'),
+        picture = received.get('picture'),
+        link = received.get('link')
+    )
+
+    return HttpResponse('success')
+
+
+def DeleteBook(request):
+    received = json.loads(request.body)
+    try:
+        curusr = received.get('curusr')
+        if curusr[2:4] != '03':
+            return Response(status=403)
+
+        todelete = received.get('todelete')
+        Book.objects.filter(id=todelete).delete()
+        return HttpResponse('success')
+    except:
+        return Response(status=403)
