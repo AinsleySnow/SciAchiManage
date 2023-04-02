@@ -371,3 +371,52 @@ export function DeleteConfpaper(id) {
   window.location.assign(REACT_URL + '/my/achi');
   return response === 'success';
 }
+
+
+export function GetArticle(id, from) {
+  return fetch(API_URL + '/articleinfo/?id=' + id + '&from=' + from)
+    .then((res) => res.json())
+}
+
+export function SetArticleInfo(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/setarticleinfo/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => { return res.text() === 'success'; });
+}
+
+export function AddArticle(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/addarticle/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => res.json());
+}
+
+export function DeleteArticle(id) {
+  let response = '';
+  let uid = window.sessionStorage.getItem('id');
+
+  fetch(API_URL + '/deletearticle/', {
+    method: 'POST',
+    body: JSON.stringify({ todelete: id, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => response = res.text());
+
+  window.location.assign(REACT_URL + '/my/achi');
+  return response === 'success';
+}

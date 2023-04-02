@@ -797,3 +797,104 @@ def DeleteConfpaper(request):
         return HttpResponse('success')
     except:
         return Response(status=403)
+
+
+class ArticleInfo(APIView):
+    serializer_class = ArticleSerializer
+
+    batch_size = 250
+    total_objects = Article.objects.count()
+
+    def get(self, request):
+        id = request.GET['id']
+        if id != 'all':
+            a = Article.objects.get(id=id)
+            return Response({
+                'id': a.id,
+                'issn': a.issn.issn,
+                'title': a.title,
+                'author': a.author,
+                'version': a.version,
+                'publish_date': a.publish_date,
+                'link': a.link
+            })
+        else:
+            start = int(request.GET['from'])
+            if start >= ArticleInfo.total_objects:
+                return None
+            article = [
+                {
+                    'id': a.id,
+                    'issn': a.issn.issn,
+                    'title': a.title,
+                    'author': a.author,
+                    'version': a.version,
+                    'publish_date': a.publish_date,
+                    'link': a.link
+                }
+                for a in Article.objects.all()[start:start + ArticleInfo.batch_size]
+            ]
+            return Response(article)
+
+    def post(self, request):
+        serializer = ArticleSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+
+def SetArticleInfo(request):
+    received = json.loads(request.body)
+    id = received.get('id')
+
+    a = Article.objects.get(id=id)
+    if a.id != received.get('id'):
+        a.id = received.get('id')
+    if a.issn != received.get('issn'):
+        a.issn = Newspaper.objects.get(issn=received.get('issn'))
+    if a.title != received.get('title'):
+        a.title = received.get('title')
+    if a.author != received.get('author'):
+        a.author = received.get('author')
+    if a.version != received.get('version'):
+        a.version = received.get('version')
+    if a.publish_date != received.get('publish_date'):
+        a.publish_date = received.get('publish_date')
+    if a.link != received.get('link'):
+        a.link = received.get('link')
+
+    a.save()
+    return HttpResponse('success')
+
+
+def AddArticle(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    if curusr[2:4] != '03':
+        return Response(status=403)
+
+    Article.objects.create(
+        issn = Newspaper.objects.get(issn=received.get('issn')),
+        title = received.get('title'),
+        author = received.get('author'),
+        version = received.get('version'),
+        publish_date = received.get('publish_date'),
+        link = received.get('link')
+    )
+
+    return HttpResponse('success')
+
+
+def DeleteArticle(request):
+    received = json.loads(request.body)
+    try:
+        curusr = received.get('curusr')
+        if curusr[2:4] != '03':
+            return Response(status=403)
+
+        todelete = received.get('todelete')
+        Article.objects.filter(id=todelete).delete()
+        return HttpResponse('success')
+    except:
+        return Response(status=403)
+

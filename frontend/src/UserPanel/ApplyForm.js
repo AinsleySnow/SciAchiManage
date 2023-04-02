@@ -617,7 +617,98 @@ export function NewspaperInfo(props) {
   );
 }
 
-export function ArticleInfo() {
+export function ArticleInfo(props) {
+  const [id, setId] = React.useState(props.id);
+  const [issn, setIssn] = React.useState(props.issn);
+  const [title, setTitle] = React.useState(props.title);
+  const [author, setAuthor] = React.useState(props.author);
+  const [version, setVersion] = React.useState(props.version);
+  const [publish_date, setPublishDate] = React.useState(props.publish_date);
+  const [link, setLink] = React.useState(props.link);
+
+  React.useEffect(
+    () => setId(props.id),
+    [props.id]
+  );
+  React.useEffect(
+    () => setIssn(props.issn),
+    [props.issn]
+  );
+  React.useEffect(
+    () => setTitle(props.title),
+    [props.title]
+  );
+  React.useEffect(
+    () => setAuthor(props.author),
+    [props.author]
+  );
+  React.useEffect(
+    () => setVersion(props.version),
+    [props.version]
+  );
+  React.useEffect(
+    () => setPublishDate(props.publish_date),
+    [props.publish_date]
+  );
+  React.useEffect(
+    () => setLink(props.link),
+    [props.link]
+  );
+
+
+  var adict = {
+    id: id,
+    issn: issn,
+    title: title,
+    author: author,
+    version: version,
+    publish_date: publish_date,
+    link: link
+  };
+
+  const handleIdChange = (event) => {
+    setId(event.target.value);
+    adict.id = event.target.value;
+    props.onArticleChange(adict);
+  };
+
+  const handleIssnChange = (event) => {
+    setIssn(event.target.value);
+    adict.issn = event.target.value;
+    props.onArticleChange(adict);
+  };
+
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+    adict.title = event.target.value;
+    props.onArticleChange(adict);
+  };
+
+  const handleAuthorChange = (event) => {
+    setAuthor(event.target.value);
+    adict.author = event.target.value;
+    props.onArticleChange(adict);
+  };
+
+  const handleVersionChange = (event) => {
+    setVersion(event.target.value);
+    adict.version = event.target.value;
+    props.onArticleChange(adict);
+  };
+
+  const handlePDChange = (event) => {
+    setPublishDate(event.target.value);
+    adict.publish_date = event.target.value;
+    props.onArticleChange(adict);
+  };
+
+  const handleLinkChange = (event) => {
+    setLink(event.target.value);
+    adict.link = event.target.value;
+    props.onConfChange(adict);
+  };
+
+
   return (
     <React.Fragment>
       <Typography variant="h6" paddingBottom={4}>
@@ -626,14 +717,18 @@ export function ArticleInfo() {
       <Grid container flexShrink={'row'} spacing={3}>
         <Grid item xs={12} sm={3}>
           <TextField
+            onChange={handleIssnChange}
             required
+            value={issn}
             id="issn"
             name="issn"
             label="报纸 ISSN"
             variant="standard"
           />
           <TextField
+            onChange={handleTitleChange}
             required
+            value={title}
             id="title"
             name="title"
             label="文章题目"
@@ -642,14 +737,36 @@ export function ArticleInfo() {
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
+            onChange={handleAuthorChange}
             required
+            value={author}
             id="author"
             name="author"
             label="作者"
             variant="standard"
           />
           <TextField
+            onChange={handleVersionChange}
             required
+            value={version}
+            id="version"
+            name="version"
+            label="版数"
+            variant="standard"
+          />
+          <TextField
+            onChange={handlePDChange}
+            required
+            value={publish_date}
+            id="publish-date"
+            name="publish-date"
+            label="日期"
+            variant="standard"
+          />
+          <TextField
+            onChange={handleLinkChange}
+            required
+            value={link}
             id="link"
             name="link"
             label="链接"
@@ -787,9 +904,6 @@ export function ConferenceInfo(props) {
     confdict.link = event.target.value;
     props.onConfChange(confdict);
   };
-
-  console.log(confdict);
-
 
   return (
     <React.Fragment>

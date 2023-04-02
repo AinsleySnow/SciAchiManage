@@ -37,4 +37,8 @@ urlpatterns = [
     path('setconfpaperinfo/', views.SetConfpaperInfo),
     path('addconfpaper/', views.AddConfpaper),
     path('deleteconfpaper/', views.DeleteConfpaper),
+    path('articleinfo/', views.ArticleInfo.as_view()),
+    path('setarticleinfo/', views.SetArticleInfo),
+    path('addarticle/', views.AddArticle),
+    path('deletearticle/', views.DeleteArticle),
 ]

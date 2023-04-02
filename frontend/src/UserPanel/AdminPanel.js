@@ -28,7 +28,7 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle } from './Common'
 import { Button, Fab, Tab, Tabs, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
@@ -37,6 +37,7 @@ import { AddNewspaperPanel, NewspaperInfoEdit } from './NewspaperPanel';
 import { AddConfPanel, ConfInfoEdit } from './ConfPanel';
 import { AddPaperPanel, PaperInfoEdit } from './PaperPanel';
 import { AddConfpaperPanel, ConfpaperInfoEdit } from './ConfpaperPanel';
+import { AddArticlePanel, ArticleInfoEdit } from './ArticlePanel';
 
 
 function Copyright(props) {
@@ -447,6 +448,7 @@ function AddFab(props) {
 
 var datapanel_paper_from = 0;
 var datapanel_confpaper_from = 0;
+var datapanel_article_from = 0;
 
 function DataPanel() {
   var nomorepaper = false;
@@ -545,6 +547,52 @@ function DataPanel() {
       });
   }
 
+
+  var nomorearticle = false;
+
+  const [article, setArticle] = React.useState(null);
+  React.useEffect(() => {
+    GetArticle('all', datapanel_article_from)
+      .then((data) => {
+        setArticle(data.map(a => (
+          {
+            ...a,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/article/' + a.id}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+  const moreArticle = (e) => {
+    if (nomorearticle)
+      return;
+    datapanel_article_from += 250;
+    GetArticle('all', datapanel_article_from)
+      .then((data) => {
+        if (!data) {
+          nomorearticle = true;
+          datapanel_article_from = 0;
+          return;
+        }
+        let newdata = article.concat(data);
+        setArticle(newdata.map(a => (
+          {
+            ...a,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/article/' + a.id}>
+                  编辑
+                </Link>
+              </Typography>
+          }
+        )));
+      });
+  }
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
@@ -602,7 +650,16 @@ function DataPanel() {
             <InfoTable
               title='报刊文章'
               heads={['标题', '作者', '报纸名', '链接', '操作']}
+              rows={article}
             />
+            <Typography sx={{ marginTop: 4 }} fontSize={'small'} color="text.secondary">
+              <Link component='button' onClick={moreArticle}>
+                查看更多
+              </Link>
+            </Typography>
+            <AddFab handleClick={
+              (e) => window.location.assign(REACT_URL + '/my/article/add')
+            } />
           </Paper>
         }
         {
@@ -1032,6 +1089,18 @@ function AdminPanelContent() {
                   <Route path='/conference/:id' element={
                     <Grid item xs={12}>
                       <ConfInfoEdit id={Object.values(useParams())[0].substring(11)} />
+                    </Grid>
+                  } />
+                </Route>
+                <Route path='/article'>
+                  <Route path='/article/add' element={
+                    <Grid item xs={12}>
+                      <AddArticlePanel />
+                    </Grid>
+                  } />
+                  <Route path='/article/:id' element={
+                    <Grid item xs={12}>
+                      <ArticleInfoEdit id={Object.values(useParams())[0].substring(8)} />
                     </Grid>
                   } />
                 </Route>
