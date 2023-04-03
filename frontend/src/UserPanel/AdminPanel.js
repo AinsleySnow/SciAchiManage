@@ -28,7 +28,7 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle, GetBook } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle, GetBook, GetPatent } from './Common'
 import { Button, Fab, Tab, Tabs, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
@@ -39,6 +39,7 @@ import { AddPaperPanel, PaperInfoEdit } from './PaperPanel';
 import { AddConfpaperPanel, ConfpaperInfoEdit } from './ConfpaperPanel';
 import { AddArticlePanel, ArticleInfoEdit } from './ArticlePanel';
 import { AddBookPanel, BookInfoEdit } from './BookPanel';
+import { AddPatentPanel, PatentInfoEdit } from './PatentPanel';
 
 
 function Copyright(props) {
@@ -451,6 +452,7 @@ var datapanel_paper_from = 0;
 var datapanel_confpaper_from = 0;
 var datapanel_article_from = 0;
 var datapanel_book_from = 0;
+var datapanel_patent_from = 0;
 
 function DataPanel() {
   var nomorepaper = false;
@@ -640,6 +642,51 @@ function DataPanel() {
       });
   }
 
+  var nomorepatent = false;
+
+  const [patent, setPatent] = React.useState(null);
+  React.useEffect(() => {
+    GetPatent('all', datapanel_patent_from)
+      .then((data) => {
+        setPatent(data.map(p => (
+          {
+            ...p,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/patent/' + p.patent_num}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+  const morePatent = (e) => {
+    if (nomorepatent)
+      return;
+    datapanel_patent_from += 250;
+    GetPatent('all', datapanel_patent_from)
+      .then((data) => {
+        if (!data) {
+          nomorepatent = true;
+          datapanel_patent_from = 0;
+          return;
+        }
+        let newdata = patent.concat(data);
+        setPatent(newdata.map(p => (
+          {
+            ...p,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/patent/' + p.patent_num}>
+                  编辑
+                </Link>
+              </Typography>
+          }
+        )));
+      });
+  }
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
@@ -711,7 +758,7 @@ function DataPanel() {
         }
         {
           value === 3 &&
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <InfoTable
               title='著作'
               heads={['题目', '书号', '作者', '出版社', '出版年', '出版地', '链接', '操作']}
@@ -729,12 +776,21 @@ function DataPanel() {
         }
         {
           value === 4 &&
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 240 }}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
             <InfoTable
               title='专利'
               heads={['专利号', '公布号', '专利名', '申请人', '发明人',
                 '专辑', '专题', '分类号', '主分类号', '链接', '操作']}
+              rows={patent}
             />
+            <Typography sx={{ marginTop: 4 }} fontSize={'small'} color="text.secondary">
+              <Link component='button' onClick={morePatent}>
+                查看更多
+              </Link>
+            </Typography>
+            <AddFab handleClick={
+              (e) => window.location.assign(REACT_URL + '/my/patent/add')
+            } />
           </Paper>
         }
       </Grid>
@@ -1169,6 +1225,18 @@ function AdminPanelContent() {
                   <Route path='/book/:id' element={
                     <Grid item xs={12}>
                       <BookInfoEdit isbn={Object.values(useParams())[0].substring(5)} />
+                    </Grid>
+                  } />
+                </Route>
+                <Route path='/patent'>
+                  <Route path='/patent/add' element={
+                    <Grid item xs={12}>
+                      <AddPatentPanel />
+                    </Grid>
+                  } />
+                  <Route path='/patent/:id' element={
+                    <Grid item xs={12}>
+                      <PatentInfoEdit patent_num={Object.values(useParams())[0].substring(7)} />
                     </Grid>
                   } />
                 </Route>

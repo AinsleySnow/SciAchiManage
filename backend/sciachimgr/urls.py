@@ -45,4 +45,8 @@ urlpatterns = [
     path('setbookinfo/', views.SetBookInfo),
     path('addbook/', views.AddBook),
     path('deletebook/', views.DeleteBook),
+    path('patentinfo/', views.PatentInfo.as_view()),
+    path('setpatentinfo/', views.SetPatentInfo),
+    path('addpatent/', views.AddPatent),
+    path('deletepatent/', views.DeletePatent),
 ]

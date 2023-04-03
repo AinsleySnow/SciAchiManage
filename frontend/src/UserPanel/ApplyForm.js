@@ -1294,6 +1294,15 @@ export function BookInfo(props) {
             variant="standard"
           />
           <TextField
+            onChange={handleTitleChange}
+            value={title}
+            required
+            id="title"
+            name="title"
+            label="标题"
+            variant="standard"
+          />
+          <TextField
             onChange={handlePublisherChange}
             value={publisher}
             required
@@ -1337,18 +1346,143 @@ export function BookInfo(props) {
   );
 }
 
-export function PatentInfo() {
+export function PatentInfo(props) {
+  const [patent_num, setPatentNum] = React.useState('');
+  const [promulgate_num, setPromulgateNum] = React.useState('');
+  const [name, setName] = React.useState('');
+  const [applyer, setApplyer] = React.useState('');
+  const [inventor, setInventor] = React.useState('');
+  const [issue, setIssue] = React.useState('');
+  const [theme, setTheme] = React.useState('');
+  const [catagory_num, setCatagoryNum] = React.useState('');
+  const [major_catagory, setMajorCatagory] = React.useState('');
+  const [link, setLink] = React.useState('');
+
+  React.useEffect(
+    () => setPatentNum(props.patent_num),
+    [props.patent_num]
+  );
+  React.useEffect(
+    () => setPromulgateNum(props.promulgate_num),
+    [props.promulgate_num]
+  );
+  React.useEffect(
+    () => setName(props.name),
+    [props.name]
+  );
+  React.useEffect(
+    () => setApplyer(props.applyer),
+    [props.applyer]
+  );
+  React.useEffect(
+    () => setInventor(props.inventor),
+    [props.inventor]
+  );
+  React.useEffect(
+    () => setIssue(props.issue),
+    [props.issue]
+  );
+  React.useEffect(
+    () => setTheme(props.theme),
+    [props.theme]
+  );
+  React.useEffect(
+    () => setCatagoryNum(props.catagory_num),
+    [props.catagory_num]
+  );
+  React.useEffect(
+    () => setMajorCatagory(props.major_catagory),
+    [props.major_catagory]
+  );
+  React.useEffect(
+    () => setLink(props.link),
+    [props.link]
+  );
+
+  var pdict = {
+    patent_num: patent_num,
+    promulgate_num: promulgate_num,
+    name: name,
+    applyer: applyer,
+    inventor: inventor,
+    issue: issue,
+    theme: theme,
+    catagory_num: catagory_num,
+    major_catagory: major_catagory,
+    link: link
+  };
+
+  const handlePatentNumChange = (event) => {
+    setPatentNum(event.target.value);
+    pdict.patent_num = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handlePromulgateNumChange = (event) => {
+    setPromulgateNum(event.target.value);
+    pdict.promulgate_num = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handleNameChange = (event) => {
+    setName(event.target.value);
+    pdict.name = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handleApplyerChange = (event) => {
+    setApplyer(event.target.value);
+    pdict.applyer = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handleInventorChange = (event) => {
+    setInventor(event.target.value);
+    pdict.inventor = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handleIssueChange = (event) => {
+    setIssue(event.target.value);
+    pdict.issue = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handleThemeChange = (event) => {
+    setTheme(event.target.value);
+    pdict.theme = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handleCatagoryNumChange = (event) => {
+    setCatagoryNum(event.target.value);
+    pdict.catagory_num = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handleMajorCatagoryChange = (event) => {
+    setMajorCatagory(event.target.value);
+    pdict.major_catagory = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+  const handleLinkChange = (event) => {
+    setLink(event.target.value);
+    pdict.link = event.target.value;
+    props.onPatentChange(pdict);
+  }
+
+
   return (
     <React.Fragment>
       <Typography variant="h6" paddingBottom={4}>
         添加/编辑专利信息
       </Typography>
       <Grid container flexShrink={'row'} spacing={3}>
-        <Grid item xs={12} sm={5}>
-          <Image height={200} src='https://source.unsplash.com/random' />
-        </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
+            onChange={handlePatentNumChange}
+            value={patent_num}
             required
             id="patent-num"
             name="patent-num"
@@ -1356,6 +1490,8 @@ export function PatentInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handlePromulgateNumChange}
+            value={promulgate_num}
             required
             id="promulgate-num"
             name="promulgate-num"
@@ -1363,6 +1499,8 @@ export function PatentInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleNameChange}
+            value={name}
             required
             id="name"
             name="name"
@@ -1370,6 +1508,8 @@ export function PatentInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleApplyerChange}
+            value={applyer}
             required
             id="applyer"
             name="applyer"
@@ -1377,6 +1517,8 @@ export function PatentInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleInventorChange}
+            value={inventor}
             required
             id="inventor"
             name="inventor"
@@ -1386,13 +1528,8 @@ export function PatentInfo() {
         </Grid>
         <Grid item xs={12} sm={3}>
           <TextField
-            required
-            id="inventor"
-            name="inventor"
-            label="发明人"
-            variant="standard"
-          />
-          <TextField
+            onChange={handleIssueChange}
+            value={issue}
             required
             id="issue"
             name="issue"
@@ -1400,6 +1537,8 @@ export function PatentInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleThemeChange}
+            value={theme}
             required
             id="theme"
             name="theme"
@@ -1407,6 +1546,8 @@ export function PatentInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleCatagoryNumChange}
+            value={catagory_num}
             required
             id="cata"
             name="cata"
@@ -1414,6 +1555,8 @@ export function PatentInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleMajorCatagoryChange}
+            value={major_catagory}
             required
             id="major-cata"
             name="major-cata"
@@ -1421,6 +1564,8 @@ export function PatentInfo() {
             variant="standard"
           />
           <TextField
+            onChange={handleLinkChange}
+            value={link}
             required
             id="link"
             name="link"

@@ -921,7 +921,7 @@ class BookInfo(APIView):
             })
         else:
             start = int(request.GET['from'])
-            if start >= ArticleInfo.total_objects:
+            if start >= BookInfo.total_objects:
                 return None
             book = [
                 {
@@ -998,6 +998,122 @@ def DeleteBook(request):
 
         todelete = received.get('todelete')
         Book.objects.filter(id=todelete).delete()
+        return HttpResponse('success')
+    except:
+        return Response(status=403)
+
+
+class PatentInfo(APIView):
+    serializer_class = PatentSerializer
+
+    batch_size = 250
+    total_objects = Patent.objects.count()
+
+    def get(self, request):
+        patent_num = request.GET['patent_num']
+        if patent_num != 'all':
+            p = Patent.objects.get(patent_num=patent_num)
+            return Response({
+                'patent_num': p.patent_num,
+                'promulgate_num': p.promulgate_num,
+                'name': p.name,
+                'applyer': p.applyer,
+                'inventor': p.inventor,
+                'issue': p.issue,
+                'theme': p.theme,
+                'catagory_num': p.catagory_num,
+                'major_catagory': p.major_catagory,
+                'link': p.link
+            })
+        else:
+            start = int(request.GET['from'])
+            if start >= PatentInfo.total_objects:
+                return None
+            patent = [
+                {
+                    'patent_num': p.patent_num,
+                    'promulgate_num': p.promulgate_num,
+                    'name': p.name,
+                    'applyer': p.applyer,
+                    'inventor': p.inventor,
+                    'issue': p.issue,
+                    'theme': p.theme,
+                    'catagory_num': p.catagory_num,
+                    'major_catagory': p.major_catagory,
+                    'link': p.link
+                }
+                for p in Patent.objects.all()[start:start + PatentInfo.batch_size]
+            ]
+            return Response(patent)
+
+    def post(self, request):
+        serializer = PatentSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+
+def SetPatentInfo(request):
+    received = json.loads(request.body)
+    patent_num = received.get('patent_num')
+
+    p = Patent.objects.get(patent_num=patent_num)
+    if p.patent_num != received.get('patent_num'):
+        p.patent_num = received.get('patent_num')
+    if p.promulgate_num != received.get('promulgate_num'):
+        p.promulgate_num = received.get('promulgate_num')
+    if p.name != received.get('name'):
+        p.name = received.get('name')
+    if p.applyer != received.get('applyer'):
+        p.applyer = received.get('applyer')
+    if p.inventor != received.get('inventor'):
+        p.inventor = received.get('inventor')
+    if p.issue != received.get('issue'):
+        p.issue = received.get('issue')
+    if p.theme != received.get('theme'):
+        p.theme = received.get('theme')
+    if p.catagory_num != received.get('catagory_num'):
+        p.catagory_num = received.get('catagory_num')
+    if p.major_catagory != received.get('major_catagory'):
+        p.major_catagory = received.get('major_catagory')
+    if p.link != received.get('link'):
+        p.link = received.get('link')
+
+    p.save()
+    return HttpResponse('success')
+
+
+def AddPatent(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    if curusr[2:4] != '03':
+        return Response(status=403)
+
+    Patent.objects.create(
+        patent_num = received.get('patent_num'),
+        promulgate_num = received.get('promulgate_num'),
+        name = received.get('name'),
+        applyer = received.get('applyer'),
+        inventor = received.get('inventor'),
+        issue = received.get('issue'),
+        theme = received.get('theme'),
+        catagory_num = received.get('catagory_num'),
+        major_catagory = received.get('major_catagory'),
+        link = received.get('link')
+    )
+
+    return HttpResponse('success')
+
+
+def DeletePatent(request):
+    received = json.loads(request.body)
+    try:
+        curusr = received.get('curusr')
+        if curusr[2:4] != '03':
+            return Response(status=403)
+
+        todelete = received.get('todelete')
+        Patent.objects.filter(patent_num=todelete).delete()
         return HttpResponse('success')
     except:
         return Response(status=403)
