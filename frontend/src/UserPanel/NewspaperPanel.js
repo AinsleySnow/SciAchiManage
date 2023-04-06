@@ -128,7 +128,7 @@ export function NewspaperInfoEdit(props) {
 
   const doDelete = (e) => {
     DeleteNewspaper(props.issn)
-      .then(s => window.location.replace(REACT_URL + 'my/users'),
+      .then(s => window.location.replace(REACT_URL + 'my/published'),
         f => setOpen(true));
   };
 

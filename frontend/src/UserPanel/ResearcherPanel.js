@@ -28,9 +28,6 @@ import AppBar from '../AppBar';
 import Drawer from '../Drawer';
 import InfoTable from './InfoTable';
 import ResearcherInfo from './ResearcherInfo';
-import { ArticleInfo, BookInfo, ConferenceInfo, JournalInfo,
-  NewspaperInfo, PaperInfo, PatentInfo } from './ApplyForm';
-
 
 function Copyright(props) {
   return (
@@ -47,7 +44,7 @@ function Copyright(props) {
 
 export const resListItems = (
   <React.Fragment>
-    <ListItemButton href='/my/achievements'>
+    <ListItemButton href='/my/achi'>
       <ListItemIcon>
         <EmojiEventsRoundedIcon />
       </ListItemIcon>
@@ -57,13 +54,13 @@ export const resListItems = (
       <ListItemIcon>
         <ApprovalRoundedIcon />
       </ListItemIcon>
-      <ListItemText primary="添加成果" />
+      <ListItemText primary="申请信息" />
     </ListItemButton>
     <ListItemButton href='/my/settings'>
       <ListItemIcon>
         <SettingsRoundedIcon />
       </ListItemIcon>
-      <ListItemText primary="修改信息" />
+      <ListItemText primary="修改个人信息" />
     </ListItemButton>
   </React.Fragment>
 );
@@ -185,7 +182,7 @@ function ResearcherPanelContent() {
                       </Paper>
                     </Grid>
                   } />
-                <Route path='/achievements'
+                <Route path='/achi'
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
@@ -197,13 +194,6 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <JournalInfo />
-                        <PaperInfo />
-                        <NewspaperInfo />
-                        <ArticleInfo />
-                        <ConferenceInfo />
-                        <BookInfo />
-                        <PatentInfo />
                         <Button sx={{ marginLeft: 105, marginTop: 4, marginBottom: 1, maxWidth: 100 }} variant='contained'>确定</Button>
                       </Paper>
                     </Grid>
