@@ -1117,3 +1117,167 @@ def DeletePatent(request):
         return HttpResponse('success')
     except:
         return Response(status=403)
+
+
+class Apply(APIView):
+    def get(self, request):
+        type = request.GET['type']
+        id = request.GET['id']
+        _from = int(request.GET['from'])
+        to = int(request.GET['to'])
+
+        if id == 'all':
+            if type == 'paper':
+                apply = PaperAuthor.objects.all()[_from:to]
+                serializer = PaperAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+            elif type == 'article':
+                apply = NewspaperAuthor.objects.all()[_from:to]
+                serializer = NewspaperAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+            elif type == 'confpaper':
+                apply = ConferenceAuthor.objects.all()[_from:to]
+                serializer = ConferenceAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+            elif type == 'book':
+                apply = BookAuthor.objects.all()[_from:to]
+                serializer = BookAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+            elif type == 'patent':
+                apply = PatentAuthor.objects.all()[_from:to]
+                serializer = PatentAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+
+        if type == 'paper':
+            apply = PaperAuthor.objects.get(id=id)
+            serializer = PaperAuthorSerializer(apply, many=True)
+            return Response(serializer.data)
+        elif type == 'article':
+            apply = NewspaperAuthor.objects.get(id=id)
+            serializer = NewspaperAuthorSerializer(apply, many=True)
+            return Response(serializer.data)
+        elif type == 'confpaper':
+            apply = ConferenceAuthor.objects.get(id=id)
+            serializer = ConferenceAuthorSerializer(apply, many=True)
+            return Response(serializer.data)
+        elif type == 'book':
+            apply = BookAuthor.objects.get(id=id)
+            serializer = BookAuthorSerializer(apply, many=True)
+            return Response(serializer.data)
+        elif type == 'patent':
+            apply = PatentAuthor.objects.get(id=id)
+            serializer = PatentAuthorSerializer(apply, many=True)
+            return Response(serializer.data)
+
+        return None
+
+    def post(self, request):
+        return self.get(request)
+
+
+def AddApply(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    type = received.get('type')
+
+    if curusr[2:4] != '01':
+        return Response(status=403)
+
+    if type == 'paper':
+        PaperAuthor.objects.create(
+            applicant = received.get('applicant'),
+            pid = received.get('pid'),
+            status = 2
+        )
+    elif type == 'article':
+        NewspaperAuthor.objects.create(
+            applicant = received.get('applicant'),
+            nid = received.get('aid'),
+            status = 2
+        )
+    elif type == 'confpaper':
+        ConferenceAuthor.objects.create(
+            applicant = received.get('applicant'),
+            cid = received.get('cpid'),
+            status = 2
+        )
+    elif type == 'book':
+        BookAuthor.objects.create(
+            applicant = received.get('applicant'),
+            bid = received.get('isbn'),
+            status = 2
+        )
+    elif type == 'patent':
+        PatentAuthor.objects.create(
+            applicant = received.get('applicant'),
+            pid = received.get('patent_num'),
+            status = 2
+        )
+
+    return HttpResponse('success')
+
+
+def ApproveApply(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    type = received.get('type')
+    id = received.get('id')
+
+    if curusr[2:4] == '01':
+        return Response(status=403)
+
+    if type == 'paper':
+        apply = PaperAuthor.objects.get(id=id)
+        apply.status = 1
+        apply.save()
+    elif type == 'article':
+        apply = NewspaperAuthor.objects.get(id=id)
+        apply.status = 1
+        apply.save()
+    elif type == 'confpaper':
+        apply = ConferenceAuthor.objects.get(id=id)
+        apply.status = 1
+        apply.save()
+    elif type == 'book':
+        apply = BookAuthor.objects.get(id=id)
+        apply.status = 1
+        apply.save()
+    elif type == 'patent':
+        apply = PatentAuthor.objects.get(id=id)
+        apply.status = 1
+        apply.save()
+
+    return HttpResponse('success')
+
+
+def RejectApply(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    type = received.get('type')
+    id = received.get('id')
+
+    if curusr[2:4] == '01':
+        return Response(status=403)
+
+    if type == 'paper':
+        apply = PaperAuthor.objects.get(id=id)
+        apply.status = 2
+        apply.save()
+    elif type == 'article':
+        apply = NewspaperAuthor.objects.get(id=id)
+        apply.status = 2
+        apply.save()
+    elif type == 'confpaper':
+        apply = ConferenceAuthor.objects.get(id=id)
+        apply.status = 2
+        apply.save()
+    elif type == 'book':
+        apply = BookAuthor.objects.get(id=id)
+        apply.status = 2
+        apply.save()
+    elif type == 'patent':
+        apply = PatentAuthor.objects.get(id=id)
+        apply.status = 2
+        apply.save()
+
+    return HttpResponse('success')

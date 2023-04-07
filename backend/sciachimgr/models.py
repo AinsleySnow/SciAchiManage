@@ -175,8 +175,9 @@ class PaperAuthor(models.Model):
     )
 
     class Status(models.IntegerChoices):
-        PROCESSED = 1
-        PROCESSING = 2
+        APPROVED = 1
+        REJECTED = 2
+        PROCESSING = 3
     status = models.IntegerField(choices=Status.choices)
 
 
@@ -194,8 +195,9 @@ class NewspaperAuthor(models.Model):
     )
 
     class Status(models.IntegerChoices):
-        PROCESSED = 1
-        PROCESSING = 2
+        APPROVED = 1
+        REJECTED = 2
+        PROCESSING = 3
     status = models.IntegerField(Status.choices)
 
 
@@ -213,8 +215,9 @@ class ConferenceAuthor(models.Model):
     )
 
     class Status(models.IntegerChoices):
-        PROCESSED = 1
-        PROCESSING = 2
+        APPROVED = 1
+        REJECTED = 2
+        PROCESSING = 3
     status = models.IntegerField(Status.choices)
 
 
@@ -232,8 +235,9 @@ class BookAuthor(models.Model):
     )
 
     class Status(models.IntegerChoices):
-        PROCESSED = 1
-        PROCESSING = 2
+        APPROVED = 1
+        REJECTED = 2
+        PROCESSING = 3
     status = models.IntegerField(choices=Status.choices)
 
 
@@ -251,6 +255,7 @@ class PatentAuthor(models.Model):
     )
 
     class Status(models.IntegerChoices):
-        PROCESSED = 1
-        PROCESSING = 2
+        APPROVED = 1
+        REJECTED = 2
+        PROCESSING = 3
     status = models.IntegerField(choices=Status.choices)

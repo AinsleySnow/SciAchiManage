@@ -49,4 +49,8 @@ urlpatterns = [
     path('setpatentinfo/', views.SetPatentInfo),
     path('addpatent/', views.AddPatent),
     path('deletepatent/', views.DeletePatent),
+    path('apply/', views.Apply.as_view()),
+    path('addapply/', views.AddApply),
+    path('approveapply/', views.ApproveApply),
+    path('rejectapply/', views.RejectApply),
 ]

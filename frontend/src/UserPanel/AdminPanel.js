@@ -28,7 +28,7 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle, GetBook, GetPatent } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle, GetBook, GetPatent, GetApply, ApproveApply, RejectApply } from './Common'
 import { Button, Fab, Tab, Tabs, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
@@ -192,7 +192,6 @@ function ResearcherInfoEdit(props) {
       props.id = id;
 
     succeed = SetResInfo(id, resdict);
-    console.log(succeed)
     if (!succeed)
       setOpen(true);
   };
@@ -392,7 +391,6 @@ function AddUserPanel() {
   };
 
   const doAddition = () => {
-    console.log(usrdict);
     AddUser(usrdict)
       .then((success) => window.location.assign(REACT_URL + '/my/users'),
         (failure) => setOpen(true));
@@ -776,10 +774,10 @@ function DataPanel() {
         }
         {
           value === 4 &&
-          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column'}}>
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <InfoTable
               title='专利'
-              heads={['专利号', '公布号', '专利名', '申请人', '发明人',
+              heads={['专利号', '公布号', '专利名', '申请人工号', '发明人',
                 '专辑', '专题', '分类号', '主分类号', '链接', '操作']}
               rows={patent}
             />
@@ -799,14 +797,531 @@ function DataPanel() {
 }
 
 
+var pagesize = 100;
+var paper_page = 1;
+var confpaper_page = 1;
+var article_page = 1;
+var book_page = 1;
+var patent_page = 1;
+
 function ApplyPanel() {
+  const [value, setValue] = React.useState(0);
+
+  const [page, setPage] = React.useState(1);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    if (value === 0)
+      setPage(paper_page);
+    else if (value === 1)
+      setPage(confpaper_page);
+    else if (value === 2)
+      setPage(article_page);
+    else if (value === 3)
+      setPage(book_page);
+    else if (value === 4)
+      setPage(patent_page);
+  };
+
+  const toNextPage = () => {
+    next_page();
+    let from = (current_page() - 1) * pagesize;
+    let to = current_page() * pagesize;
+    if (value === 0) {
+      GetApply('paper', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setPaper(data);
+        }
+        );
+    }
+    else if (value === 1) {
+      GetApply('confpaper', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setConfPaper(data);
+        }
+        );
+    }
+    else if (value === 2) {
+      GetApply('article', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setArticle(data);
+        }
+        );
+    }
+    else if (value === 3) {
+      GetApply('book', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setBook(data);
+        }
+        );
+    }
+    else if (value === 4) {
+      GetApply('patent', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setPatent(data);
+        }
+        );
+    }
+  };
+
+  const toPrevPage = () => {
+    prev_page();
+    let from = (current_page() - 1) * pagesize;
+    let to = current_page() * pagesize;
+
+    if (value === 0) {
+      GetApply('paper', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setPaper(data);
+        }
+        );
+    }
+    else if (value === 1) {
+      GetApply('confpaper', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setConfPaper(data);
+        }
+        );
+    }
+    else if (value === 2) {
+      GetApply('article', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setArticle(data);
+        }
+        );
+    }
+    else if (value === 3) {
+      GetApply('book', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setBook(data);
+        }
+        );
+    }
+    else if (value === 4) {
+      GetApply('patent', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setPatent(data);
+        }
+        );
+    }
+  };
+
+  const from = () => {
+    if (value === 0) {
+      return (paper_page - 1) * pagesize;
+    } else if (value === 1) {
+      return (confpaper_page - 1) * pagesize;
+    } else if (value === 2) {
+      return (article_page - 1) * pagesize;
+    } else if (value === 3) {
+      return (book_page - 1) * pagesize;
+    } else if (value === 4) {
+      return (patent_page - 1) * pagesize;
+    }
+  };
+
+  const to = () => {
+    if (value === 0) {
+      return paper_page * pagesize;
+    } else if (value === 1) {
+      return confpaper_page * pagesize;
+    } else if (value === 2) {
+      return article_page * pagesize;
+    } else if (value === 3) {
+      return book_page * pagesize;
+    } else if (value === 4) {
+      return patent_page * pagesize;
+    }
+  };
+
+  const current_page = () => {
+    if (value === 0) {
+      return paper_page;
+    } else if (value === 1) {
+      return confpaper_page;
+    } else if (value === 2) {
+      return article_page;
+    } else if (value === 3) {
+      return book_page;
+    } else if (value === 4) {
+      return patent_page;
+    }
+  };
+
+  const next_page = () => {
+    if (value === 0) {
+      paper_page += 1;
+      setPage(paper_page);
+    } else if (value === 1) {
+      confpaper_page += 1;
+      setPage(confpaper_page);
+    } else if (value === 2) {
+      article_page += 1;
+      setPage(article_page);
+    } else if (value === 3) {
+      book_page += 1;
+      setPage(book_page);
+    } else if (value === 4) {
+      patent_page += 1;
+      setPage(patent_page);
+    }
+  };
+
+  const prev_page = () => {
+    if (value === 0) {
+      paper_page -= 1;
+      setPage(paper_page);
+    } else if (value === 1) {
+      confpaper_page -= 1;
+      setPage(confpaper_page);
+    } else if (value === 2) {
+      article_page -= 1;
+      setPage(article_page);
+    } else if (value === 3) {
+      book_page -= 1;
+      setPage(book_page);
+    } else if (value === 4) {
+      patent_page -= 1;
+      setPage(patent_page);
+    }
+  };
+
+  const [paper, setPaper] = React.useState(null);
+  React.useEffect(() => {
+    GetApply('paper', 'all', from(), to())
+      .then((data) => {
+        setPaper(data);
+      });
+  }, []);
+
+  const [confpaper, setConfPaper] = React.useState(null);
+  React.useEffect(() => {
+    GetApply('confpaper', 'all', from(), to())
+      .then((data) => {
+        setConfPaper(data);
+      });
+  }, []);
+
+  const [article, setArticle] = React.useState(null);
+  React.useEffect(() => {
+    GetApply('article', 'all', from(), to())
+      .then((data) => {
+        setArticle(data);
+      });
+  }, []);
+
+  const [book, setBook] = React.useState(null);
+  React.useEffect(() => {
+    GetApply('book', 'all', from(), to())
+      .then((data) => {
+        setBook(data);
+      });
+  }, []);
+
+  const [patent, setPatent] = React.useState(null);
+  React.useEffect(() => {
+    GetApply('patent', 'all', from(), to())
+      .then((data) => {
+        setPatent(data);
+      });
+  }, []);
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
-        <InfoTable
-          title='申请列表'
-          heads={['申请人', '部门', '状态', '操作']} />
+        <Tabs value={value} onChange={handleChange} aria-label="tab control">
+          <Tab label="期刊论文" />
+          <Tab label="会议论文" />
+          <Tab label="报刊文章" />
+          <Tab label="著作" />
+          <Tab label="专利" />
+        </Tabs>
       </Grid>
+      <Grid item xs={12}>
+        {
+          value === 0 &&
+          <Box>
+            <InfoTable
+              title='申请列表'
+              heads={['申请人工号', '论文编号', '状态', '操作']}
+              rows={
+                paper && paper.map((row) => (
+                  {
+                    applicant:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link href={REACT_URL + '/my/users/' + row.applicant}>
+                          {row.applicant}
+                        </Link>
+                      </Typography>,
+                    pid: row.pid,
+                    status: row.status,
+                    action:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link
+                          component={'button'}
+                          onClick={(e) => window.location.assign(REACT_URL + '/my/paper/' + row.pid)}
+                        >
+                          查看
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => ApproveApply(row.id, 'paper')}
+                        >
+                          通过
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => RejectApply(row.id, 'paper')}
+                        >
+                          退回
+                        </Link>
+                      </Typography>
+                  }
+                ))
+              } />
+          </Box>
+        }
+        {
+          value === 1 &&
+          <Box>
+            <InfoTable
+              title='申请列表'
+              heads={['申请人工号', '会议论文编号', '状态', '操作']}
+              rows={
+                confpaper && confpaper.map((row) => (
+                  {
+                    applicant:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link href={REACT_URL + '/my/users/' + row.applicant}>
+                          {row.applicant}
+                        </Link>
+                      </Typography>,
+                    cpid: row.cpid,
+                    status: row.status,
+                    action:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link
+                          component={'button'}
+                          onClick={(e) => window.location.assign(REACT_URL + '/my/confpaper/' + row.cpid)}
+                        >
+                          查看
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => ApproveApply(row.id, 'confpaper')}
+                        >
+                          通过
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => RejectApply(row.id, 'confpaper')}
+                        >
+                          退回
+                        </Link>
+                      </Typography>
+                  }
+                ))
+              }
+            />
+          </Box>
+        }
+        {
+          value === 2 &&
+          <Box>
+            <InfoTable
+              title='申请列表'
+              heads={['申请人工号', '报刊文章编号', '状态', '操作']}
+              rows={
+                article && article.map((row) => (
+                  {
+                    applicant:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link href={REACT_URL + '/my/users/' + row.applicant}>
+                          {row.applicant}
+                        </Link>
+                      </Typography>,
+                    aid: row.aid,
+                    status: row.status,
+                    action:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link
+                          component={'button'}
+                          onClick={(e) => window.location.assign(REACT_URL + '/my/article/' + row.aid)}
+                        >
+                          查看
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => ApproveApply(row.id, 'article')}
+                        >
+                          通过
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => RejectApply(row.id, 'article')}
+                        >
+                          退回
+                        </Link>
+                      </Typography>
+                  }
+                ))
+              }
+            />
+          </Box>
+        }
+        {
+          value === 3 &&
+          <Box>
+            <InfoTable
+              title='申请列表'
+              heads={['申请人工号', '书号', '状态', '操作']}
+              rows={
+                book && book.map((row) => (
+                  {
+                    applicant:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link href={REACT_URL + '/my/users/' + row.applicant}>
+                          {row.applicant}
+                        </Link>
+                      </Typography>,
+                    isbn: row.isbn,
+                    status: row.status,
+                    action:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link
+                          component={'button'}
+                          onClick={(e) => window.location.assign(REACT_URL + '/my/book/' + row.isbn)}
+                        >
+                          查看
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => ApproveApply(row.id, 'book')}
+                        >
+                          通过
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => RejectApply(row.id, 'book')}
+                        >
+                          退回
+                        </Link>
+                      </Typography>
+                  }
+                ))
+              }
+            />
+          </Box>
+        }
+        {
+          value === 4 &&
+          <Box>
+            <InfoTable
+              title='申请列表'
+              heads={['申请人工号', '专利号', '状态', '操作']}
+              rows={
+                patent && patent.map((row) => (
+                  {
+                    applicant:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link href={REACT_URL + '/my/users/' + row.applicant}>
+                          {row.applicant}
+                        </Link>
+                      </Typography>,
+                    patent_num: row.patent_num,
+                    status: row.status,
+                    action:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link
+                          component={'button'}
+                          onClick={(e) => window.location.assign(REACT_URL + '/my/patent/' + row.patent_num)}
+                        >
+                          查看
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => ApproveApply(row.id, 'patent')}
+                        >
+                          通过
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => RejectApply(row.id, 'patent')}
+                        >
+                          退回
+                        </Link>
+                      </Typography>
+                  }
+                ))
+              }
+            />
+          </Box>
+        }
+      </Grid>
+      <Stack direction='row' sx={{ marginTop: 3, paddingLeft: 5 }} spacing={3}>
+        <Button
+          variant='contained'
+          disabled={page === 1}
+          onClick={(e) => toPrevPage()}>
+          上一页
+        </Button>
+        <Typography sx={{ paddingTop: 0.5 }}>{`第${page}页`}</Typography>
+        <Button
+          variant='contained'
+          onClick={(e) => toNextPage()}>
+          下一页
+        </Button>
+      </Stack>
     </Grid>
   );
 }
@@ -1123,7 +1638,7 @@ function AdminPanelContent() {
                 <Route path='/paper/:id' element={
                   <Grid item xs={12}>
                     <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                      <PaperInfoEdit id={Object.values(useParams())[0].substring(8)} />
+                      <PaperInfoEdit id={Object.values(useParams())[0].substring(6)} />
                     </Paper>
                   </Grid>
                 } />

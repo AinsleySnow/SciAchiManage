@@ -56,3 +56,28 @@ class PatentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patent
         fields = ['patent_num', 'promulgate_num', 'name', 'applyer', 'inventor', 'issue', 'theme', 'catagory_num', 'major_catagory', 'link']
+
+class PaperAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaperAuthor
+        fields = ['applicant', 'pid', 'status']
+
+class NewspaperAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewspaperAuthor
+        fields = ['applicant', 'aid', 'status']
+
+class ConferenceAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConferenceAuthor
+        fields = ['applicant', 'cpid', 'status']
+
+class BookAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BookAuthor
+        fields = ['applicant', 'isbn', 'status']
+
+class PatentAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatentAuthor
+        fields = ['applicant', 'patent_num', 'status']
