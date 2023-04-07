@@ -209,8 +209,8 @@ def get_patent():
                         'patent_num': get_patent_num(),
                         'promulgate_num': get_promulate_num(),
                         'name': random.choice(patent_name),
-                        'applyer': 'xxxxxxxx',
-                        'inventor': 'xxxxxxxxx',
+                        'applyer': res[1],
+                        'inventor': res[1] + '，' + ''.join([usr[1] + '，' for usr in random.choices(reslist, k=random.randint(0, 3))]),
                         'issue': 'xxxxxxxxxxxxxx',
                         'theme': 'xxxxxxxxxxx',
                         'catagory_num': 'xxxxxxxxxxxx',
@@ -221,8 +221,8 @@ def get_patent():
 
 
 if __name__ == '__main__':
-    get_paper()
-    get_article()
-    get_book()
-    get_conf_paper()
+    #get_paper()
+   # get_article()
+   # get_book()
+  #  get_conf_paper()
     get_patent()

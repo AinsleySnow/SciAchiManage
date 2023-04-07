@@ -206,8 +206,8 @@ class ConferenceAuthor(models.Model):
         on_delete=models.CASCADE,
         to_field='id'
     )
-    cid = models.ForeignKey(
-        Conference,
+    cpid = models.ForeignKey(
+        ConferencePaper,
         on_delete=models.CASCADE,
         to_field='id'
     )
