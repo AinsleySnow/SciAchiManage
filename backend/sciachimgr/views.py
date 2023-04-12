@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
+from django.db.models.functions import Substr
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import json
@@ -1121,10 +1122,33 @@ def DeletePatent(request):
 
 class Apply(APIView):
     def get(self, request):
+        utype = request.GET['uid'][2:4]
         type = request.GET['type']
         id = request.GET['id']
         _from = int(request.GET['from'])
         to = int(request.GET['to'])
+
+        if utype == '02' and id == 'all':
+            if type == 'paper':
+                apply = PaperAuthor.objects.filter(Substr('id', 2, 2) == utype)[_from:to]
+                serializer = PaperAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+            elif type == 'article':
+                apply = NewspaperAuthor.objects.filter(Substr('id', 2, 2) == utype)[_from:to]
+                serializer = NewspaperAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+            elif type == 'confpaper':
+                apply = ConferenceAuthor.objects.filter(Substr('id', 2, 2) == utype)[_from:to]
+                serializer = ConferenceAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+            elif type == 'book':
+                apply = BookAuthor.objects.filter(Substr('id', 2, 2) == utype)[_from:to]
+                serializer = BookAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+            elif type == 'patent':
+                apply = PatentAuthor.objects.filter(Substr('id', 2, 2) == utype)[_from:to]
+                serializer = PatentAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
 
         if id == 'all':
             if type == 'paper':

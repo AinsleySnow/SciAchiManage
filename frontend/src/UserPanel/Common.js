@@ -521,7 +521,9 @@ export function DeletePatent(id) {
 
 
 export function GetApply(type, id, from, to) {
-  return fetch(API_URL + '/apply/?type=' + type + '&id=' + id + '&from=' + from + '&to=' + to)
+  let uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/apply/?uid=' + uid + '&type=' + type + '&id=' + id + '&from=' + from + '&to=' + to)
     .then((res) => res.json())
 }
 
