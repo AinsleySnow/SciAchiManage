@@ -61,7 +61,7 @@ export const assistantListItems = (
       <ListItemIcon>
         <PeopleAltRoundedIcon />
       </ListItemIcon>
-      <ListItemText primary="用户管理" />
+      <ListItemText primary="成员管理" />
     </ListItemButton>
     <ListItemButton href='/my/achi'>
       <ListItemIcon>
@@ -113,7 +113,7 @@ function UsrManage() {
 
   return (
     <InfoTable
-      title='用户列表'
+      title='成员列表'
       heads={['工号', '用户类型', '姓名', '密码', '性别', '部门', '操作']}
       rows={users}
     />
@@ -692,6 +692,7 @@ function DataPanel() {
           <Tab label="期刊论文" />
           <Tab label="会议论文" />
           <Tab label="报刊文章" />
+          <Tab label="奖项" />
           <Tab label="著作" />
           <Tab label="专利" />
         </Tabs>
@@ -703,7 +704,7 @@ function DataPanel() {
             <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
               <InfoTable
                 title='期刊论文'
-                heads={['标题', '作者', '刊物', '链接', '操作']}
+                heads={['序号', '刊物ISBN', '标题', '作者', '页码', '卷号', '期号', '出版日期', '链接', '操作']}
                 rows={paper} />
               <Typography sx={{ marginTop: 4 }} fontSize={'small'} color="text.secondary">
                 <Link component='button' onClick={morePaper}>

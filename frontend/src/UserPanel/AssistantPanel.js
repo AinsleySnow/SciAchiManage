@@ -1060,7 +1060,7 @@ function UsrManage() {
 
   return (
     <InfoTable
-      title='用户列表'
+      title='成员列表'
       heads={['工号', '用户类型', '姓名', '密码', '性别', '部门', '操作']}
       rows={users}
     />

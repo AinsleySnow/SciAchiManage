@@ -137,6 +137,22 @@ function SettingPanel() {
 }
 
 
+function AchiList() {
+  return (
+    <InfoTable />
+  )
+}
+
+
+function ApplyForm() {
+  return (
+    <div>
+      <h1>申请信息</h1>
+    </div>
+  )
+}
+
+
 function ResearcherPanelContent() {
   return (
     <ThemeProvider theme={mdTheme}>
@@ -178,7 +194,7 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <InfoTable />
+                        <AchiList />
                       </Paper>
                     </Grid>
                   } />
@@ -186,7 +202,7 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <InfoTable />
+                        <AchiList />
                       </Paper>
                     </Grid>
                   } />
