@@ -20,6 +20,7 @@ import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import ApprovalRoundedIcon from '@mui/icons-material/ApprovalRounded';
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded';
 import AutoStoriesRoundedIcon from '@mui/icons-material/AutoStoriesRounded';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
@@ -86,6 +87,12 @@ export const assistantListItems = (
         <AutoStoriesRoundedIcon />
       </ListItemIcon>
       <ListItemText primary="报刊/会议管理" />
+    </ListItemButton>
+    <ListItemButton href='/my/stat'>
+      <ListItemIcon>
+        <BarChartIcon />
+      </ListItemIcon>
+      <ListItemText primary="成果统计" />
     </ListItemButton>
   </React.Fragment>
 );

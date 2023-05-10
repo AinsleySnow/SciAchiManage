@@ -5,8 +5,6 @@ import Login from './Login'
 import ResearcherPanel from './UserPanel/ResearcherPanel';
 import AssistantPanel from './UserPanel/AssistantPanel';
 import AdminPanel from './UserPanel/AdminPanel';
-import Album from './SchoolPage/Album';
-import Researcher from './SchoolPage/Researcher';
 import { REACT_URL } from './Constants';
 
 
@@ -31,9 +29,7 @@ function App() {
       <Router>
         <Routes>
           <Route path='/my/*' element={<My />}/>
-          <Route path='/college/*' element={<Album title='学院列表'/>} />
           <Route path='/login' element={<Login />} />
-          <Route path='/' element={<Researcher />} />
         </Routes>
       </Router>
     </div>

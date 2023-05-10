@@ -11,13 +11,14 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import MuiLink from '@mui/material/Link';
 
-import { Button } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ApprovalRoundedIcon from '@mui/icons-material/ApprovalRounded';
 import EmojiEventsRoundedIcon from '@mui/icons-material/EmojiEventsRounded';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import { Routes, Route } from 'react-router-dom'
 
 import { API_URL } from '../Constants';
@@ -28,6 +29,8 @@ import AppBar from '../AppBar';
 import Drawer from '../Drawer';
 import InfoTable from './InfoTable';
 import ResearcherInfo from './ResearcherInfo';
+import { JournalInfo, PaperInfo } from './ApplyForm';
+import { StatPanel } from './StatPanel';
 
 function Copyright(props) {
   return (
@@ -61,6 +64,12 @@ export const resListItems = (
         <SettingsRoundedIcon />
       </ListItemIcon>
       <ListItemText primary="修改个人信息" />
+    </ListItemButton>
+    <ListItemButton href='/my/stat'>
+      <ListItemIcon>
+        <BarChartIcon />
+      </ListItemIcon>
+      <ListItemText primary="成果统计" />
     </ListItemButton>
   </React.Fragment>
 );
@@ -139,7 +148,7 @@ function SettingPanel() {
 
 function AchiList() {
   return (
-    <InfoTable />
+    <Paper />
   )
 }
 
@@ -154,6 +163,10 @@ function ApplyForm() {
 
 
 function ResearcherPanelContent() {
+  const [type, setType] = React.useState(0);
+
+  let handleTypeChange = (e) => setType(e.target.value); 
+
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -210,7 +223,26 @@ function ResearcherPanelContent() {
                   element={
                     <Grid item xs={12}>
                       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                        <Button sx={{ marginLeft: 105, marginTop: 4, marginBottom: 1, maxWidth: 100 }} variant='contained'>确定</Button>
+                      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                        <InputLabel id="sex-select">成果类型</InputLabel>
+                        <Select
+                          labelId="type-select"
+                          id="type"
+                          onChange={handleTypeChange}
+                          label="成果类型"
+                        >
+                            <MenuItem value="">
+                              <em>未设置</em>
+                            </MenuItem>
+                            <MenuItem value={1}>期刊论文</MenuItem>
+                            <MenuItem value={2}>会议论文</MenuItem>
+                            <MenuItem value={3}>获奖</MenuItem>
+                            <MenuItem value={4}>报刊文章</MenuItem>
+                            <MenuItem value={5}>专著</MenuItem>
+                            <MenuItem value={6}>专利</MenuItem>
+                          </Select>
+                        </FormControl>
+                        <PaperInfo />
                       </Paper>
                     </Grid>
                   } />
@@ -222,6 +254,15 @@ function ResearcherPanelContent() {
                       </Paper>
                     </Grid>
                   } />
+                <Route path='/stat'
+                  element={
+                    <Grid item xs={12}>
+                      <Paper>
+                        <StatPanel />
+                      </Paper>
+                    </Grid>
+                  }
+                />
               </Routes>
             </Grid>
             <Copyright sx={{ pt: 4 }} />

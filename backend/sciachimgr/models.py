@@ -158,6 +158,7 @@ class Patent(models.Model):
     theme = models.CharField(max_length=45)
     catagory_num = models.CharField(max_length=100)
     major_catagory = models.CharField(max_length=10)
+    apply_date = models.DateField()
     link = models.CharField(max_length=400, blank=True)
 
 

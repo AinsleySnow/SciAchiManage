@@ -20,6 +20,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import ApprovalRoundedIcon from '@mui/icons-material/ApprovalRounded';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 import AppBar from '../AppBar';
 import Drawer from '../Drawer';
@@ -1033,6 +1034,12 @@ export const assistantListItems = (
         <ApprovalRoundedIcon />
       </ListItemIcon>
       <ListItemText primary="申请处理" />
+    </ListItemButton>
+    <ListItemButton href='/my/stat'>
+      <ListItemIcon>
+        <BarChartIcon />
+      </ListItemIcon>
+      <ListItemText primary="统计信息" />
     </ListItemButton>
   </React.Fragment>
 );

@@ -53,4 +53,7 @@ urlpatterns = [
     path('addapply/', views.AddApply),
     path('approveapply/', views.ApproveApply),
     path('rejectapply/', views.RejectApply),
+    path('getstatbyyear/', views.GetStatByYear),
+    path('getstatbycollege/', views.GetStatByCollege),
+    path('getstatbytype/', views.GetStatByType),
 ]
