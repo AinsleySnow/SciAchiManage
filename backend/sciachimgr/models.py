@@ -162,6 +162,10 @@ class Patent(models.Model):
     link = models.CharField(max_length=400, blank=True)
 
 
+class Prize(models.Model):
+    prize_name = models.CharField(max_length=400, primary_key=True)
+    desp = models.CharField(max_length=1000)
+
 
 class PaperAuthor(models.Model):
     applicant = models.ForeignKey(

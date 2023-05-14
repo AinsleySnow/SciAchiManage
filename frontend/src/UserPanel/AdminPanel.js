@@ -41,6 +41,7 @@ import { AddConfpaperPanel, ConfpaperInfoEdit } from './ConfpaperPanel';
 import { AddArticlePanel, ArticleInfoEdit } from './ArticlePanel';
 import { AddBookPanel, BookInfoEdit } from './BookPanel';
 import { AddPatentPanel, PatentInfoEdit } from './PatentPanel';
+import { StatPanel } from './StatPanel';
 
 
 function Copyright(props) {
@@ -1763,6 +1764,15 @@ function AdminPanelContent() {
                     </Grid>
                   } />
                 </Route>
+                <Route path='/stat'
+                  element={
+                    <Grid item xs={12}>
+                      <Paper>
+                        <StatPanel />
+                      </Paper>
+                    </Grid>
+                  }
+                />
               </Routes>
             </Grid>
             <Copyright sx={{ pt: 4 }} />

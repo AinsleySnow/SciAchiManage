@@ -33,11 +33,9 @@ def DoLogin(request):
     print(received.get('id'))
     user = User.objects.filter(id=received.get('id'))
     if not user.exists():
-        print('a')
         return HttpResponse('fail')
 
     user = User.objects.get(id=received.get('id'))
-    print('\'' + user.passwd + '\'')
     if user.passwd == received.get('passwd'):
         request.session['logged'] = True
         request.session['user'] = user.id
@@ -1269,6 +1267,10 @@ def ApproveApply(request):
         apply = BookAuthor.objects.get(id=id)
         apply.status = 1
         apply.save()
+    elif type == 'prize':
+        apply = BookAuthor.objects.get(id=id)
+        apply.status = 1
+        apply.save()
     elif type == 'patent':
         apply = PatentAuthor.objects.get(id=id)
         apply.status = 1
@@ -1373,128 +1375,78 @@ def GetStatByYear(request):
 
     elif curusr[2:4] == '02':
         result = dict()
-        for apply in PaperAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]):
-            year = Paper.objects.get(id=apply.pid.id).publish_date.year
-            if year in result:
-                result[year].paper += 1
-            else:
-                result[year] = AchiSet()
-                result[year].paper = 1
-        for apply in NewspaperAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]):
-            year = Article.objects.get(id=apply.pid.id).publish_date.year
-            if year in result:
-                result[year].article += 1
-            else:
-                result[year] = AchiSet()
-                result[year].article = 1
-        for apply in ConferenceAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]):
-            year = ConferencePaper.objects.get(id=apply.pid.id).publish_date.year
-            if year in result:
-                result[year].confpaper += 1
-            else:
-                result[year] = AchiSet()
-                result[year].confpaper = 1
-        for apply in BookAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]):
-            year = Book.objects.get(id=apply.pid.id).publish_year.year
-            if year in result:
-                result[year].book += 1
-            else:
-                result[year] = AchiSet()
-                result[year].book = 1
-        for apply in PatentAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]):
-            year = Patent.objects.get(id=apply.pid.id).apply_date.year
-            if year in result:
-                result[year].patent += 1
-            else:
-                result[year] = AchiSet()
-                result[year].patent = 1
+
+        pa = PaperAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2])
+        p = pa.values('pid')
+        for y in range(1990, 2024):
+            result[y] = AchiSet()
+            result[y].paper = p.filter(pid__publish_date__year=y).count()
+
+        na = NewspaperAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2])
+        a = na.values('aid')
+        for y in range(1990, 2024):
+            result[y].article = a.filter(aid__publish_date__year=y).count()
+
+        ca = ConferenceAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2])
+        cp = ca.values('cpid')
+        for y in range(1990, 2024):
+            result[y].confpaper = cp.filter(cpid__publish_date__year=y).count()
+
+        ba = BookAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2])
+        b = ba.values('isbn')
+        for y in range(1990, 2024):
+            result[y].book = b.filter(isbn__publish_year__year=y).count()
+
+        return HttpResponse(json.dumps(result, cls=AchiSetEncoder), content_type="application/json")
 
     elif curusr[2:4] == '03':
         result = dict()
-        for apply in PaperAuthor.objects.all():
-            year = Paper.objects.get(id=apply.pid.id).publish_date.year
-            if year in result:
-                result[year].paper += 1
-            else:
-                result[year] = AchiSet()
-                result[year].paper = 1
-        for apply in NewspaperAuthor.objects.all():
-            year = Article.objects.get(id=apply.pid.id).publish_date.year
-            if year in result:
-                result[year].article += 1
-            else:
-                result[year] = AchiSet()
-                result[year].article = 1
-        for apply in ConferenceAuthor.objects.all():
-            year = ConferencePaper.objects.get(id=apply.pid.id).publish_date.year
-            if year in result:
-                result[year].confpaper += 1
-            else:
-                result[year] = AchiSet()
-                result[year].confpaper = 1
-        for apply in BookAuthor.objects.all():
-            year = Book.objects.get(id=apply.pid.id).publish_year.year
-            if year in result:
-                result[year].book += 1
-            else:
-                result[year] = AchiSet()
-                result[year].book = 1
-        for apply in PatentAuthor.objects.all():
+
+        pa = PaperAuthor.objects.filter(status=1)
+        p = pa.values('pid')
+        for y in range(1990, 2024):
+            result[y] = AchiSet()
+            result[y].paper = p.filter(pid__publish_date__year=y).count()
+
+        na = NewspaperAuthor.objects.filter(status=1)
+        a = na.values('aid')
+        for y in range(1990, 2024):
+            result[y].article = a.filter(aid__publish_date__year=y).count()
+
+        ca = ConferenceAuthor.objects.filter(status=1)
+        cp = ca.values('cpid')
+        for y in range(1990, 2024):
+            result[y].confpaper = cp.filter(cpid__publish_date__year=y).count()
+
+        ba = BookAuthor.objects.filter(status=1)
+        b = ba.values('isbn')
+        for y in range(1990, 2024):
+            result[y].book = b.filter(isbn__publish_year__year=y).count()
+
+        '''for apply in PatentAuthor.objects.all():
             year = Patent.objects.get(id=apply.pid.id).apply_date.year
             if year in result:
                 result[year].patent += 1
             else:
                 result[year] = AchiSet()
-                result[year].patent = 1
+                result[year].patent = 1'''
 
         return HttpResponse(json.dumps(result, cls=AchiSetEncoder), content_type="application/json")
 
 
 
 def GetStatByCollege(request):
-    collegelist = { c.id: c.name for c in College.objects.all() }      
+    collegelist = [ (c.id, c.name) for c in College.objects.all() ] 
 
     result = dict()
-    for apply in PaperAuthor.objects.all():
-        aid = apply.applicant.id[0:2]
-        name = collegelist[aid]
-        if name not in result:
-            result[name] = AchiSet()
-            result[name].paper = 1
-        else:
-            result[name].paper += 1
-    for apply in NewspaperAuthor.objects.all():
-        aid = apply.applicant.id[0:2]
-        name = collegelist[aid]
-        if name not in result:
-            result[name] = AchiSet()
-            result[name].article = 1
-        else:
-            result[name].article += 1
-    for apply in ConferenceAuthor.objects.all():
-        aid = apply.applicant.id[0:2]
-        name = collegelist[aid]
-        if name not in result:
-            result[name] = AchiSet()
-            result[name].confpaper = 1
-        else:
-            result[name].confpaper += 1
-    for apply in BookAuthor.objects.all():
-        aid = apply.applicant.id[0:2]
-        name = collegelist[aid]
-        if name not in result:
-            result[name] = AchiSet()
-            result[name].book = 1
-        else:
-            result[name].book += 1
-    for apply in PatentAuthor.objects.all():
-        aid = apply.applicant.id[0:2]
-        name = collegelist[aid]
-        if name not in result:
-            result[name] = AchiSet()
-            result[name].patent = 1
-        else:
-            result[name].patent += 1
+
+    for (c, n) in collegelist:
+        result[n] = AchiSet()
+        result[n].paper = PaperAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
+        result[n].article = NewspaperAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
+        result[n].confpaper = ConferenceAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
+        result[n].book = BookAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
+        result[n].patent = PatentAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
 
     return HttpResponse(json.dumps(result, cls=AchiSetEncoder), content_type="application/json")
 
@@ -1520,12 +1472,11 @@ def GetStatByType(request):
         achi.book = BookAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]).count()
         achi.patent = PatentAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]).count()
         return HttpResponse(json.dumps(achi, cls=AchiSetEncoder), content_type="application/json")
-    
-    elif curusr[2:4] == '03':
-        achi.paper = PaperAuthor.objects.all().count()
-        achi.article = NewspaperAuthor.objects.all().count()
-        achi.confpaper = ConferenceAuthor.objects.all().count()
-        achi.book = BookAuthor.objects.all().count()
-        achi.patent = PatentAuthor.objects.all().count()
-        return HttpResponse(json.dumps(achi, cls=AchiSetEncoder), content_type="application/json")
 
+    elif curusr[2:4] == '03':
+        achi.paper = PaperAuthor.objects.filter(status=1).count()
+        achi.article = NewspaperAuthor.objects.filter(status=1).count()
+        achi.confpaper = ConferenceAuthor.objects.filter(status=1).count()
+        achi.book = BookAuthor.objects.filter(status=1).count()
+        achi.patent = PatentAuthor.objects.filter(status=1).count()
+        return HttpResponse(json.dumps(achi, cls=AchiSetEncoder), content_type="application/json")

@@ -1,10 +1,9 @@
 import MuiAppBar from '@mui/material/AppBar';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
+import { Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { API_URL, REACT_URL } from './Constants';
 
 
 const AppBarBase = styled(MuiAppBar, {
@@ -18,38 +17,20 @@ const AppBarBase = styled(MuiAppBar, {
 
 
 export default function AppBar(props) {
-  const handleMyClick = (e) => {
-    e.preventDefault();
-    var islogged = fetch(API_URL + '/logged')
-      .then((res) => res.text() === 'logged');
-
-    if (islogged) window.location.assign(REACT_URL + '/my');
-    else window.location.assign(REACT_URL + '/login');
-  };
-
   return (
     <AppBarBase position="absolute" drawerwidth={props.drawerwidth}>
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ pr: '24px' }}>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button
-              sx={{ color: 'white', display: 'block', fontSize: '18px' }}
-              onClick={(e) => window.location.assign(REACT_URL)}
-            >
-              首页
-            </Button>
-            <Button
-              sx={{ color: 'white', display: 'block', fontSize: '18px' }}
-              onClick={(e) => window.location.assign(REACT_URL + '/college')}
-            >
-              学院
-            </Button>
-            <Button
-              sx={{ color: 'white', display: 'block', fontSize: '18px' }}
-              onClick={handleMyClick}
-            >
-              我的
-            </Button>
+            <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                sx={{ flexGrow: 1 }}
+                >
+                高校教科研成果统计系统
+            </Typography>
           </Box>
         </Toolbar>
       </Container>

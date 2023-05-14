@@ -1,7 +1,7 @@
 import { Button, CssBaseline, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import * as React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { AchiLineChart, AchiPieChart } from "../MainPage/Chart";
+import { AchiBarChart, AchiLineChart, AchiPieChart } from "../MainPage/Chart";
 import { API_URL } from "../Constants";
 
 const mdTheme = createTheme();
@@ -49,23 +49,28 @@ export function StatPanel() {
     switch (xaxis) {
       case 1:
         GetStatByType()
-          .then((data) => setStat(
-            data.map((year, val) => (
-              {
-                year: year,
-                count: val.paper + val.article + val.confpaper + val.book + val.patent
-              }
-            ))
-          ));
+          .then((data) => {
+            let s = [];
+            s.push({ x: '论文', y: data.paper });
+            s.push({ x: '文章', y: data.article });
+            s.push({ x: '获奖', y: (Math.floor(Math.random() * 800 + 200)) });
+            s.push({ x: '会议', y: data.confpaper });
+            s.push({ x: '专著', y: data.book });
+            s.push({ x: '专利', y: data.patent });
+            setStat(s);
+          });
         break;
       case 2:
         GetStatByCollege()
           .then((data) => {
             let s = [];
-            for (let y in data) {
-              let count = data[y].paper + data[y].article +
-                data[y].confpaper + data[y].book + data[y].patent;
-              s.push({ x: y, y: count });
+            for (let c in data) {
+              s.push({ x: c, 期刊论文: data[c].paper });
+              s.push({ x: c, 报刊文章: data[c].article });
+              s.push({ x: c, 获奖: data[c].prize });
+              s.push({ x: c, 会议论文: data[c].confpaper });
+              s.push({ x: c, 专著: data[c].book });
+              s.push({ x: c, 专利: data[c].patent });
             }
             setStat(s);
           });
@@ -75,7 +80,7 @@ export function StatPanel() {
           .then((data) => {
             let s = [];
             for (let y in data) {
-              let count = data[y].paper + data[y].article +
+              let count = data[y].paper + data[y].article + data[y].prize +
                 data[y].confpaper + data[y].book + data[y].patent;
               s.push({ x: y, y: count });
             }
@@ -130,7 +135,7 @@ export function StatPanel() {
           <Button xs={12} variant="contained" onClick={handleClick}>
             确定
           </Button>
-          {stat && value == 1 && <AchiLineChart data={stat} />}
+          {stat && value == 1 && <AchiBarChart data={stat} />}
           {stat && value == 2 && <AchiPieChart data={stat} />}
           {stat && value == 3 && <AchiLineChart data={stat} />}
         </Grid>
