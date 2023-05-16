@@ -53,7 +53,7 @@ export function StatPanel() {
             let s = [];
             s.push({ x: '论文', y: data.paper });
             s.push({ x: '文章', y: data.article });
-            s.push({ x: '获奖', y: (Math.floor(Math.random() * 700 + 3500)) });
+            s.push({ x: '获奖', y: data.prize });
             s.push({ x: '会议', y: data.confpaper });
             s.push({ x: '专著', y: data.book });
             s.push({ x: '专利', y: data.patent });
@@ -67,7 +67,7 @@ export function StatPanel() {
             for (let c in data) {
               s.push({ x: c, 期刊论文: data[c].paper });
               s.push({ x: c, 报刊文章: data[c].article });
-              s.push({ x: c, 获奖: Math.floor(Math.random() * 800 + 200) });
+              s.push({ x: c, 获奖: data[c].prize });
               s.push({ x: c, 会议论文: data[c].confpaper });
               s.push({ x: c, 专著: data[c].book });
               s.push({ x: c, 专利: data[c].patent });
@@ -80,7 +80,7 @@ export function StatPanel() {
           .then((data) => {
             let s = [];
             for (let y in data) {
-              let count = data[y].paper + data[y].article +
+              let count = data[y].paper + data[y].article + data[y].prize +
                 data[y].confpaper + data[y].book + data[y].patent;
               s.push({ x: y, y: count });
             }

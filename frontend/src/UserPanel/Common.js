@@ -520,6 +520,55 @@ export function DeletePatent(id) {
 }
 
 
+export function GetPrize(id, from) {
+  return fetch(API_URL + '/prizeinfo/?id=' + id + '&from=' + from)
+    .then((res) => res.json())
+}
+
+export function SetPrizeInfo(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/setprizeinfo/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => { return res.text() === 'success'; });
+}
+
+export function AddPrize(dict) {
+  var uid = window.sessionStorage.getItem('id');
+
+  return fetch(API_URL + '/addprize/', {
+    method: 'POST',
+    body: JSON.stringify({ ...dict, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => res.json());
+}
+
+export function DeletePrize(id) {
+  let response = '';
+  let uid = window.sessionStorage.getItem('id');
+
+  fetch(API_URL + '/deleteprize/', {
+    method: 'POST',
+    body: JSON.stringify({ todelete: id, curusr: uid }),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8'
+    }
+  })
+    .then((res) => response = res.text());
+
+  window.location.assign(REACT_URL + '/my/achi');
+  return response === 'success';
+}
+
+
 export function GetApply(type, id, from, to) {
   let uid = window.sessionStorage.getItem('id');
 
@@ -550,7 +599,7 @@ export function ApproveApply(id, type) {
       'Content-type': 'application/json; charset=UTF-8'
     }
   })
-    .then((res) => res.json());
+    .then((res) => { alert('已通过。'); return res.json() });
 }
 
 export function RejectApply(id, type) {
@@ -563,5 +612,5 @@ export function RejectApply(id, type) {
       'Content-type': 'application/json; charset=UTF-8'
     }
   })
-    .then((res) => res.json());
+    .then((res) => { alert('已退回。'); return res.json(); });
 }

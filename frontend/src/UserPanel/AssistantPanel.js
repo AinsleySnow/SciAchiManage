@@ -26,7 +26,7 @@ import AppBar from '../AppBar';
 import Drawer from '../Drawer';
 import UserInfo from './UserInfo';
 import { MessageBar } from '../MessageBar';
-import { GetUser, SetUserInfo, DeleteUser, AddUser, GetApply, ApproveApply, RejectApply } from './Common';
+import { GetUser, SetUserInfo, DeleteUser, AddUser, GetApply, ApproveApply, RejectApply, GetPrize } from './Common';
 import InfoTable from './InfoTable';
 import { REACT_URL } from '../Constants';
 import { AddPaperPanel, PaperInfoEdit } from './PaperPanel';
@@ -39,6 +39,7 @@ import { AddBookPanel, BookInfoEdit } from './BookPanel';
 import { GetPaper, GetConfpaper, GetArticle, GetBook, GetPatent } from './Common';
 import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab';
+import { AddPrizePanel, PrizeInfoEdit } from './PrizePanel';
 
 
 function AddFab(props) {
@@ -65,6 +66,7 @@ var datapanel_confpaper_from = 0;
 var datapanel_article_from = 0;
 var datapanel_book_from = 0;
 var datapanel_patent_from = 0;
+var datapanel_prize_from = 0;
 
 
 function DataPanel() {
@@ -300,6 +302,51 @@ function DataPanel() {
       });
   }
 
+  var nomoreprize = false;
+
+  const [prize, setPrize] = React.useState(null);
+  React.useEffect(() => {
+    GetPrize('all', datapanel_prize_from)
+      .then((data) => {
+        setPrize(data.map(p => (
+          {
+            ...p,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/prize/' + p.id}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+  const morePrize = (e) => {
+    if (nomoreprize)
+      return;
+    datapanel_prize_from += 250;
+    GetPatent('all', datapanel_prize_from)
+      .then((data) => {
+        if (!data) {
+          nomoreprize = true;
+          datapanel_patent_from = 0;
+          return;
+        }
+        let newdata = prize.concat(data);
+        setPatent(newdata.map(p => (
+          {
+            ...p,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/prize/' + p.patent_num}>
+                  编辑
+                </Link>
+              </Typography>
+          }
+        )));
+      });
+  }
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
@@ -402,6 +449,24 @@ function DataPanel() {
             } />
           </Box>
         }
+        {
+          value === 5 &&
+          <Box>
+            <InfoTable
+              title='获奖'
+              heads={['编号', '获奖名', '描述', '获奖日期', '操作']}
+              rows={prize}
+            />
+            <Typography sx={{ marginTop: 4 }} fontSize={'small'} color="text.secondary">
+              <Link component='button' onClick={morePrize}>
+                查看更多
+              </Link>
+            </Typography>
+            <AddFab handleClick={
+              (e) => window.location.assign(REACT_URL + '/my/prize/add')
+            } />
+          </Box>
+        }
       </Grid>
     </Grid>
   );
@@ -414,6 +479,7 @@ var confpaper_page = 1;
 var article_page = 1;
 var book_page = 1;
 var patent_page = 1;
+var prize_page = 1;
 
 function ApplyPanel() {
   const [value, setValue] = React.useState(0);
@@ -432,6 +498,8 @@ function ApplyPanel() {
       setPage(book_page);
     else if (value === 4)
       setPage(patent_page);
+    else if (value === 5)
+      setPage(prize_page);
   };
 
   const toNextPage = () => {
@@ -480,6 +548,15 @@ function ApplyPanel() {
           if (data.length === 0)
             return;
           setPatent(data);
+        }
+        );
+    }
+    else if (value === 5) {
+      GetApply('prize', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setPrize(data);
         }
         );
     }
@@ -535,6 +612,15 @@ function ApplyPanel() {
         }
         );
     }
+    else if (value === 5) {
+      GetApply('prize', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setPrize(data);
+        }
+        );
+    }
   };
 
   const from = () => {
@@ -548,6 +634,8 @@ function ApplyPanel() {
       return (book_page - 1) * pagesize;
     } else if (value === 4) {
       return (patent_page - 1) * pagesize;
+    } else if (value === 5) {
+      return (prize_page - 1) * pagesize;
     }
   };
 
@@ -562,6 +650,8 @@ function ApplyPanel() {
       return book_page * pagesize;
     } else if (value === 4) {
       return patent_page * pagesize;
+    } else if (value === 5) {
+      return prize_page * pagesize;
     }
   };
 
@@ -576,6 +666,8 @@ function ApplyPanel() {
       return book_page;
     } else if (value === 4) {
       return patent_page;
+    } else if (value === 5) {
+      return prize_page;
     }
   };
 
@@ -595,6 +687,9 @@ function ApplyPanel() {
     } else if (value === 4) {
       patent_page += 1;
       setPage(patent_page);
+    } else if (value === 5) {
+      prize_page += 1;
+      setPage(prize_page);
     }
   };
 
@@ -613,6 +708,9 @@ function ApplyPanel() {
       setPage(book_page);
     } else if (value === 4) {
       patent_page -= 1;
+      setPage(patent_page);
+    } else if (value === 5) {
+      prize_page -= 1;
       setPage(patent_page);
     }
   };
@@ -657,6 +755,14 @@ function ApplyPanel() {
       });
   }, []);
 
+  const [prize, setPrize] = React.useState(null);
+  React.useEffect(() => {
+    GetApply('prize', 'all', from(), to())
+      .then((data) => {
+        setPrize(data);
+      });
+  }, []);
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
@@ -666,6 +772,7 @@ function ApplyPanel() {
           <Tab label="报刊文章" />
           <Tab label="著作" />
           <Tab label="专利" />
+          <Tab label="获奖" />
         </Tabs>
       </Grid>
       <Grid item xs={12}>
@@ -908,6 +1015,56 @@ function ApplyPanel() {
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
                           onClick={(e) => RejectApply(row.id, 'patent')}
+                        >
+                          退回
+                        </Link>
+                      </Typography>
+                  }
+                ))
+              }
+            />
+          </Box>
+        }
+        {
+          value === 5 &&
+          <Box>
+            <InfoTable
+              title='申请列表'
+              heads={['申请人工号', '获奖编号', '状态', '操作']}
+              rows={
+                prize && prize.map((row) => (
+                  {
+                    applicant:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link href={REACT_URL + '/my/users/' + row.applicant}>
+                          {row.applicant}
+                        </Link>
+                      </Typography>,
+                    id: row.id,
+                    status: row.status,
+                    action:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link
+                          component={'button'}
+                          onClick={(e) => window.location.assign(REACT_URL + '/my/book/' + row.isbn)}
+                        >
+                          查看
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => ApproveApply(row.id, 'prize')}
+                        >
+                          通过
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => RejectApply(row.id, 'prize')}
                         >
                           退回
                         </Link>
@@ -1332,6 +1489,18 @@ function AssistantPanelContent() {
                   <Route path='/patent/:id' element={
                     <Grid item xs={12}>
                       <PatentInfoEdit patent_num={Object.values(useParams())[0].substring(7)} />
+                    </Grid>
+                  } />
+                </Route>
+                <Route path='/prize'>
+                  <Route path='/prize/add' element={
+                    <Grid item xs={12}>
+                      <AddPrizePanel />
+                    </Grid>
+                  } />
+                  <Route path='/prize/:id' element={
+                    <Grid item xs={12}>
+                      <PrizeInfoEdit id={Object.values(useParams())[0].substring(6)} />
                     </Grid>
                   } />
                 </Route>

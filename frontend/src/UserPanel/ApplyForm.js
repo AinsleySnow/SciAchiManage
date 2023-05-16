@@ -1577,3 +1577,89 @@ export function PatentInfo(props) {
     </React.Fragment >
   );
 }
+
+
+export function PrizeInfo(props) {
+    const [name, setName] = React.useState(props.id);
+    const [desp, setDesp] = React.useState(props.author);
+    const [apply_date, setApplyDate] = React.useState(props.publish_date);
+  
+    React.useEffect(
+      () => setName(props.name),
+      [props.name]
+    );
+    React.useEffect(
+      () => setDesp(props.desp),
+      [props.desp]
+    );
+    React.useEffect(
+      () => setApplyDate(props.apply_date),
+      [props.apply_date]
+    );
+  
+    var pdict = {
+      name: name,
+      desp: desp,
+      apply_date: apply_date,
+    };
+  
+    const handleNameChange = (event) => {
+      setName(event.target.value);
+      pdict.name = event.target.value;
+      props.onPrizeChange(pdict);
+    };
+  
+    const handleDespChange = (event) => {
+      setDesp(event.target.value);
+      pdict.desp = event.target.value;
+      props.onPrizeChange(pdict);
+    };
+  
+    const handlePDChange = (event) => {
+      setApplyDate(event.target.value);
+      pdict.apply_date = event.target.value;
+      props.onPrizeChange(pdict);
+    };
+    
+  
+    return (
+      <React.Fragment>
+        <Typography variant="h6" paddingBottom={4}>
+          添加/编辑获奖信息
+        </Typography>
+        <Grid container flexShrink={'row'} spacing={3}>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              onChange={handleNameChange}
+              required
+              value={name}
+              id="name"
+              name="name"
+              label="获奖名"
+              variant="standard"
+            />
+            <TextField
+              onChange={handleDespChange}
+              required
+              value={desp}
+              id="desp"
+              name="desp"
+              label="奖项描述"
+              variant="standard"
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <TextField
+              onChange={handlePDChange}
+              required
+              value={apply_date}
+              id="publish-date"
+              name="publish-date"
+              label="日期"
+              variant="standard"
+            />
+          </Grid>
+        </Grid>
+      </React.Fragment >
+    );
+  }

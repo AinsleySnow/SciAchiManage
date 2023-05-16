@@ -29,7 +29,7 @@ import ResearcherInfo from './ResearcherInfo';
 import UserInfo from './UserInfo';
 import { Routes, Route, useParams } from 'react-router-dom';
 import { API_URL, REACT_URL } from '../Constants';
-import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle, GetBook, GetPatent, GetApply, ApproveApply, RejectApply } from './Common'
+import { DeleteUser, GetUser, GetResearcher, SetResInfo, SetUserInfo, AddUser, GetCollege, GetCollegeMembers, DeleteCollege, AddCollege, GetJournal, GetNewspaper, GetConf, GetPaper, GetConfpaper, GetArticle, AddArticle, GetBook, GetPatent, GetApply, ApproveApply, RejectApply, GetPrize } from './Common'
 import { Button, Fab, Tab, Tabs, TextField } from '@mui/material';
 import { MessageBar } from '../MessageBar';
 import { Stack } from '@mui/system';
@@ -42,6 +42,7 @@ import { AddArticlePanel, ArticleInfoEdit } from './ArticlePanel';
 import { AddBookPanel, BookInfoEdit } from './BookPanel';
 import { AddPatentPanel, PatentInfoEdit } from './PatentPanel';
 import { StatPanel } from './StatPanel';
+import { AddPrizePanel, PrizeInfoEdit } from './PrizePanel';
 
 
 function Copyright(props) {
@@ -459,6 +460,7 @@ var datapanel_confpaper_from = 0;
 var datapanel_article_from = 0;
 var datapanel_book_from = 0;
 var datapanel_patent_from = 0;
+var datapanel_prize_from = 0;
 
 function DataPanel() {
   var nomorepaper = false;
@@ -693,6 +695,51 @@ function DataPanel() {
       });
   }
 
+  var nomoreprize = false;
+
+  const [prize, setPrize] = React.useState(null);
+  React.useEffect(() => {
+    GetPrize('all', datapanel_prize_from)
+      .then((data) => {
+        setPrize(data.map(p => (
+          {
+            ...p,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/prize/' + p.id}>
+                  编辑
+                </Link>
+              </Typography>
+          })));
+      });
+  }, []);
+
+  const morePrize = (e) => {
+    if (nomoreprize)
+      return;
+    datapanel_prize_from += 250;
+    GetPrize('all', datapanel_prize_from)
+      .then((data) => {
+        if (!data) {
+          nomoreprize = true;
+          datapanel_prize_from = 0;
+          return;
+        }
+        let newdata = prize.concat(data);
+        setPrize(newdata.map(cp => (
+          {
+            ...cp,
+            action:
+              <Typography fontSize={'small'} color="text.secondary">
+                <Link href={REACT_URL + '/my/prize/' + cp.id}>
+                  编辑
+                </Link>
+              </Typography>
+          }
+        )));
+      });
+  }
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
@@ -700,7 +747,7 @@ function DataPanel() {
           <Tab label="期刊论文" />
           <Tab label="会议论文" />
           <Tab label="报刊文章" />
-          <Tab label="奖项" />
+          <Tab label="获奖" />
           <Tab label="著作" />
           <Tab label="专利" />
         </Tabs>
@@ -767,6 +814,24 @@ function DataPanel() {
           value === 3 &&
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <InfoTable
+              title='获奖'
+              heads={['编号', '名称', '描述', '发表日期', '操作']}
+              rows={prize}
+            />
+            <Typography sx={{ marginTop: 4 }} fontSize={'small'} color="text.secondary">
+              <Link component='button' onClick={morePrize}>
+                查看更多
+              </Link>
+            </Typography>
+            <AddFab handleClick={
+              (e) => window.location.assign(REACT_URL + '/my/prize/add')
+            } />
+          </Paper>
+        }
+        {
+          value === 4 &&
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+            <InfoTable
               title='著作'
               heads={['题目', '书号', '作者', '出版社', '出版年', '出版地', '链接', '操作']}
               rows={book}
@@ -782,7 +847,7 @@ function DataPanel() {
           </Paper>
         }
         {
-          value === 4 &&
+          value === 5 &&
           <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <InfoTable
               title='专利'
@@ -812,6 +877,7 @@ var confpaper_page = 1;
 var article_page = 1;
 var book_page = 1;
 var patent_page = 1;
+var prize_page = 1;
 
 function ApplyPanel() {
   const [value, setValue] = React.useState(0);
@@ -830,6 +896,8 @@ function ApplyPanel() {
       setPage(book_page);
     else if (value === 4)
       setPage(patent_page);
+    else if (value === 5)
+      setPage(prize_page);
   };
 
   const toNextPage = () => {
@@ -880,6 +948,14 @@ function ApplyPanel() {
           setPatent(data);
         }
         );
+    }
+    else if (value === 5) {
+      GetApply('prize', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setPrize(data);
+        })
     }
   };
 
@@ -933,6 +1009,15 @@ function ApplyPanel() {
         }
         );
     }
+    else if (value === 5) {
+      GetApply('prize', 'all', from, to)
+        .then(data => {
+          if (data.length === 0)
+            return;
+          setPrize(data);
+        }
+        );
+    }
   };
 
   const from = () => {
@@ -946,6 +1031,8 @@ function ApplyPanel() {
       return (book_page - 1) * pagesize;
     } else if (value === 4) {
       return (patent_page - 1) * pagesize;
+    } else if (value === 5) {
+      return (prize_page - 1) * pagesize;
     }
   };
 
@@ -960,6 +1047,8 @@ function ApplyPanel() {
       return book_page * pagesize;
     } else if (value === 4) {
       return patent_page * pagesize;
+    } else if (value === 5) {
+      return prize_page * pagesize;
     }
   };
 
@@ -974,6 +1063,8 @@ function ApplyPanel() {
       return book_page;
     } else if (value === 4) {
       return patent_page;
+    } else if (value === 5) {
+      return prize_page;
     }
   };
 
@@ -993,6 +1084,9 @@ function ApplyPanel() {
     } else if (value === 4) {
       patent_page += 1;
       setPage(patent_page);
+    } else if (value === 4) {
+      prize_page += 1;
+      setPage(prize_page);
     }
   };
 
@@ -1012,6 +1106,9 @@ function ApplyPanel() {
     } else if (value === 4) {
       patent_page -= 1;
       setPage(patent_page);
+    } else if (value === 5) {
+      prize_page -= 1;
+      setPage(prize_page);
     }
   };
 
@@ -1055,6 +1152,14 @@ function ApplyPanel() {
       });
   }, []);
 
+  const [prize, setPrize] = React.useState(null);
+  React.useEffect(() => {
+    GetApply('prize', 'all', from(), to())
+      .then((data) => {
+        setPrize(data);
+      });
+  }, []);
+
   return (
     <Grid container spacing={5}>
       <Grid item xs={12}>
@@ -1064,6 +1169,7 @@ function ApplyPanel() {
           <Tab label="报刊文章" />
           <Tab label="著作" />
           <Tab label="专利" />
+          <Tab label="获奖" />
         </Tabs>
       </Grid>
       <Grid item xs={12}>
@@ -1097,7 +1203,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => ApproveApply(row.id, 'paper')}
+                          onClick={(e) => ApproveApply(row.pid, 'paper')}
                         >
                           通过
                         </Link>
@@ -1106,7 +1212,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => RejectApply(row.id, 'paper')}
+                          onClick={(e) => RejectApply(row.pid, 'paper')}
                         >
                           退回
                         </Link>
@@ -1146,7 +1252,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => ApproveApply(row.id, 'confpaper')}
+                          onClick={(e) => ApproveApply(row.cpid, 'confpaper')}
                         >
                           通过
                         </Link>
@@ -1155,7 +1261,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => RejectApply(row.id, 'confpaper')}
+                          onClick={(e) => RejectApply(row.cpid, 'confpaper')}
                         >
                           退回
                         </Link>
@@ -1196,7 +1302,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => ApproveApply(row.id, 'article')}
+                          onClick={(e) => ApproveApply(row.aid, 'article')}
                         >
                           通过
                         </Link>
@@ -1205,7 +1311,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => RejectApply(row.id, 'article')}
+                          onClick={(e) => RejectApply(row.aid, 'article')}
                         >
                           退回
                         </Link>
@@ -1246,7 +1352,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => ApproveApply(row.id, 'book')}
+                          onClick={(e) => ApproveApply(row.isbn, 'book')}
                         >
                           通过
                         </Link>
@@ -1255,7 +1361,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => RejectApply(row.id, 'book')}
+                          onClick={(e) => RejectApply(row.isbn, 'book')}
                         >
                           退回
                         </Link>
@@ -1296,7 +1402,7 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => ApproveApply(row.id, 'patent')}
+                          onClick={(e) => ApproveApply(row.patent_num, 'patent')}
                         >
                           通过
                         </Link>
@@ -1305,7 +1411,57 @@ function ApplyPanel() {
                           component='button'
                           disabled={!row.status === 3}
                           color={row.status === 3 ? 'primary' : 'text.secondary'}
-                          onClick={(e) => RejectApply(row.id, 'patent')}
+                          onClick={(e) => RejectApply(row.patent_num, 'patent')}
+                        >
+                          退回
+                        </Link>
+                      </Typography>
+                  }
+                ))
+              }
+            />
+          </Box>
+        }
+        {
+          value === 5 &&
+          <Box>
+            <InfoTable
+              title='申请列表'
+              heads={['申请人工号', '获奖编号', '状态', '操作']}
+              rows={
+                prize && prize.map((row) => (
+                  {
+                    applicant:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link href={REACT_URL + '/my/users/' + row.applicant}>
+                          {row.applicant}
+                        </Link>
+                      </Typography>,
+                    id: row.prize_id,
+                    status: row.status,
+                    action:
+                      <Typography fontSize={'small'} color="text.secondary">
+                        <Link
+                          component={'button'}
+                          onClick={(e) => window.location.assign(REACT_URL + '/my/prize/' + row.prize_id)}
+                        >
+                          查看
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => ApproveApply(row.prize_id, 'prize')}
+                        >
+                          通过
+                        </Link>
+                        {' '}
+                        <Link
+                          component='button'
+                          disabled={!row.status === 3}
+                          color={row.status === 3 ? 'primary' : 'text.secondary'}
+                          onClick={(e) => RejectApply(row.prize_id, 'prize')}
                         >
                           退回
                         </Link>
@@ -1761,6 +1917,18 @@ function AdminPanelContent() {
                   <Route path='/patent/:id' element={
                     <Grid item xs={12}>
                       <PatentInfoEdit patent_num={Object.values(useParams())[0].substring(7)} />
+                    </Grid>
+                  } />
+                </Route>
+                <Route path='/prize'>
+                  <Route path='/prize/add' element={
+                    <Grid item xs={12}>
+                      <AddPrizePanel />
+                    </Grid>
+                  } />
+                  <Route path='/prize/:id' element={
+                    <Grid item xs={12}>
+                      <PrizeInfoEdit id={Object.values(useParams())[0].substring(6)} />
                     </Grid>
                   } />
                 </Route>

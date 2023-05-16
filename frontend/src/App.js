@@ -30,6 +30,7 @@ function App() {
         <Routes>
           <Route path='/my/*' element={<My />}/>
           <Route path='/login' element={<Login />} />
+          <Route path='/' element={<Login />} />
         </Routes>
       </Router>
     </div>
