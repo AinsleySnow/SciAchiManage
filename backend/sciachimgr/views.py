@@ -1235,6 +1235,10 @@ class Apply(APIView):
                 apply = PatentAuthor.objects.filter(Substr('id', 2, 2) == utype)[_from:to]
                 serializer = PatentAuthorSerializer(apply, many=True)
                 return Response(serializer.data)
+            elif type == 'prize':
+                apply = PrizeAuthor.objects.filter(Substr('id', 2, 2) == utype)[_from:to]
+                serializer = PrizeAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
 
         if id == 'all':
             if type == 'paper':
@@ -1257,26 +1261,35 @@ class Apply(APIView):
                 apply = PatentAuthor.objects.all()[_from:to]
                 serializer = PatentAuthorSerializer(apply, many=True)
                 return Response(serializer.data)
+            elif type == 'prize':
+                apply = PrizeAuthor.objects.all()[_from:to]
+                serializer = PrizeAuthorSerializer(apply, many=True)
+                return Response(serializer.data)
+
 
         if type == 'paper':
-            apply = PaperAuthor.objects.get(id=id)
+            apply = PaperAuthor.objects.filter(applicant__id=id)
             serializer = PaperAuthorSerializer(apply, many=True)
             return Response(serializer.data)
         elif type == 'article':
-            apply = NewspaperAuthor.objects.get(id=id)
+            apply = NewspaperAuthor.objects.filter(applicant__id=id)
             serializer = NewspaperAuthorSerializer(apply, many=True)
             return Response(serializer.data)
         elif type == 'confpaper':
-            apply = ConferenceAuthor.objects.get(id=id)
+            apply = ConferenceAuthor.objects.filter(applicant__id=id)
             serializer = ConferenceAuthorSerializer(apply, many=True)
             return Response(serializer.data)
         elif type == 'book':
-            apply = BookAuthor.objects.get(id=id)
+            apply = BookAuthor.objects.filter(applicant__id=id)
             serializer = BookAuthorSerializer(apply, many=True)
             return Response(serializer.data)
         elif type == 'patent':
-            apply = PatentAuthor.objects.get(id=id)
+            apply = PatentAuthor.objects.filter(applicant__id=id)
             serializer = PatentAuthorSerializer(apply, many=True)
+            return Response(serializer.data)
+        elif type == 'prize':
+            apply = PrizeAuthor.objects.filter(applicant__id=id)
+            serializer = PrizeAuthorSerializer(apply, many=True)
             return Response(serializer.data)
 
         return None
@@ -1294,34 +1307,106 @@ def AddApply(request):
         return Response(status=403)
 
     if type == 'paper':
+        p = Paper.objects.create(
+            issn = Journal.objects.get(issn=received.get('issn')),
+            title = received.get('title'),
+            author = received.get('author'),
+            page = received.get('page'),
+            volume = received.get('volume'),
+            number = received.get('number'),
+            publish_date = received.get('publish_date'),
+            link = received.get('link')
+        )
+
         PaperAuthor.objects.create(
-            applicant = received.get('applicant'),
-            pid = received.get('pid'),
-            status = 2
+            applicant = User.objects.get(id=curusr),
+            pid = p,
+            status = 3
         )
     elif type == 'article':
+        a = Article.objects.create(
+            issn = Newspaper.objects.get(issn=received.get('issn')),
+            title = received.get('title'),
+            author = received.get('author'),
+            version = received.get('version'),
+            publish_date = received.get('publish_date'),
+            link = received.get('link')
+        )
+
         NewspaperAuthor.objects.create(
-            applicant = received.get('applicant'),
-            nid = received.get('aid'),
-            status = 2
+            applicant = User.objects.get(id=curusr),
+            nid = a,
+            status = 3
         )
     elif type == 'confpaper':
+        cp = ConferencePaper.objects.create(
+            cid = Conference.objects.get(id=received.get('cid')),
+            title = received.get('title'),
+            author = received.get('author'),
+            page = received.get('page'),
+            publish_date = received.get('publish_date'),
+            link = received.get('link')
+        )
+
         ConferenceAuthor.objects.create(
-            applicant = received.get('applicant'),
-            cid = received.get('cpid'),
-            status = 2
+            applicant = User.objects.get(id=curusr),
+            cid = cp,
+            status = 3
         )
     elif type == 'book':
+        b = Book.objects.create(
+            isbn = received.get('isbn'),
+            title = received.get('title'),
+            author = received.get('author'),
+            publisher = received.get('publisher'),
+            publish_year = received.get('publish_year'),
+            place_published = received.get('place_published'),
+            picture = received.get('picture'),
+            link = received.get('link')
+        )
+
         BookAuthor.objects.create(
-            applicant = received.get('applicant'),
-            bid = received.get('isbn'),
-            status = 2
+            applicant = User.objects.get(id=curusr),
+            bid = b,
+            status = 3
         )
     elif type == 'patent':
+        pa = Patent.objects.create(
+            patent_num = received.get('patent_num'),
+            promulgate_num = received.get('promulgate_num'),
+            name = received.get('name'),
+            applyer = received.get('applyer'),
+            inventor = received.get('inventor'),
+            issue = received.get('issue'),
+            theme = received.get('theme'),
+            catagory_num = received.get('catagory_num'),
+            major_catagory = received.get('major_catagory'),
+            link = received.get('link')
+        )
+
         PatentAuthor.objects.create(
-            applicant = received.get('applicant'),
-            pid = received.get('patent_num'),
-            status = 2
+            applicant = User.objects.get(id=curusr),
+            pid = pa,
+            status = 3
+        )
+    elif type == 'prize':
+        pra = Prize.objects.create(
+            patent_num = received.get('patent_num'),
+            promulgate_num = received.get('promulgate_num'),
+            name = received.get('name'),
+            applyer = received.get('applyer'),
+            inventor = received.get('inventor'),
+            issue = received.get('issue'),
+            theme = received.get('theme'),
+            catagory_num = received.get('catagory_num'),
+            major_catagory = received.get('major_catagory'),
+            link = received.get('link')
+        )
+
+        PrizeAuthor.objects.create(
+            applicant = User.objects.get(id=curusr),
+            pid = pra,
+            status = 3
         )
 
     return HttpResponse('success')
@@ -1337,27 +1422,31 @@ def ApproveApply(request):
         return Response(status=403)
 
     if type == 'paper':
-        apply = PaperAuthor.objects.get(id=id)
+        apply = PaperAuthor.objects.get(pid__id=id)
         apply.status = 1
         apply.save()
     elif type == 'article':
-        apply = NewspaperAuthor.objects.get(id=id)
+        apply = NewspaperAuthor.objects.get(aid__id=id)
         apply.status = 1
         apply.save()
     elif type == 'confpaper':
-        apply = ConferenceAuthor.objects.get(id=id)
+        apply = ConferenceAuthor.objects.get(cpid__id=id)
         apply.status = 1
         apply.save()
     elif type == 'book':
-        apply = BookAuthor.objects.get(id=id)
+        apply = BookAuthor.objects.get(isbn__isbn=id)
         apply.status = 1
         apply.save()
     elif type == 'prize':
-        apply = BookAuthor.objects.get(id=id)
+        apply = PrizeAuthor.objects.get(prize_id__id=id)
         apply.status = 1
         apply.save()
     elif type == 'patent':
-        apply = PatentAuthor.objects.get(id=id)
+        apply = PatentAuthor.objects.get(patent_num__patent_num=id)
+        apply.status = 1
+        apply.save()
+    elif type == 'prize':
+        apply = PrizeAuthor.objects.get(prize_id__id=id)
         apply.status = 1
         apply.save()
 
@@ -1393,6 +1482,10 @@ def RejectApply(request):
         apply = PatentAuthor.objects.get(id=id)
         apply.status = 2
         apply.save()
+    elif type == 'patent':
+        apply = PrizeAuthor.objects.get(id=id)
+        apply.status = 2
+        apply.save()
 
     return HttpResponse('success')
 
@@ -1404,6 +1497,7 @@ class AchiSet:
         self.confpaper = 0
         self.book = 0
         self.patent = 0
+        self.prize = 0
 
 class AchiSetEncoder(json.JSONEncoder):
     def default(self, o):
@@ -1440,7 +1534,7 @@ def GetStatByYear(request):
                 result[year].confpaper = 1
         for apply in BookAuthor.objects.filter(status=1, applicant__id=curusr):
             try:
-                year = Book.objects.get(isbn=apply.isbn).publish_year.year
+                year = Book.objects.get(isbn=apply.isbn.isbn).publish_year.year
                 if year in result:
                     result[year].book += 1
                 else:
@@ -1448,13 +1542,20 @@ def GetStatByYear(request):
                     result[year].book = 1
             except:
                 pass
-        '''for apply in PatentAuthor.objects.filter(status=1, applicant__id=curusr):
-            year = Patent.objects.get(id=apply.pid.id).apply_date.year
+        for apply in PatentAuthor.objects.filter(status=1, applicant__id=curusr):
+            year = Patent.objects.get(patent_num=apply.patent_num.patent_num).apply_date.year
             if year in result:
                 result[year].patent += 1
             else:
                 result[year] = AchiSet()
-                result[year].patent = 1'''
+                result[year].patent = 1
+        for apply in PrizeAuthor.objects.filter(status=1, applicant__id=curusr):
+            year = Prize.objects.get(id=apply.prize_id.id).apply_date.year
+            if year in result:
+                result[year].prize += 1
+            else:
+                result[year] = AchiSet()
+                result[year].prize = 1
 
         return HttpResponse(json.dumps(result, cls=AchiSetEncoder), content_type="application/json")
 
@@ -1482,6 +1583,16 @@ def GetStatByYear(request):
         for y in range(1990, 2024):
             result[y].book = b.filter(isbn__publish_year__year=y).count()
 
+        pa = PatentAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2])
+        p = pa.values('patent_num')
+        for y in range(1990, 2024):
+            result[y].patent = p.filter(patent_num__apply_date__year=y).count()
+
+        pra = PrizeAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2])
+        pr = pra.values('prize_id')
+        for y in range(1990, 2024):
+            result[y].prize = pr.filter(prize_id__apply_date__year=y).count()
+
         return HttpResponse(json.dumps(result, cls=AchiSetEncoder), content_type="application/json")
 
     elif curusr[2:4] == '03':
@@ -1508,13 +1619,15 @@ def GetStatByYear(request):
         for y in range(1990, 2024):
             result[y].book = b.filter(isbn__publish_year__year=y).count()
 
-        '''for apply in PatentAuthor.objects.all():
-            year = Patent.objects.get(id=apply.pid.id).apply_date.year
-            if year in result:
-                result[year].patent += 1
-            else:
-                result[year] = AchiSet()
-                result[year].patent = 1'''
+        pa = PatentAuthor.objects.filter(status=1)
+        p = pa.values('patent_num')
+        for y in range(1990, 2024):
+            result[y].patent = p.filter(patent_num__apply_date__year=y).count()
+
+        pra = PrizeAuthor.objects.filter(status=1)
+        pr = pra.values('prize_id')
+        for y in range(1990, 2024):
+            result[y].prize = pr.filter(prize_id__apply_date__year=y).count()
 
         return HttpResponse(json.dumps(result, cls=AchiSetEncoder), content_type="application/json")
 
@@ -1532,6 +1645,7 @@ def GetStatByCollege(request):
         result[n].confpaper = ConferenceAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
         result[n].book = BookAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
         result[n].patent = PatentAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
+        result[n].prize = PrizeAuthor.objects.filter(status=1, applicant__id__startswith='%02d' % c).count()
 
     return HttpResponse(json.dumps(result, cls=AchiSetEncoder), content_type="application/json")
 
@@ -1548,6 +1662,7 @@ def GetStatByType(request):
         achi.confpaper = ConferenceAuthor.objects.filter(status=1, applicant__id=curusr).count()
         achi.book = BookAuthor.objects.filter(status=1, applicant__id=curusr).count()
         achi.patent = PatentAuthor.objects.filter(status=1, applicant__id=curusr).count()
+        achi.prize = PrizeAuthor.objects.filter(status=1, applicant__id=curusr).count()
         return HttpResponse(json.dumps(achi, cls=AchiSetEncoder), content_type="application/json")
 
     elif curusr[2:4] == '02':
@@ -1556,6 +1671,7 @@ def GetStatByType(request):
         achi.confpaper = ConferenceAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]).count()
         achi.book = BookAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]).count()
         achi.patent = PatentAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]).count()
+        achi.prize = PrizeAuthor.objects.filter(status=1, applicant__id__startswith=curusr[0:2]).count()
         return HttpResponse(json.dumps(achi, cls=AchiSetEncoder), content_type="application/json")
 
     elif curusr[2:4] == '03':
@@ -1564,4 +1680,5 @@ def GetStatByType(request):
         achi.confpaper = ConferenceAuthor.objects.filter(status=1).count()
         achi.book = BookAuthor.objects.filter(status=1).count()
         achi.patent = PatentAuthor.objects.filter(status=1).count()
+        achi.prize = PrizeAuthor.objects.filter(status=1).count()
         return HttpResponse(json.dumps(achi, cls=AchiSetEncoder), content_type="application/json")
