@@ -119,9 +119,23 @@ def get_patentauthor():
                 i += 1
 
 
+def get_prizeauthor():
+    with open('prize_author.csv', 'w+', encoding='utf-8') as result:
+        result.write('id,applicant,prize_id,status\n')
+        writer = csv.DictWriter(result, ['id', 'applicant', 'prize_id', 'status'])
+
+        with open('prize.csv', 'r', encoding='utf-8') as f:
+            i = 0
+            for (_, id) in name_id.items():
+                for j in range(0, 10):
+                    writer.writerow({
+                        'id': i,
+                        'applicant': id,
+                        'prize_id': i,
+                        'status': 1
+                    })
+                    i += 1
+
+
 if __name__ == '__main__':
-    get_paperauthor()
-    get_newspaperauthor()
-    get_conferenceauthor()
-    get_bookauthor()
-    get_patentauthor()
+    get_prizeauthor()

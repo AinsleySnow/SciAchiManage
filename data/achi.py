@@ -220,9 +220,39 @@ def get_patent():
                 )
 
 
+def get_prize():
+    with open('prize.csv', 'w+', encoding='utf-8') as file:
+        writer = csv.DictWriter(
+            file, ['id', 'prize_name', 'desp', 'apply_date'])
+        file.write('id,prize_name,desp,apply_date\n\n')
+        id = 0
+        for res in reslist:
+            for i in range(0, 10):
+                writer.writerow(
+                    {
+                        'id': id,
+                        'prize_name': 'xxxxxxxxx',
+                        'desp': 'xxxxxxxxx',
+                        'apply_date': get_date(),
+                    }
+                )
+                id += 1
+
+
+def add_date_to_patent():
+    with open('patent.csv', 'r', encoding='utf-8') as file:
+        with open('patent2.csv', 'w+', encoding='utf-8') as file2:
+            file2.write(file.readline().rstrip('\n') + ',apply_date\n\n')
+            for line in file.readlines():
+                if line != '\n':
+                    file2.write(line.rstrip('\n') + ',' + get_date() + '\n\n')
+
+
 if __name__ == '__main__':
     #get_paper()
    # get_article()
    # get_book()
   #  get_conf_paper()
-    get_patent()
+  #  get_patent()
+  #  get_prize()
+    add_date_to_patent()
