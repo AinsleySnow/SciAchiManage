@@ -1005,6 +1005,91 @@ def DeleteBook(request):
         return Response(status=403)
 
 
+class PrizeInfo(APIView):
+    serializer_class = PrizeSerializer
+
+    batch_size = 250
+    total_objects = Prize.objects.count()
+
+    def get(self, request):
+        id = request.GET['id']
+        if id != 'all':
+            p = Prize.objects.get(id=id)
+            return Response({
+                'id': p.id,
+                'name': p.prize_name,
+                'desp': p.desp,
+                'apply_date': p.apply_date
+            })
+        else:
+            start = int(request.GET['from'])
+            if start >= PrizeInfo.total_objects:
+                return None
+            prize = [
+                {
+                    'id': p.id,
+                    'name': p.prize_name,
+                    'desp': p.desp,
+                    'apply_date': p.apply_date
+                }
+                for p in Prize.objects.all()[start:start + PrizeInfo.batch_size]
+            ]
+            return Response(prize)
+
+    def post(self, request):
+        serializer = PrizeSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+
+def SetPrizeInfo(request):
+    received = json.loads(request.body)
+    id = received.get('id')
+
+    p = Prize.objects.get(id=id)
+    if p.id != received.get('id'):
+        p.id = received.get('id')
+    if p.prize_name != received.get('name'):
+        p.prize_name = received.get('name')
+    if p.desp != received.get('desp'):
+        p.desp = received.get('desp')
+    if p.apply_date != received.get('apply_date'):
+        p.apply_date = received.get('apply_date')
+
+    p.save()
+    return HttpResponse('success')
+
+
+def AddPrize(request):
+    received = json.loads(request.body)
+    curusr = received.get('curusr')
+    if curusr[2:4] != '03':
+        return Response(status=403)
+
+    Prize.objects.create(
+        prize_name = received.get('name'),
+        desp = received.get('desp'),
+        apply_date = received.get('apply_date'),
+    )
+
+    return HttpResponse('success')
+
+
+def DeletePrize(request):
+    received = json.loads(request.body)
+    try:
+        curusr = received.get('curusr')
+        if curusr[2:4] != '03':
+            return Response(status=403)
+
+        todelete = received.get('todelete')
+        Prize.objects.filter(id=todelete).delete()
+        return HttpResponse('success')
+    except:
+        return Response(status=403)
+
+
 class PatentInfo(APIView):
     serializer_class = PatentSerializer
 

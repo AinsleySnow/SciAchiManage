@@ -162,9 +162,12 @@ class Patent(models.Model):
     link = models.CharField(max_length=400, blank=True)
 
 
+
 class Prize(models.Model):
-    prize_name = models.CharField(max_length=400, primary_key=True)
+    prize_name = models.CharField(max_length=400)
     desp = models.CharField(max_length=1000)
+    apply_date = models.DateField()
+
 
 
 class PaperAuthor(models.Model):
@@ -264,3 +267,23 @@ class PatentAuthor(models.Model):
         REJECTED = 2
         PROCESSING = 3
     status = models.IntegerField(choices=Status.choices)
+
+
+class PrizeAuthor(models.Model):
+    applicant = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        to_field='id'
+    )
+    prize_id = models.ForeignKey(
+        Prize,
+        on_delete=models.CASCADE,
+        to_field='id'
+    )
+
+    class Status(models.IntegerChoices):
+        APPROVED = 1
+        REJECTED = 2
+        PROCESSING = 3
+    status = models.IntegerField(choices=Status.choices)
+

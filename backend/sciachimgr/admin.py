@@ -24,6 +24,8 @@ class JournalAdmin(ImportExportModelAdmin):
 class PaperAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     pass
 
+class PrizeAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    pass
 
 class NewspaperResource(resources.ModelResource):
     class Meta:
@@ -74,6 +76,9 @@ class ConfAuthorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 class BookAuthorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     pass
 
+class PrizeAuthorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+    pass
+
 class PatentAuthorAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     pass
 
@@ -88,8 +93,10 @@ admin.site.register(models.Conference, ConferenceAdmin)
 admin.site.register(models.ConferencePaper, ConferencePaperAdmin)
 admin.site.register(models.Book, BookAdmin)
 admin.site.register(models.Patent, PatentAdmin)
+admin.site.register(models.Prize, PrizeAuthorAdmin)
 admin.site.register(models.PaperAuthor, PaperAuthorAdmin)
 admin.site.register(models.NewspaperAuthor, NewspaperAuthorAdmin)
 admin.site.register(models.ConferenceAuthor, ConfAuthorAdmin)
 admin.site.register(models.BookAuthor, BookAuthorAdmin)
+admin.site.register(models.PrizeAuthor, PrizeAuthorAdmin)
 admin.site.register(models.PatentAuthor, PatentAuthorAdmin)

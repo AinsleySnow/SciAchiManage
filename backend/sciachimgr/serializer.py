@@ -52,6 +52,11 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['isbn', 'title', 'author', 'publisher', 'publish_year', 'place_published', 'picture', 'link']
 
+class PrizeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Prize
+        fields = ['id', 'name', 'desp', 'apply_date']
+
 class PatentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patent
@@ -81,3 +86,8 @@ class PatentAuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = PatentAuthor
         fields = ['applicant', 'patent_num', 'status']
+
+class PrizeAuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrizeAuthor
+        fields = ['applicant', 'prize_id', 'status']
